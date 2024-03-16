@@ -3,6 +3,7 @@
         "Appwrite",
         "Melston",
         "Perfs",
-        "prefs"
+        "prefs",
+        "signup"
     ]
 }

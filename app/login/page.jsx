@@ -1,34 +1,42 @@
 "use client";
 import { useState } from "react";
-import { account, ID } from "@/app/appwrite";
+import { account, ID } from "@/lib/appwrite";
+import { useUser } from "@/hooks/User"
 import {OAuthProvider} from 'appwrite'
+import { Button } from "@/components/ui/button";
+
 
 const LoginPage = () => {
   const [loggedInUser, setLoggedInUser] = useState(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const {login, logout, signup} = useUser
 
-  const login = async (email, password) => {
-    const session = await account.createEmailPasswordSession(email, password);
-    setLoggedInUser(await account.get());
-  };
 
-  const register = async () => {
-    await account.create(ID.unique(), email, password, name);
-    login(email, password);
-  };
+
+
+  // const login = async (email, password) => {
+  //   // const session = await account.createEmailPasswordSession(email, password);
+  //   const session = await account.createSession(email, password);
+  //   setLoggedInUser(await account.get());
+  // };
+  
+  // const logout = async () => {
+  //   await account.deleteSession("current");
+  //   setLoggedInUser(null);
+  // };
+  // const signup = async () => {
+  //   await account.create(ID.unique(), email, password, name);
+  //   login(email, password);
+  // };
 
   const googleLogin = async () => {
-    const session = await account.createOAuth2Session(OAuthProvider.googleLogin,'https://watchlist.davidmellons.com', 'http://www.google.com')
+    const session = await account.createOAuth2Session(OAuthProvider.Google,"http://localhost:3000/login", 'http://www.google.com')
     console.log('Session: ', session)
     setLoggedInUser(await account.get())
   }
 
-  const logout = async () => {
-    await account.deleteSession("current");
-    setLoggedInUser(null);
-  };
 
   if (loggedInUser) {
     return (
@@ -42,7 +50,7 @@ const LoginPage = () => {
   }
 
   return (
-    <div>
+    <div className="flex justify-items-center m-10">
       <p>Not logged in</p>
       <form>
         <input
@@ -57,18 +65,22 @@ const LoginPage = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <input
+        {/* <input
           type="text"
           placeholder="Name"
           value={name}
           onChange={(e) => setName(e.target.value)}
-        />
+        /> */}
         <button type="button" onClick={() => login(email, password)}>
           Login
         </button>
-        <button type="button" onClick={register}>
+        <button type="button" onClick={signup}>
           Register
         </button>
+        <Button
+          type="button"
+          onClick={googleLogin}
+          >Login with Google</Button>
       </form>
     </div>
   );

@@ -1,165 +1,116 @@
 'use client'
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { useUser } from '@/hooks/User'
+import { FormEventHandler, useState } from 'react'
 
-import { Button } from "@/components/ui/button"
-import { Separator } from "@/components/ui/separator"
-import { useEffect, useState } from "react"
-import { account, ID } from "@/lib/appwrite"
-import { OAuthProvider } from "appwrite"
-import { Skeleton } from "@/components/ui/skeleton"
 
-export default function Tutorial() {
+
+export default function TutorialPage() {
+    const user = useUser()
+    console.log(user)
+    return (
+        <div className='flex flex-col items-center justify-center '>
+            <h1 className='text-4xl font-bold text-center mb-10'>Tutorial</h1>
+            <div className="mb-10">
+                <Login />
+            </div>
+            <div className="mb-10">
+
+                <Signup />
+            </div>
+            <div className="mb-10">
+                <Logout />
+            </div>
+
+        </div>
+    )
+
+}
+
+const Login = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-    const [user, setUser] = useState<any>(null)
-    const [loadingUser, setLoadingUser] = useState(false)
+    const { login } = useUser()
 
-    console.log({ user })
-    console.log({ loadingUser })
-    useEffect(() => {
-        async function getUser() {
-
-            setUser(await account.get())
-            setLoadingUser(false)
-        }
-        getUser()
-    }, [])
-
-    async function handleLogin() {
-        console.log(`in handle login`)
-        try {
-            setLoadingUser(true)
-            await account.createEmailPasswordSession(email, password)
-
-            setUser(await account.get())
-            setLoadingUser(false)
-            setEmail('')
-            setPassword('')
-        } catch (e) {
-            console.error(e)
-        }
-    }
-    async function handleRegister() {
-        try {
-            await account.create(ID.unique(), email, password)
-            await handleLogin()
-        } catch (e) {
-            console.error(e)
-        }
-    }
-
-    async function handleLogout() {
-        try {
-            await account.deleteSession('current')
-            setUser(null)
-        } catch (e) {
-            console.error(e)
-        }
-    }
-
-    async function handleGoogleLogin() {
-        try {
-            await account.createOAuth2Session(OAuthProvider.Google,
-                'http://localhost:3000/', 
-                'http://localhost:3000/tutorial',
-                [
-                   'https://www.googleapis.com/auth/userinfo.profile' 
-                ] )
-            setUser(await account.get())
-            console.log({user})
-            setEmail('')
-            setPassword('')
-        } catch (e) {
-            console.error(e)
-        }
-    }
-
-    if (loadingUser) {
-        return (
-            <div className="min-h-screen flex flex-col justify-center items-center bg-gray-100">
-                <div className="p-8 bg-white shadow-md rounded-lg max-w-sm text-center">
-                    <Skeleton className="mb-4 h-[30px] w-[80%]" />
-                    <Skeleton className="mb-4 h-[20px] w-[90%]" />
-                    <Skeleton className="mb-6 h-[20px] w-[60%]" />
-                    <Skeleton className="h-[40px] w-[50%]" />
-                </div>
-            </div>
-        )
-    }
-
-    if (user) {
-        return (
-            <div className="min-h-screen flex flex-col justify-center items-center bg-gray-100">
-                <div className="p-8 bg-white shadow-lg rounded-lg max-w-sm text-center">
-                    <h2 className="text-xl font-semibold mb-4">You're Already Logged In</h2>
-                    <p className="mb-4">You can access your account details and settings in your dashboard.</p>
-                    <Button
-                        onClick={handleLogout}
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                    >
-                        logout
-                    </Button>
-                </div>
-            </div>
-
-        )
-    }
-
-
-    console.log(`Email: ${email}`)
-    console.log(`Password: ${password}`)
+    const handleLogin = async (e:any) => {
+        e.preventDefault();
+        console.log(email, password)
+        await login(email, password)
+    };
 
     return (
-        <main className="min-h-screen flex flex-col justify-center items-center bg-gray-100">
-            <div className="p-8 bg-white shadow-md rounded-lg">
-                <h1 className="text-2xl font-bold text-center mb-4">Log In or Sign Up</h1>
-                <form className="space-y-4">
-                    <div>
-                        <input
-                            type="email"
-                            placeholder="Email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            className="w-full p-2 border border-gray-300 rounded-md"
-                        />
-                    </div>
+        <>
+            <h2 className="text-2xl font-bold text-center mb-5">Login</h2><form onSubmit={handleLogin} className="w-60">
+                <Input
+                    type="email"
+                    placeholder="Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)} />
+                <Input
+                    type="password"
+                    placeholder="Password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)} />
+                <Button type="submit" className="mt-5">Login</Button>
+            </form>
+        </>
+    )
+};
 
-                    <div>
-                        <input
-                            type="password"
-                            placeholder="Password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            className="w-full p-2 border border-gray-300 rounded-md"
-                        />
-                    </div>
-                    <div className="flex justify-between items-center">
-                        <Button
-                            type="button"
-                            onClick={handleLogin}
-                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                        >
-                            Login
-                        </Button>
-                        <Button
-                            type="button"
-                            onClick={handleRegister}
-                            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                        >
-                            Register
-                        </Button>
-                    </div>
-                </form>
-                <Separator className="my-4" />
-                <div className="flex justify-center items-center">
-                    <Button
-                        className="m-auto"
-                        onClick={handleGoogleLogin}> Login With Google </Button>
-                </div>
-                <div className="h-10 w-10 bg-background" >
+const Logout = () => {
+    const { logout } = useUser()
 
-                </div>
-            </div>
-        </main>
+    const handleLogout = async () => {
+        await logout()
+    };
 
+    return (
+        <Button onClick={handleLogout}>Logout</Button>
+    )
+};
+
+const GoogleLogin = () =>{
+    
+}
+
+const Signup = () => {
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [name, setName] = useState('')
+
+    const { signup } = useUser()
+
+    const handleSignup = async (e:any) => {
+        e.preventDefault();
+        console.log(email, password, name)
+        await signup(email, password, name)
+    };
+
+    return (
+        <> 
+            <h2 className="text-2xl font-bold text-center mb-5">Signup</h2>
+        <form onSubmit={handleSignup} className="w-60">
+            <Input
+                type="name"
+                placeholder="Name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+            />
+            <Input
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+            />
+            <Input
+                type="password"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+            />
+            <Button type="submit" className='mt-5'>Login</Button>
+        </form>
+        </>
     )
 }

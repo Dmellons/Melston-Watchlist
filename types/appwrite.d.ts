@@ -17,7 +17,7 @@ export type AppwriteUser = {
         "phoneVerification": bool,
         "prefs": UserPrefs,
         "accessedAt": string
-}
+} | Models.User<Models.Preferences>
 
 export type UserPrefs = {
     "role": UserRoles
