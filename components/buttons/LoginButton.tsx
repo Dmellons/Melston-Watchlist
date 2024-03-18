@@ -1,40 +1,30 @@
 'use client'
-
-// import { signIn, signOut, useSession } from "next-auth/react"
 import { Button } from "@/components/ui/button";
-
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import Link from "next/link";
 import { ModeToggle } from "./ModeToggle";
-// import { account } from "@/lib/appwrite";
 import { useUser } from "@/hooks/User";
 
 export default function LoginButton() {
-    // const { data: session } = useSession();
-    const { user } = useUser()
-
-    // const session = account.getSession('current').then((session) => session)
+    const { user, logout, loginWithGoogle } = useUser()
     console.log({ user })
+
+    // console.log({ user })
     if (user) {
 
         // const imgUrl = session?.user?.image ? session.user.image : undefined  
         const imgUrl = user?.image ? user.image : undefined
 
         const userInitials = user ? user?.name.split(" ").map((initial) => initial[0]).join('') : "NA"
-        // const userInitials = "NA"
-
 
         const handleLogout = async () => {
-            const { logout } = useUser()
             try {
                 await logout()
             } catch (e) {
                 console.error(e)
             }
         }
-
 
     return (
         <div >
@@ -52,7 +42,10 @@ export default function LoginButton() {
                         <ModeToggle />
                         <Button asChild variant="link" >
                             <Link href="/profile" className="text-popover-foreground">User Profile</Link>
+                        </Button>
 
+                        <Button asChild variant="link" >
+                            <Link href="/watchlist" className="text-popover-foreground">Watchlist</Link>
                         </Button>
                     </div>
                     <Button
@@ -68,7 +61,7 @@ export default function LoginButton() {
 }
 return (
     <div className="m-auto">
-        <Button className="bg-primary hover:bg-muted text-primary-foreground hover:text-muted-foreground" onClick={() => signIn()}>Sign in</Button>
+        <Button className="bg-primary hover:bg-muted text-primary-foreground hover:text-muted-foreground" onClick={() => loginWithGoogle()}>Sign in</Button>
     </div>
 )
 }

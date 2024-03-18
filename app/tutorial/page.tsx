@@ -8,7 +8,7 @@ import { FormEventHandler, useState } from 'react'
 
 export default function TutorialPage() {
     const user = useUser()
-    console.log(user)
+    // console.log(user)
     return (
         <div className='flex flex-col items-center justify-center '>
             <h1 className='text-4xl font-bold text-center mb-10'>Tutorial</h1>
@@ -35,7 +35,6 @@ const Login = () => {
 
     const handleLogin = async (e:any) => {
         e.preventDefault();
-        console.log(email, password)
         await login(email, password)
     };
 
@@ -71,7 +70,15 @@ const Logout = () => {
 };
 
 const GoogleLogin = () =>{
-    
+    const  { loginWithGoogle } = useUser()
+
+    const handleLoginWithGoogle = async () => {
+        await loginWithGoogle()
+    };
+
+    return (
+        <Button onClick={handleLoginWithGoogle}>Login with Google</Button>
+    )
 }
 
 const Signup = () => {
@@ -83,7 +90,6 @@ const Signup = () => {
 
     const handleSignup = async (e:any) => {
         e.preventDefault();
-        console.log(email, password, name)
         await signup(email, password, name)
     };
 

@@ -1,16 +1,26 @@
-async function TestPage() {
+'use client'
+import { useUser } from "@/hooks/User"
 
-    const url = await process.env.APPWRITE_ENDPOINT_URL
-    const projectId = await process.env.APPWRITE_PROJECT_ID
+function TestPage() {
+    const { user } = useUser()
+
+
     return (
-        <div>
-            <h1>This is a test page</h1>
-            <span>URL: 
-                {url}
-                </span>
-            <p>This is the ID:
-                {projectId}
-            </p>
+        <div className="flex flex-col items-center w-full h-full justify-center">
+            <h1 className="text-3xl font-bold">Test Page</h1>
+            <h2 className="text-xl">User info</h2>
+            <ul>
+                {user ? (
+                    <>
+                        <li>Name: {user.name}</li>
+                        <li>Email: {user.email}</li>
+                    </>
+                ) : (
+                    <li>No user logged in</li>
+                )}
+
+            </ul>
+
         </div>
     )
 }
