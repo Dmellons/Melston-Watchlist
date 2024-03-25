@@ -1,5 +1,6 @@
 'use client'
 import { useUser } from "@/hooks/User"
+import AddWatchlist from "./AddWatchlist"
 
 function TestPage() {
     const { user } = useUser()
@@ -14,6 +15,7 @@ function TestPage() {
                     <>
                         <li>Name: {user.name}</li>
                         <li>Email: {user.email}</li>
+                    <AddWatchlist />
                     </>
                 ) : (
                     <li>No user logged in</li>
