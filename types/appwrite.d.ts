@@ -1,3 +1,5 @@
+import { PlatformPath } from "path"
+
 export type AppwriteUser = {
     
         "$id": string,
@@ -27,3 +29,27 @@ export type UserRoles = [
     'Admin',
     'User'
 ]
+
+export enum ContentType = {
+    boardgame,
+    videogame,
+    tv,
+    movie
+}
+
+export enum platform {
+    Netflix,
+    Nintendo,
+    Xbox,
+    Playstaation,
+    Hulu,
+    Max,
+    CrunchyRoll,
+}
+
+export type WatchlistDocumentCreate = {
+    title: string,
+    content_type: ContentType[],
+    patform: Platform[],
+
+}
