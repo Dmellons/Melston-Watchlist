@@ -44,16 +44,14 @@ const WatchlistPage = () => {
     }, [user])
 
     return (
-        <div>
+        <main className="flex min-h-screen flex-col items-center justify-between p-24">
             <h1 className="text-3xl font-bold">Watchlist</h1>
-            <ul>
-                <li>Item 1</li>
-                <li>Item 2</li>
-                <li>Item 3</li>
+                <AddWatchlist />
+            <div>
                 {
                     user ? (
                         watchlist?.documents && watchlist?.documents.map((document) => (
-                            <li key={document.$id}>{document.title}</li>
+                            <div key={document.$id}>{document.title}</div>
                         ))
 
 
@@ -61,9 +59,8 @@ const WatchlistPage = () => {
                         <p>You are not logged in</p>
                     )
                 }
-            </ul>
-            <AddWatchlist />
-        </div>
+            </div>
+        </main>
     );
 };
 
