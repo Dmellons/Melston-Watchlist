@@ -47,7 +47,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
         const checkUser = async () => {
             try {
                 const { $id, email, name, prefs, status, labels, ...rest } = await account.get()
-                console.log(`User: ${user}`)
+                // console.log(`User: ${user}`)
                 setUser({
                     id: $id,
                     admin: labels?.includes('admin') ? true : false,

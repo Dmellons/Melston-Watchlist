@@ -1,6 +1,6 @@
 'use client'
 import { useUser } from "@/hooks/User"
-import AddWatchlist from "./AddWatchlist"
+import AddWatchlist from "../../components/buttons/AddWatchlist"
 
 function TestPage() {
     const { user } = useUser()

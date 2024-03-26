@@ -1,28 +1,47 @@
 'use client'
+import AddWatchlist from "@/components/buttons/AddWatchlist";
 import { useUser } from "@/hooks/User";
-import { account } from "@/lib/appwrite";
-
-import { type WatchlistDocumentCreate } from "@/types/appwrite";
+import { database } from "@/lib/appwrite";
+import { WatchlistDocument } from "@/types/appwrite";
+import { Models, Query } from "appwrite";
+import { useEffect, useState } from "react";
 const WatchlistPage = () => {
-
-    async function asyncUser() {
-        const user = await account.get()
-        console.log(user)
-    }
-    asyncUser()
     const { user } = useUser()
-    const user2 = asyncUser()
-    console.log(user)
-    console.log(user2)
+    const [watchlist, setWatchlist] = useState<Models.DocumentList<WatchlistDocument> | undefined>(undefined)
 
-    const addDocument = async () => {
-        const response = await account.createDocument("watchlist", "unique()", {
-            name: "My Watchlist",
-            description: "This is my watchlist",
-            items: [],
-        });
-        console.log(response);
-    };
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const result: Models.DocumentList<WatchlistDocument> = await database.listDocuments(
+                    'watchlist', 
+                    'watchlist',
+                    // [
+                    //     Query.
+                    // ]
+                    )
+                console.log("result: ", result)
+                if (!user) {
+                    return
+                }
+
+
+                // const data: Models.DocumentList<WatchlistDocument> = await database.listDocuments(
+                //     'watchlist', 
+                //     'watchlist',
+                //     [
+                //         Query.equal('user', user.id)
+                //     ]
+                //     )
+        
+                // console.log("data: ", data)
+                setWatchlist(result)
+            } catch (error) {
+                console.error(error)
+            }
+        }
+        fetchData()
+    }, [user])
 
     return (
         <div>
@@ -31,16 +50,19 @@ const WatchlistPage = () => {
                 <li>Item 1</li>
                 <li>Item 2</li>
                 <li>Item 3</li>
+                {
+                    user ? (
+                        watchlist?.documents && watchlist?.documents.map((document) => (
+                            <li key={document.$id}>{document.title}</li>
+                        ))
+
+
+                    ) : (
+                        <p>You are not logged in</p>
+                    )
+                }
             </ul>
-            {
-               user ? (
-                
-                    <p>{JSON.stringify(user.debug)}</p>
-                ) : (
-                    <p>You are not logged in</p>
-                )
-            }
-            <button onClick={addDocument}>Add Document</button>
+            <AddWatchlist />
         </div>
     );
 };
