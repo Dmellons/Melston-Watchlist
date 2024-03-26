@@ -1,4 +1,5 @@
 import { PlatformPath } from "path"
+import { Models } from "appwrite"
 
 export type AppwriteUser = {
 
@@ -53,7 +54,26 @@ export enum Platform {
 
 export type WatchlistDocumentCreate = {
     title: string,
-    contentType: ContentType[],
-    platform: Platform[],
+    content_type?: string[],
+    platform?: string[],
 
-}
+} 
+
+export type DocumentType = {
+    label: string,
+    icon?: string,
+}  & Models.Document
+
+export type ContentTypeType = {
+    label: string,
+    icon: null,
+
+  }  & Models.Document
+
+  export type WatchlistDocument = {
+    title: string,
+    TMDB_key: string,
+    contentType: string[],
+    platform?: string[],
+    watched: boolean,
+  } & Models.Document

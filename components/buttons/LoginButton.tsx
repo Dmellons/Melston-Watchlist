@@ -8,7 +8,7 @@ import { useUser } from "@/hooks/User";
 
 export default function LoginButton() {
     const { user, logout, loginWithGoogle } = useUser()
-    console.log({ user })
+    
 
     // console.log({ user })
     if (user) {

@@ -5,6 +5,7 @@ import "./globals.css";
 import MainHeader from "@/components/layout/MainHeader";
 import { ThemeProvider } from "@/components/Contexts/ThemeProvider";
 import { UserProvider } from "@/hooks/User";
+import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -31,6 +32,7 @@ export default function RootLayout({
 
             <MainHeader />
             {children}
+            <Toaster />
 
           </ThemeProvider>
         </UserProvider>
