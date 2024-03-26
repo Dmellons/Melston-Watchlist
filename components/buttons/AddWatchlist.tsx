@@ -117,7 +117,7 @@ const AddWatchlist = () => {
                     </SelectGroup>
                 </SelectContent>
             </Select>
-            <Button onClick={handleAddWatchlist} className="mb-4">+Add</Button>
+            <Button onClick={handleAddWatchlist} className="my-4">+Add</Button>
         </div>
     )
 
