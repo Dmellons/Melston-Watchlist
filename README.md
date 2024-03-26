@@ -5,4 +5,6 @@
 
 ## TODO
 
-- Continue with Appwrite auth context in CGPT
+- [ ] Add to watchlist button
+  - [ ] Add toast for success and error
+  
