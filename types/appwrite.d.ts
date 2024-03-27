@@ -54,7 +54,7 @@ export enum Platform {
 
 export type WatchlistDocumentCreate = {
     title: string,
-    content_type?: string[],
+    content_type?: string,
     platform?: string[],
 
 } 

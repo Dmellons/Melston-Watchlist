@@ -43,7 +43,7 @@ const WatchlistPage = () => {
 
 
                     ) : (
-                        <p>You are not logged in</p>
+                        <p>Please Login</p>
                     )
                 }
             </div>
