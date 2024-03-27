@@ -21,7 +21,7 @@ export default function MainHeader() {
           lg:flex-nowrap
         "
         >
-            <div className="flex flex-1 items-center justify-center lg:order-none lg:self-center">
+            <div className="flex justify-center lg:order-none lg:self-center">
                 <Button asChild variant="link" className="text-xl text-title-foreground font-bold hover">
 
                     <Link href="/">
