@@ -59,7 +59,7 @@ const AddWatchlist = () => {
 
         const data: WatchlistDocumentCreate = {
             title: title,
-            content_type: [contentType],
+            content_type: contentType,
             platform: undefined
         }
 
@@ -99,14 +99,11 @@ const AddWatchlist = () => {
                 onChange={handleTitleUpdate}
                 className="mb-4"
             />
-            <Select
-                
-                onValueChange={handleContentTypeUpdate}
-            >
+            <Select onValueChange={handleContentTypeUpdate} >
                 <SelectTrigger >
                     <SelectValue
                         placeholder="Movie, TV Show, etc..."
-                        value={contentType}
+                        // value={contentType}
                     />
                 </SelectTrigger>
                 <SelectContent>
