@@ -80,7 +80,8 @@ const AddWatchlist = () => {
             // add toast on error
             toast({
                 title: `Error`,
-                description: `Error adding ${title} to your watchlist.`,
+                description: `Error adding ${title} to your watchlist.\n${error}`,
+                action: <ToastAction altText="Ok">Ok</ToastAction>,
                 variant: 'destructive'
             })
             console.error(error)
