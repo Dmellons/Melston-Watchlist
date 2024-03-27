@@ -29,7 +29,8 @@ const AddWatchlist = () => {
         const fetchData = async () => {
             try {
                 const result:Models.DocumentList<ContentTypeType> = await database.listDocuments('watchlist', 'content_type')
-                
+                const data = result.documents.filter((item) => item.$permissions )
+                console.log({data})
                 setContentTypes(result)
             } catch (error) {
                 console.error(error)

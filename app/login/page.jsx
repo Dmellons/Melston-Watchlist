@@ -32,7 +32,7 @@ const LoginPage = () => {
   // };
 
   const googleLogin = async () => {
-    const session = await account.createOAuth2Session(OAuthProvider.Google,"http://localhost:3000/login", 'http://www.google.com')
+    const session = await account.createOAuth2Session(OAuthProvider.Google,`${process.env.NEXT_PUBLIC_URL_BASE}/login`)
     console.log('Session: ', session)
     setLoggedInUser(await account.get())
   }
