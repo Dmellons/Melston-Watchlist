@@ -16,25 +16,12 @@ const WatchlistPage = () => {
                 const result: Models.DocumentList<WatchlistDocument> = await database.listDocuments(
                     'watchlist', 
                     'watchlist',
-                    // [
-                    //     Query.
-                    // ]
                     )
                 console.log("result: ", result)
                 if (!user) {
                     return
                 }
 
-
-                // const data: Models.DocumentList<WatchlistDocument> = await database.listDocuments(
-                //     'watchlist', 
-                //     'watchlist',
-                //     [
-                //         Query.equal('user', user.id)
-                //     ]
-                //     )
-        
-                // console.log("data: ", data)
                 setWatchlist(result)
             } catch (error) {
                 console.error(error)
