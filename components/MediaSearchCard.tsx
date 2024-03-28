@@ -40,18 +40,21 @@ const MediaSearchCard = ({
                 <CardDescription>{media.year}</CardDescription>
                 <AddWatchlistButton
                     media={media}
-                    width="24"
+                    width="w-32 m-auto"
 
                 />
             </CardHeader>
+            {
+            process.env.NEXT_PUBLIC_USER_DEBUG === "true" &&
             <CardContent>
                 <p className="text-sm text-muted-foreground">
                     {media.type}
                 </p>
             </CardContent>
+}
 
-            <CardFooter className="flex items-center align-middle">
-            </CardFooter>
+            {/* <CardFooter className="flex items-center align-middle">
+            </CardFooter> */}
 
         </Card>
     )

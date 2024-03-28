@@ -4,7 +4,7 @@ import { WatchlistDocumentCreate } from "@/types/appwrite"
 import { AutocompleteResult } from "@/types/watchmodeApi"
 import { toast } from "sonner"
 
-const AddWatchlistButton = ({ media, width="full" }: { media: AutocompleteResult, width?: string }) => {
+const AddWatchlistButton = ({ media, width="w-full" }: { media: AutocompleteResult, width: string }) => {
 
     function handleAddWatchlist() {
 
@@ -40,8 +40,8 @@ const AddWatchlistButton = ({ media, width="full" }: { media: AutocompleteResult
 
     return (
         <Button
-            variant="outline"
-            className={`max-w-${width}`}
+            variant="default"
+            className={`min-w-16 ${width}`}
             onClick={handleAddWatchlist}
         >
             +Add
