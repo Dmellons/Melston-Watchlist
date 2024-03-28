@@ -10,6 +10,7 @@ const SearchMovie = ({
         // query:string
     }) => {
 
+
     const [query, setQuery] = useState<string>("")
     const [results, setResults] = useState<AutocompleteResult[]>([])
 
@@ -54,12 +55,12 @@ const SearchMovie = ({
             <div className="p-3 my-4">
                 {results.length === 0 && <div>No results</div>}
                 {results.length > 0 &&
-                    <>
+                    <div className="flex flex-col gap-4">
                         <h2>Results!</h2>
                         {results.map((result) => (
                             <MediaSearchCard key={result.tmdb_id} media={result} />
                         ))}
-                    </>
+                    </div>
                 }
             </div>
 
