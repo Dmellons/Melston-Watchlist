@@ -28,7 +28,7 @@ function TestPage() {
                         // query="Spider Man" 
                     />
 
-                    <AddWatchlist />
+                    {/* <AddWatchlist /> */}
                     </div>
         </div>
     )

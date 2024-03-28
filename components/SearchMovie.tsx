@@ -1,14 +1,17 @@
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "./ui/input"
+import MediaSearchCard from "./MediaSearchCard"
+import { AutocompleteResult, WatchmodeApi } from "@/types/watchmodeApi"
 
-const SearchMovie =  ({
+const SearchMovie = ({
     // query
 }: {
-    // query:string
-}) => {
+        // query:string
+    }) => {
 
     const [query, setQuery] = useState<string>("")
+    const [results, setResults] = useState<AutocompleteResult[]>([])
     const movieList = async () => {
         /*
         * Set this to 1 to include titles and people in results. 
@@ -19,15 +22,17 @@ const SearchMovie =  ({
         By default this is set to 1
         *
         */
-        const res =  fetch(`https://api.watchmode.com/v1/autocomplete-search?apiKey=${process.env.NEXT_PUBLIC_WATCHMODE_API_KEY}&search_value=${query}&search_type=1`)
-        .then(res => res.json())
-        .then(data => console.log(data))
-        .catch(error => console.log(error)) 
+        const res = fetch(`https://api.watchmode.com/v1/autocomplete-search?apiKey=${process.env.NEXT_PUBLIC_WATCHMODE_API_KEY}&search_value=${query}&search_type=1`)
+            .then(res => res.json())
+            .then(data => setResults(data.results))
+            .catch(error => console.log(error))
+
+            console.log(results)
     }
 
     useEffect(() => {
-        console.log("search movie")
-    }, [])
+        console.log({ results })
+    }, [results])
 
     return (
         <div>
@@ -38,11 +43,22 @@ const SearchMovie =  ({
             >
                 Clicky
             </Button>
-            <Input 
+            <Input
                 placeholder="Search Movie"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
             />
+            <div className="p-3 my-4">
+                {results.length === 0 && <div>No results</div>}
+                {results.length > 0 &&
+                    <>
+                    <h2>Results!</h2>
+                    {results.map((result) => (
+                            <MediaSearchCard key={result.tmdb_id} media={result} />
+                    ))}
+                    </>
+                }
+            </div>
 
         </div>
     )

@@ -1,4 +1,17 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+    images: {
+        remotePatterns: [
+            {
+                protocol: "https",
+                hostname: "image.tmdb.org",
+            },
+            {
+                protocol: "https",
+                hostname: "cdn.watchmode.com", // for watchmode movie posters
+            },
+        ],
+    },
+};
 
 export default nextConfig;
