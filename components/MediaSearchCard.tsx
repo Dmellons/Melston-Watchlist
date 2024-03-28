@@ -19,7 +19,7 @@ const MediaSearchCard = ({
     console.log({media})
     return (
         
-        <Card className="flex flex-row max-w-lg">
+        <Card className="flex  flex-row max-w-lg">
                 <Image
                     src={media.image_url} 
                     placeholder="empty"
