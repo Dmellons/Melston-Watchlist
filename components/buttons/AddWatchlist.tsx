@@ -29,9 +29,9 @@ const AddWatchlist = () => {
         // let contentTypes: Models.DocumentList<ContentTypeType> | undefined = undefined
         const fetchData = async () => {
             try {
-                const result:Models.DocumentList<ContentTypeType> = await database.listDocuments('watchlist', 'content_type')
-                const data = result.documents.filter((item) => item.$permissions )
-                console.log({data})
+                const result: Models.DocumentList<ContentTypeType> = await database.listDocuments('watchlist', 'content_type')
+                const data = result.documents.filter((item) => item.$permissions)
+                console.log({ data })
                 setContentTypes(result)
             } catch (error) {
                 console.error(error)
@@ -39,7 +39,7 @@ const AddWatchlist = () => {
         }
         fetchData()
     }, [])
-    
+
     // const platforms = database.listDocuments('watchlist', ['platform'])
 
     if (!user) {
@@ -48,7 +48,7 @@ const AddWatchlist = () => {
 
 
     function handleContentTypeUpdate(event: React.ChangeEvent<HTMLInputElement>) {
-        console.log({event})
+        console.log({ event })
         setContentType(event.target.value.$id)
 
     }
@@ -68,36 +68,11 @@ const AddWatchlist = () => {
         }
 
         const promise = database.createDocument('watchlist', 'watchlist', ID.unique(), data)
-        promise.then(function (response) {
-            // add toast on success
-            toast.success(`Successfully added!`,{
-                description: `Added ${title} to your watchlist.`,
-                className: 'success'
-            })
-            console.log(response)
-            
-            setTitle('')
-            
-        }, function (error) {
-            // add toast on error
-            if (process.env.NEXT_PUBLIC_USER_DEBUG === 'true') {
-                
-                toast.error('Oops!', {
-                    description: `There was an error adding ${title} to your watchlist.\n${error}`,
-                    className: 'error',
-                    action: {
-                        label: 'Log Error',
-                        onClick: () => console.log('Clicked Error: ',{error}),
-                    }
-                })
-            } else{
-                toast.error(`Oops!`, {
-                    description: `There was an error adding ${title} to your watchlist. `,
-                    className: 'error',
-                    
-                })
-            }
-            console.error(error)
+        
+        toast.promise(promise, {
+            loading: 'Adding...',
+            success: `Added "${title}" to your watchlist!`,
+            error: `Oops! There was an error adding "${title}" to your watchlist.`,
         })
 
 
@@ -114,11 +89,11 @@ const AddWatchlist = () => {
                 onChange={handleTitleUpdate}
                 className="mb-4"
             />
-            <Select  onValueChange={(value) => handleContentTypeUpdate({target: {value}})} >
+            <Select onValueChange={(value) => handleContentTypeUpdate({ target: { value } })} >
                 <SelectTrigger >
                     <SelectValue
                         placeholder="Movie, TV Show, etc..."
-                        // value={contentType}
+                    // value={contentType}
                     />
                 </SelectTrigger>
                 <SelectContent>
