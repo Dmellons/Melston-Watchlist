@@ -6,7 +6,13 @@
 ## TODO
 
 - [ ] Add to watchlist button
-  - [ ] Add toast for success and error
+  - [x] Add toast for success and error
+
+### Watchlist
+
+- [ ] Add Combobox dropdown to watchlist item row / card
+  - [ ] delete
+  - [ ] marked watched
 
 ### API
 

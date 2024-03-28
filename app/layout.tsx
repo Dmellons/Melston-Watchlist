@@ -5,7 +5,7 @@ import "./globals.css";
 import MainHeader from "@/components/layout/MainHeader";
 import { ThemeProvider } from "@/components/Contexts/ThemeProvider";
 import { UserProvider } from "@/hooks/User";
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "@/components/ui/sonner";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,8 +22,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head >
-      <link rel="icon" href="/logo.svg" sizes="any" />
-        </head>
+        <link rel="icon" href="/logo.svg" sizes="any" />
+      </head>
       <body className={inter.className}>
         <UserProvider>
           <ThemeProvider
@@ -34,8 +34,18 @@ export default function RootLayout({
           >
 
             <MainHeader />
-            {children}
-            <Toaster />
+            <main>
+              {children}
+            </main>
+            <Toaster
+              toastOptions={{
+                // unstyled: true,
+                classNames: {
+                  // toast: "bg-slate-900 text-slate-50",
+                  error: "bg-destructive text-destructive-foreground",
+                  success: "bg-success text-success-foreground",
+                }
+              }} />
 
           </ThemeProvider>
         </UserProvider>

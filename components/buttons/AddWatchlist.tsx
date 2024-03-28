@@ -11,9 +11,9 @@ import {
     // ContentType, 
     WatchlistDocumentCreate
 } from "@/types/appwrite";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "../ui/select";
-import { toast } from "../ui/use-toast";
+import { toast } from "sonner";
 import { ToastAction } from "../ui/toast";
 
 
@@ -22,6 +22,7 @@ const AddWatchlist = () => {
     const [title, setTitle] = useState('')
     const [contentType, setContentType] = useState('')
     const [contentTypes, setContentTypes] = useState<Models.DocumentList<ContentTypeType> | undefined>(undefined)
+    const searchRef = useRef()
     // const [platform, setPlatform] = useState('')
 
     useEffect(() => {
@@ -47,12 +48,15 @@ const AddWatchlist = () => {
 
 
     function handleContentTypeUpdate(event: React.ChangeEvent<HTMLInputElement>) {
-        setContentType(event.$id)
+        console.log({event})
+        setContentType(event.target.value.$id)
 
     }
 
     function handleTitleUpdate(event: React.ChangeEvent<HTMLInputElement>) {
+        // event.preventDefault()
         setTitle(event.target.value)
+        // console.log(searchRef.current.value)
     }
 
     function handleAddWatchlist() {
@@ -66,11 +70,9 @@ const AddWatchlist = () => {
         const promise = database.createDocument('watchlist', 'watchlist', ID.unique(), data)
         promise.then(function (response) {
             // add toast on success
-            toast({
-                title: `Successfully added!`,
+            toast.success(`Successfully added!`,{
                 description: `Added ${title} to your watchlist.`,
-                action: <ToastAction altText="Ok">Ok</ToastAction>,
-                variant: 'default'
+                className: 'success'
             })
             console.log(response)
             
@@ -78,12 +80,23 @@ const AddWatchlist = () => {
             
         }, function (error) {
             // add toast on error
-            toast({
-                title: `Error`,
-                description: `Error adding ${title} to your watchlist.\n${error}`,
-                action: <ToastAction altText="Ok">Ok</ToastAction>,
-                variant: 'destructive'
-            })
+            if (process.env.NEXT_PUBLIC_USER_DEBUG === 'true') {
+                
+                toast.error('Oops!', {
+                    description: `There was an error adding ${title} to your watchlist.\n${error}`,
+                    className: 'error',
+                    action: {
+                        label: 'Log Error',
+                        onClick: () => console.log('Clicked Error: ',{error}),
+                    }
+                })
+            } else{
+                toast.error(`Oops!`, {
+                    description: `There was an error adding ${title} to your watchlist. `,
+                    className: 'error',
+                    
+                })
+            }
             console.error(error)
         })
 
@@ -96,11 +109,12 @@ const AddWatchlist = () => {
                 type="title"
                 id="titleSearch"
                 placeholder="Title"
+                // ref={searchRef}
                 value={title}
                 onChange={handleTitleUpdate}
                 className="mb-4"
             />
-            <Select onValueChange={handleContentTypeUpdate} >
+            <Select  onValueChange={(value) => handleContentTypeUpdate({target: {value}})} >
                 <SelectTrigger >
                     <SelectValue
                         placeholder="Movie, TV Show, etc..."

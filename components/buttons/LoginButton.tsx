@@ -30,9 +30,9 @@ export default function LoginButton() {
         <div >
             <Popover>
                 <PopoverTrigger>
-                    <Avatar className=" hover:shadow-md hover:shadow-primary">
+                    <Avatar className=" hover:shadow-md hover:shadow-primary border border-secondary">
                         <AvatarImage src={imgUrl} />
-                        <AvatarFallback className="text-foreground bg-background">{userInitials}</AvatarFallback>
+                        <AvatarFallback className="bg-popover text-popover-foreground">{userInitials}</AvatarFallback>
                     </Avatar>
                 </PopoverTrigger>
                 <PopoverContent className="grid justify-items-center w-80 bg-popover">
