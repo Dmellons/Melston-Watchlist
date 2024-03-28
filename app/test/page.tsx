@@ -23,7 +23,7 @@ function TestPage() {
                     )}
 
             </ul>
-                    <div className="border m-4 p-10 rounded-lg">
+                    <div className="border m-4 p-10 rounded-lg w-full">
                     <SearchMovie 
                         // query="Spider Man" 
                     />
