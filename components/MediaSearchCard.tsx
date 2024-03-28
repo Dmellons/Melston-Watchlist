@@ -19,12 +19,12 @@ const MediaSearchCard = ({
     console.log({media})
     return (
         
-        <Card className="flex  flex-row max-w-lg">
+        <Card className="flex  flex-row max-w-lg p-2">
                 <Image
                     src={media.image_url} 
                     placeholder="empty"
-                    width={128} 
-                    height={30} 
+                    width={93} 
+                    height={128} 
                     alt="Poster"
                     />
             <CardHeader>
