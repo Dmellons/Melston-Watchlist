@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "./ui/input"
 import MediaSearchCard from "./MediaSearchCard"
-import { AutocompleteResult, WatchmodeApi } from "@/types/watchmodeApi"
+import { TMDBMultiSearchResult } from "@/types/tmdbApi"
 
 const SearchMovie = ({
     // query
@@ -12,19 +12,19 @@ const SearchMovie = ({
 
 
     const [query, setQuery] = useState<string>("")
-    const [results, setResults] = useState<AutocompleteResult[]>([])
+    const [results, setResults] = useState<TMDBMultiSearchResult[]>([])
 
     const movieList = async () => {
-        /*
-        * Set this to 1 to include titles and people in results. 
-        Set this to 2 to include titles only. 
-        Set this to 3 to include movies only. 
-        Set this to 4 to include TV only. 
-        Set this to 5 to include people only. 
-        By default this is set to 1
-        *
-        */
-        const res = fetch(`https://api.watchmode.com/v1/autocomplete-search?apiKey=${process.env.NEXT_PUBLIC_WATCHMODE_API_KEY}&search_value=${query}&search_type=1`)
+       
+       const options = {
+           method: 'GET',
+           headers: {
+               accept: 'application/json',
+               Authorization: `Bearer ${process.env.NEXT_PUBLIC_TMDB_API_READ_ACCESS_TOKEN}`
+            }
+        };
+        
+        const res = fetch(`https://api.themoviedb.org/3/search/multi?query=${query}`, options)
             .then(res => res.json())
             .then(data => setResults(data.results))
             .catch(error => console.log(error))
@@ -53,17 +53,18 @@ const SearchMovie = ({
                 Search
             </Button>
             <div className="p-3 my-4 w-full">
+                <div className="flex flex-col grid-flow-row gap-4 items-center w-full">
                 {results.length === 0 && <div>No results</div>}
                 {results.length > 0 &&
-                    <>
-                        <h2>Results!</h2>
-                        <div className="flex flex-col gap-4">
+                        <>
+                        <h2>Results!</h2><div className="flex flex-col gap-4 items-center">
                             {results.map((result) => (
-                                <MediaSearchCard key={result.tmdb_id} media={result} />
+                                <MediaSearchCard key={result.id} media={result} />
                             ))}
                         </div>
-                    </>
+                        </>
                 }
+                </div>
             </div>
 
         </div>
