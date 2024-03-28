@@ -45,7 +45,7 @@ const MediaSearchCard = ({
                 />
             </CardHeader>
             {
-            process.env.NEXT_PUBLIC_USER_DEBUG === "false" &&
+            process.env.NEXT_PUBLIC_USER_DEBUG === "true" &&
             <CardContent>
                 <p className="text-sm text-muted-foreground">
                     {media.type}
