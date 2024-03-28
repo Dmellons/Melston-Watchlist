@@ -1,12 +1,15 @@
 import { Button } from "@/components/ui/button"
 import { ID, database } from "@/lib/appwrite"
 import { WatchlistDocumentCreate } from "@/types/appwrite"
+import { TMDBMultiSearchResult } from "@/types/tmdbApi"
 import { AutocompleteResult } from "@/types/watchmodeApi"
 import { toast } from "sonner"
 
-const AddWatchlistButton = ({ media, width="w-full" }: { media: AutocompleteResult, width: string }) => {
+const AddWatchlistButton = ({ media, width="w-full" }: { media:TMDBMultiSearchResult, width: string }) => {
 
     function handleAddWatchlist() {
+
+        
 
         const data:WatchlistDocumentCreate = {
             title: media.name,
