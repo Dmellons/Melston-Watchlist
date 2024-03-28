@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react"
+'use client'
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "./ui/input"
 import MediaSearchCard from "./MediaSearchCard"
@@ -32,10 +33,6 @@ const SearchMovie = ({
         console.log(results)
     }
 
-    useEffect(() => {
-        console.log({ results })
-
-    }, [results])
 
     return (
         <div className="p-3 flex flex-col items-center">
