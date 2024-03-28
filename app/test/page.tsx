@@ -1,6 +1,7 @@
 'use client'
 import { useUser } from "@/hooks/User"
-import AddWatchlist from "../../components/buttons/AddWatchlist"
+import AddWatchlist from "@/components/buttons/AddWatchlist"
+import SearchMovie from "@/components/SearchMovie"
 
 function TestPage() {
     const { user } = useUser()
@@ -15,14 +16,20 @@ function TestPage() {
                     <>
                         <li>Name: {user.name}</li>
                         <li>Email: {user.email}</li>
-                    <AddWatchlist />
+                        
                     </>
                 ) : (
                     <li>No user logged in</li>
-                )}
+                    )}
 
             </ul>
+                    <div className="border m-4 p-10 rounded-lg">
+                    <SearchMovie 
+                        // query="Spider Man" 
+                    />
 
+                    <AddWatchlist />
+                    </div>
         </div>
     )
 }
