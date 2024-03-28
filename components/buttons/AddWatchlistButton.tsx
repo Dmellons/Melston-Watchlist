@@ -4,7 +4,7 @@ import { WatchlistDocumentCreate } from "@/types/appwrite"
 import { AutocompleteResult } from "@/types/watchmodeApi"
 import { toast } from "sonner"
 
-const AddWatchlistButton = ({ media }: { media: AutocompleteResult  }) => {
+const AddWatchlistButton = ({ media, width="full" }: { media: AutocompleteResult, width?: string }) => {
 
     function handleAddWatchlist() {
 
@@ -18,14 +18,21 @@ const AddWatchlistButton = ({ media }: { media: AutocompleteResult  }) => {
             image_url: media.image_url   
         }
 
-        const promise = database.createDocument('watchlist', 'watchlist', ID.unique(), data).catch((error) => {
-            console.error(error)
-        })
-        console.log({data})
-        toast.promise(promise, {
+        // const promise = database.createDocument('watchlist', 'watchlist', ID.unique(), data).catch((error) => {
+        //     console.error(error)
+        // })
+        
+        toast.promise(database.createDocument('watchlist', 'watchlist', ID.unique(), data), {
             loading: 'Adding...',
-            success: `Added "${media.name}" to your watchlist!`,
-            error: `Oops! There was an error adding "${media.name}" to your watchlist.`,
+            success: (res) => {
+                console.log({res})
+                return `Added "${media.name}" to your watchlist!`
+            }
+                ,
+            error: (res) => {
+                console.error({res})
+                return`Oops! There was an error adding "${media.name}" to your watchlist.\n\nError: ${res.response.message} `
+            },
         })
 
 
@@ -34,7 +41,7 @@ const AddWatchlistButton = ({ media }: { media: AutocompleteResult  }) => {
     return (
         <Button
             variant="outline"
-            className="w-full"
+            className={`max-w-${width}`}
             onClick={handleAddWatchlist}
         >
             +Add

@@ -12,6 +12,7 @@ const SearchMovie = ({
 
     const [query, setQuery] = useState<string>("")
     const [results, setResults] = useState<AutocompleteResult[]>([])
+
     const movieList = async () => {
         /*
         * Set this to 1 to include titles and people in results. 
@@ -27,35 +28,37 @@ const SearchMovie = ({
             .then(data => setResults(data.results))
             .catch(error => console.log(error))
 
-            console.log(results)
+        console.log(results)
     }
 
     useEffect(() => {
         console.log({ results })
+
     }, [results])
 
     return (
-        <div>
-            <h1>Search Movie</h1>
+        <div className="p-3 flex flex-col items-center">
+            <h1 className="text-3xl mb-4">Search Movies & TV</h1>
 
-            <Button
-                onClick={() => movieList()}
-            >
-                Clicky
-            </Button>
             <Input
                 placeholder="Search Movie"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
             />
+            <Button
+                className="my-5 w-24 align-middle"
+                onClick={() => movieList()}
+            >
+                Search
+            </Button>
             <div className="p-3 my-4">
                 {results.length === 0 && <div>No results</div>}
                 {results.length > 0 &&
                     <>
-                    <h2>Results!</h2>
-                    {results.map((result) => (
+                        <h2>Results!</h2>
+                        {results.map((result) => (
                             <MediaSearchCard key={result.tmdb_id} media={result} />
-                    ))}
+                        ))}
                     </>
                 }
             </div>
