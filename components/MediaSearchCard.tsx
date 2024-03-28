@@ -14,6 +14,7 @@ import { Button } from "./ui/button"
 import Link from "next/link"
 import { TMDBMovieSearchResult, TMDBMultiSearchResult, TMDBTelevisionSearchResult } from "@/types/tmdbApi"
 import { Infer } from "next/dist/compiled/superstruct"
+import { Separator } from "./ui/separator"
 
 
 type CardData = {
@@ -59,21 +60,21 @@ const MediaSearchCard = ({
     }
 
     return (
-        <Card className="flex flex-col sm:flex-row justify-between items-center max-w-lg p-2 gap-2">
+        <Card className="flex flex-col sm:flex-row justify-between items-center max-w-lg p-2 ">
             <CardHeader className="flex flex-col  justify-between items-center sm:flex-row sm:justify-center sm:gap-4 sm:min-w-48">
-                <div className="flex flex-col items-center gap-3">
+                <div className="flex flex-col items-center gap-1">
                     {
                         media.poster_path ? <Image
                             src={`https://image.tmdb.org/t/p/w500${data.image_url}`}
-                            width={93}
-                            height={128}
+                            width={256}
+                            height={256}
                             alt={`${data.title} poster`}
                             className="rounded-md"
                             objectFit="cover"
                             placeholder="empty"
                             sizes="100%"
                             style={{
-                                width: "93px",
+                                width: "256px",
                                 height: "auto",
                             }}
                         /> : (
@@ -82,16 +83,19 @@ const MediaSearchCard = ({
                             </div>
                         )
                     }
-                    <CardTitle className="text-center">{data.title}</CardTitle>
-                    <div className="flex flex-col justify-center items-center gap-2">
-
-                        <CardDescription className="font-subtitle">Year: {data.year.substring(0, 4)}</CardDescription>
-                        {/* <CardDescription className="font-subtitle">{data.tmdb_type}</CardDescription> */}
-                    </div>
+                    <CardTitle className="text-center text-2xl block sm:hidden">{data.title}</CardTitle>
+                    <CardDescription className="font-subtitle block sm:hidden">Year: {data.year.substring(0, 4)}</CardDescription>
+                    <CardDescription className="font-subtitle block sm:hidden ">Type: {`${data.tmdb_type.charAt(0).toUpperCase()}${data.content_type.slice(1)}`}</CardDescription>
                 </div>
             </CardHeader>
+            <Separator className="block  sm:hidden" />
             <CardContent className="flex flex-col gap-2">
+                    <CardTitle className="text-center text-2xl hidden sm:block">{data.title}</CardTitle>
+                <div className="flex flex-row justify-between">
 
+                    <CardDescription className="font-subtitle hidden sm:block ">Year: {data.year.substring(0, 4)}</CardDescription>
+                    <CardDescription className="font-subtitle hidden sm:block ">Type: {`${data.tmdb_type.charAt(0).toUpperCase()}${data.content_type.slice(1)}`}</CardDescription>
+                </div>
                 <p >
                     {data.description}
                 </p>

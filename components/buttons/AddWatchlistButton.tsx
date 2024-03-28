@@ -1,55 +1,75 @@
+'use client'
 import { Button } from "@/components/ui/button"
 import { ID, database } from "@/lib/appwrite"
 import { WatchlistDocumentCreate } from "@/types/appwrite"
 import { TMDBMultiSearchResult } from "@/types/tmdbApi"
-import { AutocompleteResult } from "@/types/watchmodeApi"
 import { toast } from "sonner"
 
-const AddWatchlistButton = ({ media, width="w-full" }: { media:TMDBMultiSearchResult, width: string }) => {
+const AddWatchlistButton = ({ media, width = "w-full" }: { media: TMDBMultiSearchResult, width: string }) => {
 
+    let data: WatchlistDocumentCreate
     function handleAddWatchlist() {
 
-        
 
-        const data:WatchlistDocumentCreate = {
-            title: media.name,
-            content_type: media.type,
-            tmdb_id: media.tmdb_id,
-            imdb_id: media.imdb_id,
-            tmdb_type: media.tmdb_type,
-            year: media.year,
-            image_url: media.image_url   
+        if (media.media_type === 'tv') {
+
+            data = {
+                title: media.name,
+                content_type: media.media_type,
+                tmdb_id: media.id,
+                tmdb_type: media.media_type,
+                release_date: media.first_air_date,
+                poster_url: `https://image.tmdb.org/t/p/w500${media.poster_path}`,
+                description: media.overview ? media.overview : "No description available",
+                genre_ids: media.genre_ids ? media.genre_ids : []
+            }
         }
+
+        if (media.media_type === 'movie') {
+
+            data = {
+                title: media.title,
+                content_type: media.media_type,
+                tmdb_id: media.id,
+                tmdb_type: media.media_type,
+                release_date: media.release_date,
+                poster_url: `https://image.tmdb.org/t/p/w500${media.poster_path}`,
+                description: media.overview ? media.overview : "No description available",
+                genre_ids: media.genre_ids ? media.genre_ids : []
+            }
+        }
+
 
         // const promise = database.createDocument('watchlist', 'watchlist', ID.unique(), data).catch((error) => {
         //     console.error(error)
         // })
-        
+
         toast.promise(database.createDocument('watchlist', 'watchlist', ID.unique(), data), {
             loading: 'Adding...',
             success: (res) => {
-                console.log({res})
-                return `Added "${media.name}" to your watchlist!`
+                console.log({ res })
+                return `Added "${data.title}" to your watchlist!`
             }
-                ,
+            ,
             error: (res) => {
-                console.error({res})
-                return`Oops! There was an error adding "${media.name}" to your watchlist.\n\nError: ${res.response.message} `
+                console.error({ res })
+                return `Oops! There was an error adding "${data.title}" to your watchlist.\n\nError: ${res.response.message} `
             },
         })
 
 
     }
 
-    return (
-        <Button
-            variant="default"
-            className={`min-w-16 ${width}`}
-            onClick={handleAddWatchlist}
-        >
-            +Add
-        </Button>
-    )
+
+return (
+    <Button
+        variant="default"
+        className={`min-w-16 ${width}`}
+        onClick={handleAddWatchlist}
+    >
+        +Add
+    </Button>
+)
 }
 
 export default AddWatchlistButton
