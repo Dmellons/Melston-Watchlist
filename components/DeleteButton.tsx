@@ -1,6 +1,4 @@
 import * as React from "react"
-
-import { cn } from "@/lib/utils"
 import { useMediaQuery } from "@/hooks/MediaQuery"
 import { Button } from "@/components/ui/button"
 import {
@@ -21,22 +19,19 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Trash2 } from "lucide-react"
-import { Databases } from "appwrite"
 import { database } from "@/lib/appwrite"
 import { toast } from "sonner"
 
 export default function DeleteButton({
-  buttonVariant = "outline",
+  buttonVariant = "destructive",
   buttonText = "Delete",
   title = "this",
   document_id
 }: {
-  buttonVariant: "link" | "outline" | "default" | "secondary" | "ghost" | "destructive" | null,
-  buttonText: string | React.JSX.Element
-  title: string
+  buttonVariant?: "link" | "outline" | "default" | "secondary" | "ghost" | "destructive" | null,
+  buttonText?: string | React.JSX.Element
+  title?: string
   document_id: string
 }) {
   const [open, setOpen] = React.useState(false)
@@ -81,7 +76,6 @@ export default function DeleteButton({
           >
             {buttonContent}
           </Button>
-          {/* <ProfileForm /> */}
         </DialogContent>
       </Dialog>
     )
@@ -109,7 +103,6 @@ export default function DeleteButton({
           >
             {buttonContent}
           </Button>
-        {/* <ProfileForm className="px-4" /> */}
           <DrawerClose asChild>
             <Button variant="outline">Cancel</Button>
           </DrawerClose>
@@ -119,18 +112,3 @@ export default function DeleteButton({
   )
 }
 
-function ProfileForm({ className }: React.ComponentProps<"form">) {
-  return (
-    <form className={cn("grid items-start gap-4", className)}>
-      <div className="grid gap-2">
-        <Label htmlFor="email">Email</Label>
-        <Input type="email" id="email" defaultValue="shadcn@example.com" />
-      </div>
-      <div className="grid gap-2">
-        <Label htmlFor="username">Username</Label>
-        <Input id="username" defaultValue="@shadcn" />
-      </div>
-      <Button type="submit">Save changes</Button>
-    </form>
-  )
-}
