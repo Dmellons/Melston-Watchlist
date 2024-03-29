@@ -15,8 +15,6 @@ import {
     AccordionTrigger,
 } from "@/components/ui/accordion"
 import { Separator } from "./ui/separator"
-import Providers from "./Providers"
-import { useState } from "react"
 import DeleteButton from "./DeleteButton"
 
 type CardData = {
@@ -31,10 +29,8 @@ type CardData = {
 }
 let data: CardData
 const WatchlistMediaCard = ({
-    document_id,
     media
 }: {
-    document_id: string;
     media: WatchlistDocument;
 }) => {
 
@@ -114,11 +110,10 @@ const WatchlistMediaCard = ({
                         </AccordionContent>
                     </AccordionItem>
                 </Accordion>
-                <DeleteButton 
-                    buttonVariant={"destructive"} 
-                    buttonText={"Delete"} 
-                    title={data.title} 
-                    document_id={media.$id} />
+                <DeleteButton
+                    title={data.title}
+                    document_id={media.$id}
+                />
 
                 {/* <Providers providers={providers}/> */}
             </CardContent>
