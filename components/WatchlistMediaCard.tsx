@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/accordion"
 import { Separator } from "./ui/separator"
 import DeleteButton from "./DeleteButton"
+import { ScrollArea, ScrollBar } from "./ui/scroll-area"
 
 type CardData = {
     title: string,
@@ -105,8 +106,10 @@ const WatchlistMediaCard = ({
                     <AccordionItem value="item-1">
                         <AccordionTrigger>Description</AccordionTrigger>
                         <AccordionContent>
-                            {data.description}
-
+                            <ScrollArea className="max-h-36 w-full">
+                                    {data.description}
+                                <ScrollBar orientation="vertical"/>
+                            </ScrollArea>
                         </AccordionContent>
                     </AccordionItem>
                 </Accordion>
