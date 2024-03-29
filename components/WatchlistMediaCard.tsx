@@ -17,6 +17,7 @@ import {
 import { Separator } from "./ui/separator"
 import Providers from "./Providers"
 import { useState } from "react"
+import DeleteButton from "./DeleteButton"
 
 type CardData = {
     title: string,
@@ -30,9 +31,11 @@ type CardData = {
 }
 let data: CardData
 const WatchlistMediaCard = ({
+    document_id,
     media
 }: {
-    media: WatchlistDocument
+    document_id: string;
+    media: WatchlistDocument;
 }) => {
 
     if (media.content_type === 'tv' || media.content_type === 'movie') {
@@ -47,18 +50,6 @@ const WatchlistMediaCard = ({
         }
 
     }
-
-    // if (media.content_type === 'movie') {
-    //     data = {
-    //         title: media.title,
-    //         content_type: media.content_type,
-    //         tmdb_id: media.id,
-    //         tmdb_type: media.media_type,
-    //         year: media.release_date,
-    //         poster_url: media.poster_url,
-    //         description: media.description ? media.description : "No description available"
-    //     }
-    // }
 
     const providerData = fetch(`https://api.themoviedb.org/3/${data.tmdb_type}/${data.tmdb_id}/watch/providers?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}`)
         .then(res => res.json())
@@ -123,6 +114,11 @@ const WatchlistMediaCard = ({
                         </AccordionContent>
                     </AccordionItem>
                 </Accordion>
+                <DeleteButton 
+                    buttonVariant={"destructive"} 
+                    buttonText={"Delete"} 
+                    title={data.title} 
+                    document_id={media.$id} />
 
                 {/* <Providers providers={providers}/> */}
             </CardContent>

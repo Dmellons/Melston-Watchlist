@@ -45,3 +45,18 @@ export { ID,  type Models } from 'appwrite';
 
 
 // }
+
+export function handleWatchlistDelete({ id }: { id: string }) {
+    toast.promise(database.deleteDocument('watchlist', 'watchlist', id), {
+        loading: 'Deleting...',
+        success: (res) => {
+            console.log({res})
+            return `Deleted "${id}" from your watchlist!`
+        }
+            ,
+        error: (res) => {
+            console.error({res})
+            return`Oops! There was an error deleting "${id}" from your watchlist.\n\nError: ${res.response.message} `
+        },
+    })
+}
