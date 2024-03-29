@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "./ui/input"
 import MediaSearchCard from "./MediaSearchCard"
 import { TMDBMultiSearchResult } from "@/types/tmdbApi"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion"
 
 const SearchMovie = ({
     // query
@@ -53,13 +54,21 @@ const SearchMovie = ({
                 <div className="flex flex-col grid-flow-row gap-4 items-center w-full">
                 {results.length === 0 && <div>No results</div>}
                 {results.length > 0 &&
-                        <>
-                        <h2>Results!</h2><div className="flex flex-col gap-4 items-center">
+                        <Accordion type="single" collapsible>
+                        <AccordionItem value="item-1">
+                            <AccordionTrigger>Results!</AccordionTrigger>
+                            <AccordionContent>
+                            <div className="flex flex-col gap-4 items-center">
                             {results.map((result) => (
                                 <MediaSearchCard key={result.id} media={result} />
                             ))}
                         </div>
-                        </>
+    
+                            </AccordionContent>
+                        </AccordionItem>
+                    </Accordion>
+
+                        
                 }
                 </div>
             </div>
