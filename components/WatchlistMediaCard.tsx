@@ -8,6 +8,12 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
+import {
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
+} from "@/components/ui/accordion"
 import { Separator } from "./ui/separator"
 import Providers from "./Providers"
 import { useState } from "react"
@@ -58,34 +64,35 @@ const WatchlistMediaCard = ({
         .then(res => res.json())
         .then(data => console.log(data))
 
-    console.log({providerData})
+    console.log({ providerData })
     return (
         <Card className="
         flex 
         flex-col 
-        gap-2
+        overflow-y-auto
         justify-between 
         items-center 
-        w-2xl 
+        w-full
+        max-w-2xl 
         p-2 
         md:flex-row 
         md:max-h-96 
-        md:overflow-hidden
+        
         ">
-            <CardHeader className="flex flex-col  justify-between items-center sm:flex-row sm:justify-center sm:gap-4 sm:min-w-48">
+            <CardHeader className="flex flex-col w-full justify-between items-center sm:flex-row sm:justify-center sm:gap-4 sm:min-w-48">
                 <div className="flex flex-col items-center gap-1">
                     {
                         media.poster_url ? <Image
                             src={data.poster_url}
-                            width={256}
-                            height={256}
+                            width={200}
+                            height={200}
                             alt={`${data.title} poster`}
                             className="rounded-md"
                             objectFit="cover"
                             placeholder="empty"
                             sizes="100%"
                             style={{
-                                width: "256px",
+                                width: "200px",
                                 height: "auto",
                             }}
                         /> : (
@@ -107,9 +114,16 @@ const WatchlistMediaCard = ({
                     <CardDescription className="font-subtitle hidden sm:block ">Year: {data.year?.substring(0, 4)}</CardDescription>
                     <CardDescription className="font-subtitle hidden sm:block ">Type: {`${data.tmdb_type?.charAt(0).toUpperCase()}${data.content_type?.slice(1)}`}</CardDescription>
                 </div>
-                <p >
-                    {data.description}
-                </p>
+                <Accordion type="single" collapsible>
+                    <AccordionItem value="item-1">
+                        <AccordionTrigger>Description</AccordionTrigger>
+                        <AccordionContent>
+                            {data.description}
+
+                        </AccordionContent>
+                    </AccordionItem>
+                </Accordion>
+
                 {/* <Providers providers={providers}/> */}
             </CardContent>
         </Card>
