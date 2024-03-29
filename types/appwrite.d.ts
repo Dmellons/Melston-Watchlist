@@ -63,7 +63,7 @@ export type WatchlistDocumentCreate = {
     poster_url: string,
     description: string,
     genre_ids: number[],
-   
+    notes?: string[],   
 
 }
 export type DocumentType = {
@@ -73,7 +73,8 @@ export type DocumentType = {
 
 export type ContentTypeType = {
     label: string,
-    icon: null,
+    icon?: string,
+    website?: string
 
 } & Models.Document
 

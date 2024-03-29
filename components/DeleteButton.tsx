@@ -26,7 +26,7 @@ import { toast } from "sonner"
 export default function DeleteButton({
   buttonVariant = "destructive",
   buttonText = "Delete",
-  title = "this",
+  title,
   document_id
 }: {
   buttonVariant?: "link" | "outline" | "default" | "secondary" | "ghost" | "destructive" | null,
@@ -38,18 +38,24 @@ export default function DeleteButton({
   const isDesktop = useMediaQuery("(min-width: 768px)")
   const iconMarkup = buttonText === "Delete" ? <Trash2 className="h-4 w-4 " aria-hidden="true" /> : null;
   const buttonContent = <div className="flex gap-1">{iconMarkup}{buttonText}</div>;
+  console.log({ title })
+  function deleteDocument({ id, title }: { id: string, title?: string }) {
 
-  function handleDelete({ id }: { id: string }) {
     toast.promise(database.deleteDocument('watchlist', 'watchlist', id), {
       loading: 'Deleting...',
       success: (res) => {
-        console.log({ res })
-        return `Deleted "${id}" from your watchlist!`
+        
+        if (title) {
+          return `Deleted "${title}" from your watchlist!`
+        } else {
+          return `Deleted from your watchlist!`
+        }
+         
       }
       ,
       error: (res) => {
         console.error({ res })
-        return `Oops! There was an error deleting "${id}" from your watchlist.\n\nError: ${res.response.message} `
+        return `Oops! There was an error deleting "${title}" from your watchlist.\n\nError: ${res.response.message} `
       },
     })
   }
@@ -70,7 +76,7 @@ export default function DeleteButton({
           <Button
             variant={"destructive"}
             onClick={() => {
-              handleDelete({ id: document_id })
+              deleteDocument({ id: document_id, title: title })
               setOpen(false)
             }}
           >
@@ -97,7 +103,7 @@ export default function DeleteButton({
         <Button
             variant={"destructive"}
             onClick={() => {
-              handleDelete({ id: document_id })
+              deleteDocument({ id: document_id , title: title})
               setOpen(false)
             }}
           >
