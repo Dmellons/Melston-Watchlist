@@ -1,6 +1,7 @@
 'use client'
-import { account } from "@/lib/appwrite";
-import { OAuthProvider } from "appwrite";
+import { account, database } from "@/lib/appwrite";
+import { WatchlistDocument } from "@/types/appwrite";
+import { Models, OAuthProvider } from "appwrite";
 import { createContext, useContext, useEffect, useState } from "react";
 
 export interface UserState {
@@ -21,7 +22,7 @@ export type UserType = {
     labels?: string[]
     image?: string;
     debug?: any;
-
+    watchlist?: Models.DocumentList<WatchlistDocument>;
 }
 
 const defaultState: UserState = {
@@ -47,7 +48,8 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
         const checkUser = async () => {
             try {
                 const { $id, email, name, prefs, status, labels, ...rest } = await account.get()
-                // console.log(`User: ${user}`)
+                const watchlist: Models.DocumentList<WatchlistDocument> = await database.listDocuments('watchlist','watchlist') 
+                
                 setUser({
                     id: $id,
                     admin: labels?.includes('admin') ? true : false,
@@ -56,6 +58,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
                     status,
                     labels, 
                     image: prefs.image ? prefs.image : null,
+                    watchlist: watchlist,
                     // debug: rest
                 });
             } catch (error) {
