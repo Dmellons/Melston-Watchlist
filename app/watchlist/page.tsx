@@ -1,6 +1,8 @@
 'use client'
+import SearchMovie from "@/components/SearchMovie";
 import WatchlistMediaCard from "@/components/WatchlistMediaCard";
 import AddWatchlist from "@/components/buttons/AddWatchlist";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useUser } from "@/hooks/User";
 import { database } from "@/lib/appwrite";
 import { WatchlistDocument } from "@/types/appwrite";
@@ -33,17 +35,28 @@ const WatchlistPage = () => {
     console.log({ watchlist })
 
     return (
-        <main className="flex min-h-screen flex-col items-center justify-between p-24">
+        <main className="flex min-h-screen flex-col items-center p- sm:p-18">
             <h1 className="text-3xl font-bold">Watchlist</h1>
-            <AddWatchlist />
+            {/* <AddWatchlist /> */}
             {
                 user ? (
-                    <div className="flex flex-col gap-4 sm:flex sm:flex-row ">
+                    <div className="flex flex-col w-full gap-4 p-10  sm:p-18  ">
+                        <SearchMovie />
+                        <Accordion type="single" className="w-full" collapsible>
+                            <AccordionItem value="item-1">
+                                <AccordionTrigger className="w-full">Watchlist</AccordionTrigger>
+                                <AccordionContent>
+                                    <div className="flex flex-col justify-center gap-4 flex-wrap sm:flex-row ">
 
-                        {watchlist?.documents && watchlist?.documents.map((document) => {
-                            
-                            return <WatchlistMediaCard key={document.$id} media={document} />
-                        })}
+                                    {watchlist?.documents && watchlist?.documents.map((document) => {
+                                        
+                                        return <WatchlistMediaCard key={document.$id} media={document} />
+                                    })}
+                                    </div>
+                                </AccordionContent>
+                            </AccordionItem>
+                        </Accordion>
+
                     </div>
                 ) : (
                     <p>Please Login</p>
