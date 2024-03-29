@@ -8,12 +8,9 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
-import { AutocompleteResult } from "@/types/watchmodeApi"
 import AddWatchlistButton from "@/components/buttons/AddWatchlistButton"
-import { Button } from "./ui/button"
-import Link from "next/link"
-import { TMDBMovieSearchResult, TMDBMultiSearchResult, TMDBTelevisionSearchResult } from "@/types/tmdbApi"
-import { Infer } from "next/dist/compiled/superstruct"
+
+import { TMDBMultiSearchResult, TMDBTelevisionSearchResult } from "@/types/tmdbApi"
 import { Separator } from "./ui/separator"
 
 

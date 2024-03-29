@@ -1,4 +1,5 @@
 'use client'
+import WatchlistMediaCard from "@/components/WatchlistMediaCard";
 import AddWatchlist from "@/components/buttons/AddWatchlist";
 import { useUser } from "@/hooks/User";
 import { database } from "@/lib/appwrite";
@@ -14,9 +15,9 @@ const WatchlistPage = () => {
         const fetchData = async () => {
             try {
                 const result: Models.DocumentList<WatchlistDocument> = await database.listDocuments(
-                    'watchlist', 
                     'watchlist',
-                    )
+                    'watchlist',
+                )
                 console.log("result: ", result)
                 if (!user) {
                     return
@@ -29,24 +30,25 @@ const WatchlistPage = () => {
         }
         fetchData()
     }, [user])
+    console.log({ watchlist })
 
     return (
         <main className="flex min-h-screen flex-col items-center justify-between p-24">
             <h1 className="text-3xl font-bold">Watchlist</h1>
-                <AddWatchlist />
-            <div>
-                {
-                    user ? (
-                        watchlist?.documents && watchlist?.documents.map((document) => (
-                            <div key={document.$id}>{document.title}</div>
-                        ))
+            <AddWatchlist />
+            {
+                user ? (
+                    <div className="flex flex-col gap-4 sm:flex sm:flex-row ">
 
-
-                    ) : (
-                        <p>Please Login</p>
-                    )
-                }
-            </div>
+                        {watchlist?.documents && watchlist?.documents.map((document) => {
+                            
+                            return <WatchlistMediaCard key={document.$id} media={document} />
+                        })}
+                    </div>
+                ) : (
+                    <p>Please Login</p>
+                )
+            }
         </main>
     );
 };
