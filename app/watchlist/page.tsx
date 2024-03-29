@@ -1,7 +1,6 @@
 'use client'
 import SearchMovie from "@/components/SearchMovie";
 import WatchlistMediaCard from "@/components/WatchlistMediaCard";
-import AddWatchlist from "@/components/buttons/AddWatchlist";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { useUser } from "@/hooks/User";
 import { database } from "@/lib/appwrite";
@@ -14,23 +13,9 @@ const WatchlistPage = () => {
 
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const result: Models.DocumentList<WatchlistDocument> = await database.listDocuments(
-                    'watchlist',
-                    'watchlist',
-                )
-                console.log("result: ", result)
-                if (!user) {
-                    return
-                }
-
-                setWatchlist(result)
-            } catch (error) {
-                console.error(error)
-            }
+        if(user){
+            setWatchlist(user?.watchlist)
         }
-        fetchData()
     }, [user])
     console.log({ watchlist })
 
@@ -42,7 +27,7 @@ const WatchlistPage = () => {
                 user ? (
                     <div className="flex flex-col w-full gap-4 p-10  sm:p-18  ">
                         <SearchMovie />
-                        <Accordion type="single" className="w-full" collapsible>
+                        <Accordion type="single" className="w-full" collapsible defaultValue="item-1">
                             <AccordionItem value="item-1">
                                 <AccordionTrigger className="w-full">Watchlist</AccordionTrigger>
                                 <AccordionContent>

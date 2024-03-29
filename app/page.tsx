@@ -8,9 +8,9 @@ export default function Home() {
   const { user } = useUser()
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-2 sm:p-18">
-      {user &&
+      {/* {user && */}
         <SearchMovie />
-      }
+      {/* } */}
       {!user &&
         <p>Please sign in</p>
       }

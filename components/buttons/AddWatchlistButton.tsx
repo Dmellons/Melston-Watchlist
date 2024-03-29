@@ -1,15 +1,18 @@
 'use client'
 import { Button } from "@/components/ui/button"
+import { useUser } from "@/hooks/User"
 import { ID, database } from "@/lib/appwrite"
 import { WatchlistDocumentCreate } from "@/types/appwrite"
 import { TMDBMultiSearchResult } from "@/types/tmdbApi"
 import { toast } from "sonner"
 
 const AddWatchlistButton = ({ media, width = "w-full" }: { media: TMDBMultiSearchResult, width: string }) => {
+    const { user } = useUser()
+
+    if (!user) return null
 
     let data: WatchlistDocumentCreate
     function handleAddWatchlist() {
-
 
         if (media.media_type === 'tv') {
 

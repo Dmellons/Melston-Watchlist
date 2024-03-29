@@ -51,11 +51,11 @@ const SearchMovie = ({
                 Search
             </Button>
             <div className="p-3 my-4 w-full">
-                <div className="flex flex-col grid-flow-row gap-4 items-center w-full">
+                <div className="flex flex-col gap-4 items-center w-full">
                 {results.length === 0 && <div>No results</div>}
                 {results.length > 0 &&
-                        <Accordion type="single" collapsible>
-                        <AccordionItem value="item-1">
+                        <Accordion type="single" collapsible defaultValue="item-1" >
+                        <AccordionItem value="item-1" >
                             <AccordionTrigger>Results!</AccordionTrigger>
                             <AccordionContent>
                             <div className="flex flex-col gap-4 items-center">

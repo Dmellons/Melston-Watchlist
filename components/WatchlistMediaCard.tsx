@@ -17,6 +17,7 @@ import {
 import { Separator } from "./ui/separator"
 import DeleteButton from "./DeleteButton"
 import { ScrollArea, ScrollBar } from "./ui/scroll-area"
+import { useState } from "react"
 
 type CardData = {
     title: string,
@@ -34,6 +35,7 @@ const WatchlistMediaCard = ({
 }: {
     media: WatchlistDocument;
 }) => {
+    const [providers, setProviders] = useState([])
 
     if (media.content_type === 'tv' || media.content_type === 'movie') {
         data = {
@@ -50,7 +52,10 @@ const WatchlistMediaCard = ({
 
     const providerData = fetch(`https://api.themoviedb.org/3/${data.tmdb_type}/${data.tmdb_id}/watch/providers?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}`)
         .then(res => res.json())
-        .then(data => console.log(data))
+        .then(data => {
+            // setProviders(data)
+            console.log({providers})
+        })
 
     console.log({ providerData })
     return (
