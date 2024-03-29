@@ -55,31 +55,29 @@ export enum Platform {
 export type WatchlistDocumentCreate = {
     title: string,
     watched?: boolean,
-    content_type?: string,
+    content_type: string,
     tmdb_id: number,
     imdb_id?: string,
-    tmdb_type?: string,
+    tmdb_type: string,
     release_date?: string,
-    poster_url?: string,
-    description?: string,
+    poster_url: string,
+    description: string,
     genre_ids: number[],
-    backdrop_url?: string,
+   
 
-} 
-
+}
 export type DocumentType = {
     label: string,
     icon?: string,
-}  & Models.Document
+} & Models.Document
 
 export type ContentTypeType = {
     label: string,
     icon: null,
 
-  }  & Models.Document
+} & Models.Document
 
-  export type WatchlistDocument = WatchlistDocumentCreate & {
-    watched: boolean,
+export type WatchlistDocument = WatchlistDocumentCreate & {
     platform: Platform[],
 
-  } & Models.Document
+} & Models.Document
