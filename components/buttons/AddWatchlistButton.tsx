@@ -50,7 +50,10 @@ const AddWatchlistButton = ({ media, width = "w-full" }: { media: TMDBMultiSearc
         toast.promise(database.createDocument('watchlist', 'watchlist', ID.unique(), data), {
             loading: 'Adding...',
             success: (res) => {
-                console.log({ res })
+                user.watchlist = database.listDocuments('watchlist', 'watchlist').then((data) => {
+                    console.log({ data })
+                    return data
+                })
                 return `Added "${data.title}" to your watchlist!`
             }
             ,

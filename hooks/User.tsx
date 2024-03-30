@@ -43,13 +43,16 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
     const [user, setUser] = useState<null | UserType>(null);
     const [loading, setLoading] = useState(true)
-
+    const [watchlist, setWatchlist] = useState<Models.DocumentList<WatchlistDocument> | undefined>(undefined)
     useEffect(() => {
         const checkUser = async () => {
             try {
+                const watchlist = await database.listDocuments('watchlist','watchlist').then((data) => {
+                    console.log({data})
+                    return data
+                })
                 const { $id, email, name, prefs, status, labels, ...rest } = await account.get()
-                const watchlist: Models.DocumentList<WatchlistDocument> = await database.listDocuments('watchlist','watchlist') 
-                
+                console.log(watchlist)
                 setUser({
                     id: $id,
                     admin: labels?.includes('admin') ? true : false,
