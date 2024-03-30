@@ -93,15 +93,18 @@ const WatchlistMediaCard = ({
                                 Poster<br />Missing
                             </div>
                         )
-                    }
+                    } 
+                 
+
                     <CardTitle className="text-center text-2xl block sm:hidden">{data.title}</CardTitle>
                     <CardDescription className="font-subtitle block sm:hidden">Year: {data.year?.substring(0, 4)}</CardDescription>
                     <CardDescription className="font-subtitle block sm:hidden ">Type: {`${data.tmdb_type?.charAt(0).toUpperCase()}${data.content_type?.slice(1)}`}</CardDescription>
+              
                 </div>
             </CardHeader>
             <Separator className="block  sm:hidden" />
             <CardContent className="flex flex-col gap-2">
-                <CardTitle className="text-center text-2xl hidden sm:block">{data.title}</CardTitle>
+                <CardTitle className="text-center text-2xl hidden min-w-48 sm:block">{data.title}</CardTitle>
                 <div className="flex flex-row justify-between">
 
                     <CardDescription className="font-subtitle hidden sm:block ">Year: {data.year?.substring(0, 4)}</CardDescription>

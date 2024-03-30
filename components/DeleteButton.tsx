@@ -22,6 +22,7 @@ import {
 import { Trash2 } from "lucide-react"
 import { database } from "@/lib/appwrite"
 import { toast } from "sonner"
+import { useUser } from "@/hooks/User"
 
 export default function DeleteButton({
   buttonVariant = "destructive",
@@ -40,11 +41,12 @@ export default function DeleteButton({
   const buttonContent = <div className="flex gap-1">{iconMarkup}{buttonText}</div>;
   console.log({ title })
   function deleteDocument({ id, title }: { id: string, title?: string }) {
-
+    const { user } = useUser()
     toast.promise(database.deleteDocument('watchlist', 'watchlist', id), {
       loading: 'Deleting...',
       success: (res) => {
-        
+        user?.watchlist?.splice(user?.watchlist?.indexOf(id), 1)
+        user?.setUser(user)
         if (title) {
           return `Deleted "${title}" from your watchlist!`
         } else {
