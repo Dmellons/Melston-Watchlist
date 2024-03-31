@@ -14,10 +14,11 @@ import {
     AccordionItem,
     AccordionTrigger,
 } from "@/components/ui/accordion"
-import { Separator } from "./ui/separator"
-import DeleteButton from "./DeleteButton"
-import { ScrollArea, ScrollBar } from "./ui/scroll-area"
+import { Separator } from "@/components/ui/separator"
+import DeleteButton from "@/components/DeleteButton"
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { useState } from "react"
+import ProvidersBlock from "@/components/ProvidersBlock"
 
 type CardData = {
     title: string,
@@ -29,12 +30,12 @@ type CardData = {
     description: string,
 
 }
-let data: CardData
 const WatchlistMediaCard = ({
     media
 }: {
     media: WatchlistDocument;
 }) => {
+    let data: CardData
     const [providers, setProviders] = useState([])
 
     if (media.content_type === 'tv' || media.content_type === 'movie') {
@@ -51,7 +52,10 @@ const WatchlistMediaCard = ({
     }
 
     const providerData = fetch(`https://api.themoviedb.org/3/${data.tmdb_type}/${data.tmdb_id}/watch/providers?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}`)
-        .then(res => res.json())
+        .then(res => {
+            console.log({ res })
+            return res.json()
+        })
         .then(data => {
             // setProviders(data)
             console.log({providers})
@@ -126,7 +130,7 @@ const WatchlistMediaCard = ({
                     document_id={media.$id}
                 />
 
-                {/* <Providers providers={providers}/> */}
+                <ProvidersBlock providers={providers}/>
             </CardContent>
         </Card>
     )

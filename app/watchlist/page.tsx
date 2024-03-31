@@ -9,15 +9,19 @@ import { Models, Query } from "appwrite";
 import { useEffect, useRef, useState } from "react";
 import { useMemo } from "react";
 
-const WatchlistPage = () => {
+function WatchlistPage() {
+    
     const { user } = useUser()
     const [watchlist, setWatchlist] = useState<Models.DocumentList<WatchlistDocument> | undefined>(user?.watchlist)
-
-
-
+    
     useEffect(() => {
             setWatchlist(user?.watchlist)
      }, [user?.watchlist])
+    
+    if (!user) {
+        return <div className="text-3xl font-bold">please sign in </div>
+    }
+
     console.log({ watchlist })
 
     return (
