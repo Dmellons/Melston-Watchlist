@@ -7,6 +7,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 export interface UserState {
     user: UserType | null;
     loading: boolean;
+    setUser: (user: UserType | null) => Promise<void>;
     login: (email: string, password: string) => Promise<void>;
     logout: () => Promise<void>;
     signup: (email: string, password: string, name: string) => Promise<void>;
@@ -28,6 +29,7 @@ export type UserType = {
 const defaultState: UserState = {
     user: null,
     loading: true,
+    setUser: () => Promise.resolve(),
     login: () => Promise.resolve(),
     logout: () => Promise.resolve(),
     signup: () => Promise.resolve(),
@@ -41,32 +43,35 @@ const UserContext = createContext<UserState>(defaultState)
 
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
-    const [user, setUser] = useState<null | UserType>(null);
+    const [user, setUserInternal] = useState<null | UserType>(null);
     const [loading, setLoading] = useState(true)
-    const [watchlist, setWatchlist] = useState<Models.DocumentList<WatchlistDocument> | undefined>(undefined)
+    // const [watchlist, setWatchlist] = useState<Models.DocumentList<WatchlistDocument> | undefined>(undefined)
+    const setUser = async (user: UserType | null) => {
+        await setUserInternal(user)
+    }
     useEffect(() => {
         const checkUser = async () => {
             try {
-                const watchlist = await database.listDocuments('watchlist','watchlist').then((data) => {
-                    console.log({data})
+                const watchlist: Models.DocumentList<WatchlistDocument> = await database.listDocuments('watchlist', 'watchlist').then((data) => {
+
                     return data
                 })
                 const { $id, email, name, prefs, status, labels, ...rest } = await account.get()
                 console.log(watchlist)
-                setUser({
+                setUserInternal({
                     id: $id,
                     admin: labels?.includes('admin') ? true : false,
                     email,
                     name,
                     status,
-                    labels, 
+                    labels,
                     image: prefs.image ? prefs.image : null,
                     watchlist: watchlist,
                     // debug: rest
                 });
             } catch (error) {
                 console.error(`Check User Error: ${error}`)
-                setUser(null)
+                setUserInternal(null)
             } finally {
                 setLoading(false)
             }
@@ -74,28 +79,16 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
         checkUser();
     }, []);
 
-    const mainSetUser = async () => {
-        const { $id, email, name, prefs, status, ...rest } = await account.get()
-        setUser({
-            id: $id,
-            admin: prefs.admin ? true : false,
-            email,
-            name,
-            status,
-            image: prefs.image ? prefs.image : null,
-            // debug: rest
-        })
-    }
     const login = async (email: string, password: string) => {
         try {
             await account.createEmailPasswordSession(email, password);
             const { $id, name, prefs, status, ...rest } = await account.get()
-            setUser({
+            setUserInternal({
                 id: $id,
                 email,
                 name,
                 admin: prefs.admin ? true : false,
-                status, 
+                status,
                 debug: rest
             });
         } catch (error) {
@@ -104,7 +97,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     const loginWithGoogle = async () => {
-    
+
         try {
             await account.createOAuth2Session(
                 OAuthProvider.Google,
@@ -115,18 +108,18 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
                     'https://www.googleapis.com/auth/userinfo.profile',
                 ]
             );
-            
-            const { $id, name, email, prefs, status , ...debug} = await account.get()
+
+            const { $id, name, email, prefs, status, ...debug } = await account.get()
 
             console.log(`Login With Google debug: ${debug}`)
 
-            setUser({
+            setUserInternal({
                 id: $id,
                 email,
                 name,
                 admin: prefs.admin ? true : false,
-                status,  
-                debug 
+                status,
+                debug
             });
         } catch (error) {
             console.error(`Login With Google Error: ${error}`)
@@ -137,7 +130,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     const logout = async () => {
         try {
             await account.deleteSession('current');
-            setUser(null)
+            setUserInternal(null)
         } catch (error) {
             console.error(`Logout Error: ${error}`)
         }

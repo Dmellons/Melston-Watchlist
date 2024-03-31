@@ -39,14 +39,14 @@ export default function DeleteButton({
   const isDesktop = useMediaQuery("(min-width: 768px)")
   const iconMarkup = buttonText === "Delete" ? <Trash2 className="h-4 w-4 " aria-hidden="true" /> : null;
   const buttonContent = <div className="flex gap-1">{iconMarkup}{buttonText}</div>;
-  console.log({ title })
-  function deleteDocument({ id, title }: { id: string, title?: string }) {
-    const { user } = useUser()
+   function deleteDocument({ id, title }: { id: string, title?: string }) { 
+    
     toast.promise(database.deleteDocument('watchlist', 'watchlist', id), {
       loading: 'Deleting...',
       success: (res) => {
-        user?.watchlist?.splice(user?.watchlist?.indexOf(id), 1)
-        user?.setUser(user)
+        // Trying to do an optomistic update on the user.watchlist array
+        // user?.watchlist?.splice(user?.watchlist?.indexOf(id), 1)
+        // setUser(user)
         if (title) {
           return `Deleted "${title}" from your watchlist!`
         } else {
