@@ -43,6 +43,11 @@ const SearchMovie = ({
                 placeholder="Search Movie"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                        movieList()
+                    }
+                }}
             />
             <Button
                 className="my-5 w-24 align-middle"
@@ -50,6 +55,7 @@ const SearchMovie = ({
             >
                 Search
             </Button>
+            
             <div className="p-3 my-4 w-full">
                 <div className="flex flex-col gap-4 items-center w-full">
                 {results.length === 0 && <div>No results</div>}
