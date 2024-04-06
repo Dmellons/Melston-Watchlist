@@ -30,13 +30,13 @@ type CardData = {
     description: string,
 
 }
+let data: CardData
 const WatchlistMediaCard = ({
     media
 }: {
     media: WatchlistDocument;
 }) => {
-    let data: CardData
-    const [providers, setProviders] = useState([])
+    // const [providers, setProviders] = useState([])
 
     if (media.content_type === 'tv' || media.content_type === 'movie') {
         data = {
@@ -51,17 +51,22 @@ const WatchlistMediaCard = ({
 
     }
 
-    const providerData = fetch(`https://api.themoviedb.org/3/${data.tmdb_type}/${data.tmdb_id}/watch/providers?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}`)
-        .then(res => {
-            console.log({ res })
-            return res.json()
-        })
-        .then(data => {
-            // setProviders(data)
-            console.log({providers})
-        })
+    // const providerData = fetch(`https://api.themoviedb.org/3/${data.tmdb_type}/${data.tmdb_id}/watch/providers?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}`)
+    //     .then(res => {
+    //         console.log(`https://api.themoviedb.org/3/${data.tmdb_type}/${data.tmdb_id}/watch/providers?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}`)
+    //         return res.json()
+    //     }).catch (err => {
+    //         console.log(`https://api.themoviedb.org/3/${data.tmdb_type}/${data.tmdb_id}/watch/providers?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}`)
+    //         console.log(err)
+    //     }) 
 
-    console.log({ providerData })
+    // providerData.then(data => {
+    //     setProviders(data.results)
+    // })
+
+    if (!data) {
+        return null
+    }
     return (
         <Card className="
         flex 
@@ -125,12 +130,17 @@ const WatchlistMediaCard = ({
                         </AccordionContent>
                     </AccordionItem>
                 </Accordion>
+                
                 <DeleteButton
                     title={data.title}
                     document_id={media.$id}
                 />
 
-                <ProvidersBlock providers={providers}/>
+                <ProvidersBlock 
+                    tmdbId={data.tmdb_id}
+                    tmdbType={data.tmdb_type}
+                    country="US"
+                                        />
             </CardContent>
         </Card>
     )
