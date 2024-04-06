@@ -2,6 +2,7 @@
 import { ProvidersApiCall, Results, StreamingInfo, tmdbFetchOptions } from '@/lib/tmdb';
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 
 const ProvidersBlock = (
   {
@@ -39,6 +40,8 @@ const ProvidersBlock = (
     return null;
   } else if (data.results[country] === undefined) {
     return null;
+  } else if (data.results[country].flatrate === undefined) {
+    return null;
   }
   return (
     <div className='w-full m-auto'>
@@ -49,12 +52,12 @@ const ProvidersBlock = (
         ) : (
           data?.results[country]?.flatrate?.map((provider:StreamingInfo, key:number) => (
             <div key={key} className='flex items-center justify-center'>
-              <Image 
-                src={`https://image.tmdb.org/t/p/w500${provider.logo_path}`} 
-                alt={provider.provider_name} 
-                width={48} 
-                height={48} 
-                />
+              <Avatar>
+                <AvatarImage src={`https://image.tmdb.org/t/p/w500${provider.logo_path}`} />
+                <AvatarFallback>
+                  {provider.provider_name}
+                </AvatarFallback>              
+              </Avatar>
             </div>
           ))
 
