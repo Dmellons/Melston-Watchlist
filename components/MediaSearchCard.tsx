@@ -12,6 +12,7 @@ import AddWatchlistButton from "@/components/buttons/AddWatchlistButton"
 
 import { TMDBMultiSearchResult, TMDBTelevisionSearchResult } from "@/types/tmdbApi"
 import { Separator } from "./ui/separator"
+import ProvidersBlock from "@/components/ProvidersBlock"
 
 
 type CardData = {
@@ -100,6 +101,10 @@ const MediaSearchCard = ({
                     media={media}
                     width="w-32 m-auto"
 
+                />
+                <ProvidersBlock
+                    tmdbId={data.tmdb_id}
+                    tmdbType={data.tmdb_type}
                 />
             </CardContent>
         </Card>

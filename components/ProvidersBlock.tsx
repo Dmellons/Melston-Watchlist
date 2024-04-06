@@ -1,6 +1,5 @@
 'use client'
-import { ProvidersApiCall, Results, tmdbFetchOptions } from '@/lib/tmdb';
-import { Lightbulb } from 'lucide-react';
+import { ProvidersApiCall, Results, StreamingInfo, tmdbFetchOptions } from '@/lib/tmdb';
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
 
@@ -36,24 +35,25 @@ const ProvidersBlock = (
 
     fetchData();
   }, []);
-
+  if (!data) {
+    return null;
+  } else if (data.results[country] === undefined) {
+    return null;
+  }
   return (
-    <div className='w-full'>
-      <h3>Providers Block</h3>
-      <div className='flex flex-col gap-2'>
+    <div className='w-full m-auto'>
+      <h3 className='text-xl font-bold text-center mb-2'>Streaming on</h3>
+      <div className='flex gap-4 justify-center flex-wrap'>
         {loading ? (
           <div className='text-center'>Loading...</div>
         ) : (
-
-
-          data?.results[country]?.flatrate?.map((provider, key) => (
-            <div key={key} className='flex  gap-2 items-center'>
-              {/* <p>{provider.provider_name}</p> */}
+          data?.results[country]?.flatrate?.map((provider:StreamingInfo, key:number) => (
+            <div key={key} className='flex items-center justify-center'>
               <Image 
                 src={`https://image.tmdb.org/t/p/w500${provider.logo_path}`} 
                 alt={provider.provider_name} 
-                width={28} 
-                height={28} 
+                width={48} 
+                height={48} 
                 />
             </div>
           ))
@@ -61,7 +61,7 @@ const ProvidersBlock = (
         )
         }
       </div>
-      <div className='font-extralight text-[10px] text-muted '>Streaming results provided by JustWatch</div>
+      <div className='font-extralight text-[10px] text-center text-muted '>Streaming results provided by JustWatch</div>
     </div>
   )
 }
