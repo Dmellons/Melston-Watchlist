@@ -70,7 +70,7 @@ const AddWatchlistButton = ({ media, width = "w-full" }: { media: TMDBMultiSearc
 return (
     <Button
         variant="default"
-        className={`min-w-16 ${width}`}
+        className={`min-w-16 ${width} text-primary-foreground hover:bg-primary/70`}
         onClick={handleAddWatchlist}
     >
         +Add

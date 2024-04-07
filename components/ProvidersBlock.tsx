@@ -43,7 +43,7 @@ const ProvidersBlock = (
     return null;
   } else if (data.results[country] === undefined) {
     return null;
-  } else if (data.results[country].flatrate === undefined) {
+  } else if (!data.results[country].flatrate) {
     return null;
   }
   return (
@@ -52,7 +52,7 @@ const ProvidersBlock = (
       <div className='flex gap-4 justify-center flex-wrap'>
         {loading ? (
           <div className='text-center'>Loading...</div>
-        ) : (
+        ) : ( 
           data?.results[country]?.flatrate?.map((provider: StreamingInfo, key: number) => (
             <div key={key} className='flex items-center justify-center'>
               <Image

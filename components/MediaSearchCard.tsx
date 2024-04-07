@@ -13,6 +13,9 @@ import AddWatchlistButton from "@/components/buttons/AddWatchlistButton"
 import { TMDBMultiSearchResult, TMDBTelevisionSearchResult } from "@/types/tmdbApi"
 import { Separator } from "./ui/separator"
 import ProvidersBlock from "@/components/ProvidersBlock"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion"
+import { ScrollArea } from "./ui/scroll-area"
+import { Skeleton } from "./ui/skeleton"
 
 
 type CardData = {
@@ -64,8 +67,8 @@ const MediaSearchCard = ({
                     {
                         media.poster_path ? <Image
                             src={`https://image.tmdb.org/t/p/w500${data.image_url}`}
-                            width={256}
-                            height={256}
+                            width={24}
+                            height={32}
                             alt={`${data.title} poster`}
                             className="rounded-md"
                             objectFit="cover"
@@ -88,23 +91,33 @@ const MediaSearchCard = ({
             </CardHeader>
             <Separator className="block  sm:hidden" />
             <CardContent className="flex flex-col gap-2">
-                    <CardTitle className="text-center text-2xl hidden sm:block">{data.title}</CardTitle>
+                <CardTitle className="text-center text-2xl hidden sm:block">{data.title}</CardTitle>
                 <div className="flex flex-row justify-between">
 
                     <CardDescription className="font-subtitle hidden sm:block ">Year: {data.year.substring(0, 4)}</CardDescription>
                     <CardDescription className="font-subtitle hidden sm:block ">Type: {`${data.tmdb_type.charAt(0).toUpperCase()}${data.content_type.slice(1)}`}</CardDescription>
                 </div>
-                <p >
-                    {data.description}
-                </p>
+                <Accordion type="single" collapsible className="w-full">
+                    <AccordionItem value="item-1">
+                        <AccordionTrigger>Description</AccordionTrigger>
+                        <AccordionContent>
+                            <ScrollArea className="max-h-36 w-full">
+
+                                {data.description}
+                            </ScrollArea>
+                        </AccordionContent>
+                    </AccordionItem>
+                </Accordion>
+
+
+                <ProvidersBlock
+                    tmdbId={data.tmdb_id}
+                    tmdbType={data.tmdb_type}
+                />
                 <AddWatchlistButton
                     media={media}
                     width="w-32 m-auto"
 
-                />
-                <ProvidersBlock
-                    tmdbId={data.tmdb_id}
-                    tmdbType={data.tmdb_type}
                 />
             </CardContent>
         </Card>
