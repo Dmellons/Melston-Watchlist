@@ -40,7 +40,7 @@ const SearchMovie = ({
             <h1 className="text-3xl mb-4">Search Movies & TV</h1>
 
             <Input
-                placeholder="Search Movie"
+                placeholder="Movie, TV Show, Person..."
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={(e) => {
