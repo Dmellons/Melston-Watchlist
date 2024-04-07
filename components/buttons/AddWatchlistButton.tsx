@@ -4,10 +4,12 @@ import { useUser } from "@/hooks/User"
 import { ID, database } from "@/lib/appwrite"
 import { WatchlistDocumentCreate } from "@/types/appwrite"
 import { TMDBMultiSearchResult } from "@/types/tmdbApi"
+import { useOptimistic } from "react"
 import { toast } from "sonner"
 
 const AddWatchlistButton = ({ media, width = "w-full" }: { media: TMDBMultiSearchResult, width: string }) => {
     const { user } = useUser()
+    const [optomisticWatchlist, setOptomisticWatchlist] = useOptimistic(user?.watchlist)
 
     if (!user) return null
 
@@ -36,7 +38,7 @@ const AddWatchlistButton = ({ media, width = "w-full" }: { media: TMDBMultiSearc
                 tmdb_id: media.id,
                 tmdb_type: media.media_type,
                 release_date: media.release_date,
-                poster_url: `https://image.tmdb.org/t/p/w500${media.poster_path}`,
+                poster_url: media.poster_path ?`https://image.tmdb.org/t/p/w500${media.poster_path}` : null,
                 description: media.overview ? media.overview : "No description available",
                 genre_ids: media.genre_ids ? media.genre_ids : []
             }
@@ -54,6 +56,7 @@ const AddWatchlistButton = ({ media, width = "w-full" }: { media: TMDBMultiSearc
                     console.log({ data })
                     return data
                 })
+                
                 return `Added "${data.title}" to your watchlist!`
             }
             ,

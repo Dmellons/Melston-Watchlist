@@ -2,7 +2,7 @@
 import SearchMovie from "@/components/SearchMovie";
 import WatchlistMediaCard from "@/components/WatchlistMediaCard";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { useUser } from "@/hooks/User";
+import { UserState, useUser } from "@/hooks/User";
 // import { database } from "@/lib/appwrite";
 import { WatchlistDocument } from "@/types/appwrite";
 import { Models, Query } from "appwrite";
@@ -40,7 +40,10 @@ function WatchlistPage() {
                                         <div className="flex flex-col justify-center gap-4 flex-wrap sm:flex-row ">
                                             {
                                                 watchlist.documents.map((document) => (
-                                                    <WatchlistMediaCard key={document.$id} media={document} />
+                                                    <WatchlistMediaCard 
+                                                        key={document.$id} 
+                                                        media={document} 
+                                                        setWatchlist={setWatchlist}/>
                                                 ))
                                             }
                                         </div>

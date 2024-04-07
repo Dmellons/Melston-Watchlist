@@ -81,7 +81,7 @@ const MediaSearchCard = ({
                             height: "auto",
                         }}
                         /> : (
-                            <div className="w-24 h-32 flex flex-col justify-center items-center background border border-black-1 rounded-md text-primary font-bold " >
+                            <div className="w-32 h-40 flex flex-col justify-center items-center bg-background/50 border border-primary/50 rounded-md text-primary font-bold " >
                                 Poster<br />Missing
                             </div>
                         )

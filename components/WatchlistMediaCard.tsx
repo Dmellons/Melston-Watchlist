@@ -26,15 +26,17 @@ type CardData = {
     tmdb_id: number,
     tmdb_type: string,
     year?: string,
-    poster_url: string,
+    poster_url?: string,
     description: string,
 
 }
 let data: CardData
 const WatchlistMediaCard = ({
-    media
+    media,
+
 }: {
     media: WatchlistDocument;
+   
 }) => {
 
     if (media.content_type === 'tv' || media.content_type === 'movie') {
@@ -44,7 +46,7 @@ const WatchlistMediaCard = ({
             tmdb_id: media.tmdb_id,
             tmdb_type: media.tmdb_type,
             year: media.release_date,
-            poster_url: media.poster_url,
+            poster_url: media.poster_url ? media.poster_url : undefined,
             description: media.description ? media.description : "No description available"
         }
 
@@ -71,21 +73,17 @@ const WatchlistMediaCard = ({
             <CardHeader className="flex flex-col w-full justify-between items-center sm:flex-row sm:justify-center sm:gap-4 sm:min-w-48">
                 <div className="flex flex-col items-center gap-1">
                     {
-                        media.poster_url ? <Image
+                        data.poster_url ? <Image
                             src={data.poster_url}
-                            width={200}
+                            width={175}
                             height={200}
                             alt={`${data.title} poster`}
                             className="rounded-md"
                             objectFit="cover"
                             placeholder="empty"
                             sizes="100%"
-                            style={{
-                                width: "200px",
-                                height: "auto",
-                            }}
                         /> : (
-                            <div className="w-24 h-32 flex flex-col justify-center items-center bg-card border border-black-1 rounded-md text-primary font-bold " >
+                            <div className="w-24 h-32 flex flex-col justify-center items-center bg-background/50 border border-black-1 rounded-md text-primary font-bold " >
                                 Poster<br />Missing
                             </div>
                         )
