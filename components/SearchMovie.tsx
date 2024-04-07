@@ -42,7 +42,7 @@ const SearchMovie = ({
             <Input
                 placeholder="Movie, TV Show, Person..."
                 value={query}
-                className="bg-white/90  w-80"
+                className="bg-white/90  text-black w-80"
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={(e) => {
                     if (e.key === "Enter") {
@@ -59,21 +59,21 @@ const SearchMovie = ({
             
             <div className="p-3 my-4 w-full">
                 {/* <div className="flex flex-col w-full gap-4 items-center"> */}
-                {results.length === 0 && <div>No results</div>}
+                {/* {results.length === 0 && <div>No results</div>} */}
                 {results.length > 0 &&
-                        // <Accordion type="single" collapsible defaultValue="item-1" >
-                        // <AccordionItem value="item-1" >
-                        //     <AccordionTrigger>Results!</AccordionTrigger>
-                        //     <AccordionContent>
+                        <Accordion type="single" collapsible defaultValue="item-1" >
+                        <AccordionItem value="item-1" >
+                            <AccordionTrigger>Results!</AccordionTrigger>
+                            <AccordionContent>
                             <div className="flex flex-col  gap-4 items-center w-full">
                             {results.map((result) => (
                                 <MediaSearchCard key={result.id} media={result} />
                             ))}
                         </div>
     
-                    //         </AccordionContent>
-                    //     </AccordionItem>
-                    // </Accordion>
+                             </AccordionContent>
+                         </AccordionItem>
+                     </Accordion>
 
                         
                 }
