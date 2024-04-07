@@ -36,7 +36,6 @@ const WatchlistMediaCard = ({
 }: {
     media: WatchlistDocument;
 }) => {
-    // const [providers, setProviders] = useState([])
 
     if (media.content_type === 'tv' || media.content_type === 'movie') {
         data = {
@@ -51,18 +50,6 @@ const WatchlistMediaCard = ({
 
     }
 
-    // const providerData = fetch(`https://api.themoviedb.org/3/${data.tmdb_type}/${data.tmdb_id}/watch/providers?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}`)
-    //     .then(res => {
-    //         console.log(`https://api.themoviedb.org/3/${data.tmdb_type}/${data.tmdb_id}/watch/providers?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}`)
-    //         return res.json()
-    //     }).catch (err => {
-    //         console.log(`https://api.themoviedb.org/3/${data.tmdb_type}/${data.tmdb_id}/watch/providers?api_key=${process.env.NEXT_PUBLIC_TMDB_API_KEY}`)
-    //         console.log(err)
-    //     }) 
-
-    // providerData.then(data => {
-    //     setProviders(data.results)
-    // })
 
     if (!data) {
         return null
@@ -112,14 +99,14 @@ const WatchlistMediaCard = ({
                 </div>
             </CardHeader>
             <Separator className="block  sm:hidden" />
-            <CardContent className="flex flex-col gap-2">
+            <CardContent className="flex flex-col w-full gap-2">
                 <CardTitle className="text-center text-2xl hidden min-w-48 sm:block">{data.title}</CardTitle>
                 <div className="flex flex-row justify-between">
 
                     <CardDescription className="font-subtitle hidden sm:block ">Year: {data.year?.substring(0, 4)}</CardDescription>
                     <CardDescription className="font-subtitle hidden sm:block ">Type: {`${data.tmdb_type?.charAt(0).toUpperCase()}${data.content_type?.slice(1)}`}</CardDescription>
                 </div>
-                <Accordion type="single" collapsible>
+                <Accordion type="single" collapsible className="w-full"> 
                     <AccordionItem value="item-1">
                         <AccordionTrigger>Description</AccordionTrigger>
                         <AccordionContent>
