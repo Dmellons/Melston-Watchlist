@@ -23,6 +23,9 @@ const ProvidersBlock = (
   useEffect(() => {
     const fetchData = async () => {
       try {
+        /*
+        / Streaming results provided by JustWatch - https://www.justwatch.com/
+        */
         const url = `https://api.themoviedb.org/3/${tmdbType}/${tmdbId.toString()}/watch/providers`;
         console.log(url)
         const response = await fetch(url, tmdbFetchOptions);
@@ -50,21 +53,30 @@ const ProvidersBlock = (
         {loading ? (
           <div className='text-center'>Loading...</div>
         ) : (
-          data?.results[country]?.flatrate?.map((provider:StreamingInfo, key:number) => (
+          data?.results[country]?.flatrate?.map((provider: StreamingInfo, key: number) => (
             <div key={key} className='flex items-center justify-center'>
-              <Avatar>
+              <Image
+                src={`https://image.tmdb.org/t/p/w500${provider.logo_path}`}
+                alt={provider.provider_name}
+                width={50}
+                height={50}
+                className='rounded-lg '
+              />
+              {/* <Avatar className='rounded'>
                 <AvatarImage src={`https://image.tmdb.org/t/p/w500${provider.logo_path}`} />
                 <AvatarFallback>
                   {provider.provider_name}
                 </AvatarFallback>              
-              </Avatar>
+              </Avatar> */}
             </div>
           ))
 
         )
         }
       </div>
-      <div className='font-extralight text-[10px] text-center text-muted '>Streaming results provided by JustWatch</div>
+      <div className='font-extralight text-[10px] text-center text-muted '>
+        Streaming results provided by <a className='hover:cursor-text' href="https://www.justwatch.com/">JustWatch</a>
+      </div>
     </div>
   )
 }
