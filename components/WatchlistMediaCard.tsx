@@ -17,8 +17,9 @@ import {
 import { Separator } from "@/components/ui/separator"
 import DeleteButton from "@/components/DeleteButton"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
-import { useState } from "react"
+import { Dispatch, SetStateAction, useState } from "react"
 import ProvidersBlock from "@/components/ProvidersBlock"
+import { Models } from "@/lib/appwrite"
 
 type CardData = {
     title: string,
@@ -33,9 +34,11 @@ type CardData = {
 let data: CardData
 const WatchlistMediaCard = ({
     media,
+    setWatchlist
 
 }: {
     media: WatchlistDocument;
+    setWatchlist: Dispatch<SetStateAction<Models.DocumentList<WatchlistDocument>>>
    
 }) => {
 
@@ -119,6 +122,7 @@ const WatchlistMediaCard = ({
                 <DeleteButton
                     title={data.title}
                     document_id={media.$id}
+                    setWatchlist={setWatchlist}
                 />
 
                 <ProvidersBlock 

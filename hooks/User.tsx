@@ -15,7 +15,7 @@ export interface UserState {
 }
 
 export type UserType = {
-    id: string;
+    id?: string;
     email: string;
     name: string;
     admin?: boolean;
