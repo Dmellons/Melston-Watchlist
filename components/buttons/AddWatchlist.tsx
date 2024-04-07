@@ -15,6 +15,7 @@ import { useEffect, useRef, useState } from "react";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "../ui/select";
 import { toast } from "sonner";
 import { ToastAction } from "../ui/toast";
+import { revalidatePath } from "next/cache";
 
 
 const AddWatchlist = () => {
@@ -74,6 +75,7 @@ const AddWatchlist = () => {
             success: `Added "${title}" to your watchlist!`,
             error: `Oops! There was an error adding "${title}" to your watchlist.`,
         })
+        // revalidatePath(window.location.href)
 
 
     }
