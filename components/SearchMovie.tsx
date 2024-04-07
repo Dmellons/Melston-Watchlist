@@ -62,11 +62,11 @@ const SearchMovie = ({
                 {/* <div className="flex flex-col w-full gap-4 items-center"> */}
                 {/* {results.length === 0 && <div>No results</div>} */}
                 {results.length > 0 &&
-                    <Accordion type="single" collapsible defaultValue="item-1" >
+                    <Accordion type="single" collapsible defaultValue="item-1" className="w-full sm:min-w-96" >
                         <AccordionItem value="item-1" >
                             <AccordionTrigger>Results!</AccordionTrigger>
                             <AccordionContent>
-                                <div className="flex flex-col  gap-4 items-center w-full">
+                                <div className="flex flex-col p-3 gap-4 items-center w-full">
 
                                     {results.map((result) => (
                                         <MediaSearchCard key={result.id} media={result} />
@@ -79,6 +79,7 @@ const SearchMovie = ({
 
 
                 }
+                {/*
                 <Carousel >
                     <CarouselContent >
 
@@ -91,7 +92,7 @@ const SearchMovie = ({
                     <CarouselPrevious />
                     <CarouselNext />
                 </Carousel>
-                {/* </div> */}
+                 </div> */}
             </div>
 
         </div>
