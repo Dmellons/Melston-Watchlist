@@ -61,25 +61,27 @@ const MediaSearchCard = ({
     }
 
     return (
-        <Card className="flex flex-col sm:flex-row justify-between items-center max-w-lg p-2 ">
+        <Card className="flex flex-col sm:flex-row justify-between items-center w-[400px] h-[600px]  p-2 hover:z-0 hover:border hover:border-primary/50 hover:scale-100  ">
+            <div className="hover:scale-105 hover:ease-in-out hover:duration-300 w-full">
+
             <CardHeader className="flex flex-col  justify-between items-center sm:flex-row sm:justify-center sm:gap-4 sm:min-w-48">
                 <div className="flex flex-col items-center gap-1">
                     {
                         media.poster_path ? <Image
-                            src={`https://image.tmdb.org/t/p/w500${data.image_url}`}
-                            width={24}
-                            height={32}
-                            alt={`${data.title} poster`}
-                            className="rounded-md"
-                            objectFit="cover"
-                            placeholder="empty"
-                            sizes="100%"
-                            style={{
-                                width: "256px",
-                                height: "auto",
-                            }}
+                        src={`https://image.tmdb.org/t/p/w500${data.image_url}`}
+                        width={24}
+                        height={32}
+                        alt={`${data.title} poster`}
+                        className="rounded-md"
+                        objectFit="cover"
+                        placeholder="empty"
+                        sizes="100%"
+                        style={{
+                            width: "128px",
+                            height: "auto",
+                        }}
                         /> : (
-                            <div className="w-24 h-32 flex flex-col justify-center items-center bg-card border border-black-1 rounded-md text-primary font-bold " >
+                            <div className="w-24 h-32 flex flex-col justify-center items-center background border border-black-1 rounded-md text-primary font-bold " >
                                 Poster<br />Missing
                             </div>
                         )
@@ -90,18 +92,18 @@ const MediaSearchCard = ({
                 </div>
             </CardHeader>
             <Separator className="block  sm:hidden" />
-            <CardContent className="flex flex-col gap-2">
+            <CardContent className="flex flex-col gap-2 w-full">
                 <CardTitle className="text-center text-2xl hidden sm:block">{data.title}</CardTitle>
-                <div className="flex flex-row justify-between">
+                <div className="flex flex-row justify-between text-center">
 
                     <CardDescription className="font-subtitle hidden sm:block ">Year: {data.year.substring(0, 4)}</CardDescription>
                     <CardDescription className="font-subtitle hidden sm:block ">Type: {`${data.tmdb_type.charAt(0).toUpperCase()}${data.content_type.slice(1)}`}</CardDescription>
                 </div>
                 <Accordion type="single" collapsible className="w-full">
-                    <AccordionItem value="item-1">
-                        <AccordionTrigger>Description</AccordionTrigger>
+                    <AccordionItem value="item-1 ">
+                        <AccordionTrigger className="">Description</AccordionTrigger>
                         <AccordionContent>
-                            <ScrollArea className="max-h-36 w-full">
+                            <ScrollArea className="max-h-36 ">
 
                                 {data.description}
                             </ScrollArea>
@@ -113,13 +115,14 @@ const MediaSearchCard = ({
                 <ProvidersBlock
                     tmdbId={data.tmdb_id}
                     tmdbType={data.tmdb_type}
-                />
+                    />
                 <AddWatchlistButton
                     media={media}
                     width="w-32 m-auto"
-
-                />
+                    
+                    />
             </CardContent>
+                    </div>
         </Card>
     )
 }

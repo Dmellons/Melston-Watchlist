@@ -5,6 +5,7 @@ import { Input } from "./ui/input"
 import MediaSearchCard from "./MediaSearchCard"
 import { TMDBMultiSearchResult } from "@/types/tmdbApi"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion"
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "./ui/carousel"
 
 const SearchMovie = ({
     // query
@@ -17,15 +18,15 @@ const SearchMovie = ({
     const [results, setResults] = useState<TMDBMultiSearchResult[]>([])
 
     const movieList = async () => {
-       
-       const options = {
-           method: 'GET',
-           headers: {
-               accept: 'application/json',
-               Authorization: `Bearer ${process.env.NEXT_PUBLIC_TMDB_API_READ_ACCESS_TOKEN}`
+
+        const options = {
+            method: 'GET',
+            headers: {
+                accept: 'application/json',
+                Authorization: `Bearer ${process.env.NEXT_PUBLIC_TMDB_API_READ_ACCESS_TOKEN}`
             }
         };
-        
+
         const res = fetch(`https://api.themoviedb.org/3/search/multi?query=${query}`, options)
             .then(res => res.json())
             .then(data => setResults(data.results))
@@ -56,27 +57,40 @@ const SearchMovie = ({
             >
                 Search
             </Button>
-            
+
             <div className="p-3 my-4 w-full">
                 {/* <div className="flex flex-col w-full gap-4 items-center"> */}
                 {/* {results.length === 0 && <div>No results</div>} */}
                 {results.length > 0 &&
-                        <Accordion type="single" collapsible defaultValue="item-1" >
+                    <Accordion type="single" collapsible defaultValue="item-1" >
                         <AccordionItem value="item-1" >
                             <AccordionTrigger>Results!</AccordionTrigger>
                             <AccordionContent>
-                            <div className="flex flex-col  gap-4 items-center w-full">
-                            {results.map((result) => (
-                                <MediaSearchCard key={result.id} media={result} />
-                            ))}
-                        </div>
-    
-                             </AccordionContent>
-                         </AccordionItem>
-                     </Accordion>
+                                <div className="flex flex-col  gap-4 items-center w-full">
 
-                        
+                                    {results.map((result) => (
+                                        <MediaSearchCard key={result.id} media={result} />
+                                    ))}
+                                </div>
+
+                            </AccordionContent>
+                        </AccordionItem>
+                    </Accordion>
+
+
                 }
+                <Carousel >
+                    <CarouselContent >
+
+                        {results.map((result) => (
+                            <CarouselItem className="basis-1/4  hover:z-0 pl-4 -ml-4" key={result.id}>
+                                <MediaSearchCard key={result.id} media={result} />
+                            </CarouselItem>
+                        ))}
+                    </CarouselContent>
+                    <CarouselPrevious />
+                    <CarouselNext />
+                </Carousel>
                 {/* </div> */}
             </div>
 
