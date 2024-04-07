@@ -2,12 +2,12 @@
 import { account, database } from "@/lib/appwrite";
 import { WatchlistDocument } from "@/types/appwrite";
 import { Models, OAuthProvider } from "appwrite";
-import { createContext, useContext, useEffect, useState } from "react";
+import { SetStateAction, createContext, useContext, useEffect, useState, Dispatch } from "react";
 
 export interface UserState {
     user: UserType | null;
     loading: boolean;
-    setUser: (user: UserType | null) => Promise<void>;
+    setUser: Dispatch<SetStateAction<UserType | null>>
     login: (email: string, password: string) => Promise<void>;
     logout: () => Promise<void>;
     signup: (email: string, password: string, name: string) => Promise<void>;
@@ -21,15 +21,15 @@ export type UserType = {
     admin?: boolean;
     status: boolean;
     labels?: string[]
+    watchlist?: Models.DocumentList<WatchlistDocument> | Models.DocumentList<Models.Document>
     image?: string;
     debug?: any;
-    watchlist?: Models.DocumentList<WatchlistDocument>;
 }
 
 const defaultState: UserState = {
     user: null,
     loading: true,
-    setUser: () => Promise.resolve(),
+    setUser: () => Promise.resolve(), 
     login: () => Promise.resolve(),
     logout: () => Promise.resolve(),
     signup: () => Promise.resolve(),
@@ -43,22 +43,19 @@ const UserContext = createContext<UserState>(defaultState)
 
 export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
-    const [user, setUserInternal] = useState<null | UserType>(null);
+    const [userState, setUserState] = useState<null | UserType>(null);
     const [loading, setLoading] = useState(true)
-    // const [watchlist, setWatchlist] = useState<Models.DocumentList<WatchlistDocument> | undefined>(undefined)
-    const setUser = async (user: UserType | null) => {
-        await setUserInternal(user)
-    }
+
     useEffect(() => {
         const checkUser = async () => {
             try {
-                const watchlist: Models.DocumentList<WatchlistDocument> = await database.listDocuments('watchlist', 'watchlist').then((data) => {
+                const { $id, email, name, prefs, status, labels, ...rest } = await account.get()
+                const watchlist: Models.DocumentList<WatchlistDocument> | Models.DocumentList<Models.Document> = await database.listDocuments('watchlist', 'watchlist').then((data) => {
 
                     return data
                 })
-                const { $id, email, name, prefs, status, labels, ...rest } = await account.get()
-                console.log(watchlist)
-                setUserInternal({
+               
+                setUserState({
                     id: $id,
                     admin: labels?.includes('admin') ? true : false,
                     email,
@@ -71,7 +68,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
                 });
             } catch (error) {
                 console.error(`Check User Error: ${error}`)
-                setUserInternal(null)
+                setUserState(null)
             } finally {
                 setLoading(false)
             }
@@ -83,7 +80,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
         try {
             await account.createEmailPasswordSession(email, password);
             const { $id, name, prefs, status, ...rest } = await account.get()
-            setUserInternal({
+            setUserState({
                 id: $id,
                 email,
                 name,
@@ -113,7 +110,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
             console.log(`Login With Google debug: ${debug}`)
 
-            setUserInternal({
+            setUserState({
                 id: $id,
                 email,
                 name,
@@ -130,7 +127,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     const logout = async () => {
         try {
             await account.deleteSession('current');
-            setUserInternal(null)
+            setUserState(null)
         } catch (error) {
             console.error(`Logout Error: ${error}`)
         }
@@ -146,7 +143,14 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     return (
-        <UserContext.Provider value={{ user, loading, login, logout, signup, loginWithGoogle }}>
+        <UserContext.Provider value={{ 
+            user: userState, 
+            loading:loading, 
+            login: login, 
+            logout: logout, 
+            signup: signup, 
+            setUser: setUserState,
+            loginWithGoogle: loginWithGoogle } }>
             {children}
         </UserContext.Provider>
     )

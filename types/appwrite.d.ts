@@ -60,7 +60,7 @@ export type WatchlistDocumentCreate = {
     imdb_id?: string,
     tmdb_type: string,
     release_date?: string,
-    poster_url: string,
+    poster_url?: string | null,
     description: string,
     genre_ids: number[],
     notes?: string[],   
