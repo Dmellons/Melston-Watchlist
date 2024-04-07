@@ -61,7 +61,7 @@ const MediaSearchCard = ({
     }
 
     return (
-        <Card className="flex flex-col sm:flex-row justify-between items-center w-[400px] sm:h-[600px] m-2 p-2 hover:z-0 hover:border hover:border-primary/50 sm:hover:scale-100  ">
+        <Card className="flex flex-col sm:flex-row justify-between items-center w-full sm:w-[400px] sm:h-[600px] p-2 hover:z-0 hover:border hover:border-primary/50 sm:hover:scale-100  ">
             <div className="hover:scale-105 hover:ease-in-out hover:duration-300 w-full">
 
             <CardHeader className="flex flex-col  justify-between items-center sm:flex-row sm:justify-center sm:gap-4 sm:min-w-48">
