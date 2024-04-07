@@ -14,7 +14,7 @@ import { TMDBMultiSearchResult, TMDBTelevisionSearchResult } from "@/types/tmdbA
 import { Separator } from "./ui/separator"
 import ProvidersBlock from "@/components/ProvidersBlock"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion"
-import { ScrollArea } from "./ui/scroll-area"
+import { ScrollArea, ScrollBar } from "./ui/scroll-area"
 import { Skeleton } from "./ui/skeleton"
 
 
@@ -61,7 +61,7 @@ const MediaSearchCard = ({
     }
 
     return (
-        <Card className="flex flex-col sm:flex-row justify-between items-center w-full sm:w-[400px] sm:h-[600px] p-2 hover:z-0 hover:border hover:border-primary/50 sm:hover:scale-100  ">
+        <Card className="flex flex-col sm:flex-row justify-between items-center w-full sm:w-[400px] p-2 hover:z-0 hover:border hover:border-primary/50 sm:hover:scale-100  ">
             <div className="hover:scale-105 hover:ease-in-out hover:duration-300 w-full">
 
             <CardHeader className="flex flex-col  justify-between items-center sm:flex-row sm:justify-center sm:gap-4 sm:min-w-48">
@@ -103,9 +103,10 @@ const MediaSearchCard = ({
                     <AccordionItem value="item-1 ">
                         <AccordionTrigger className="">Description</AccordionTrigger>
                         <AccordionContent>
-                            <ScrollArea className="max-h-36 ">
+                            <ScrollArea className="max-h-72 w-full h-full  p-2 rounded-md border">
 
                                 {data.description}
+                                <ScrollBar />
                             </ScrollArea>
                         </AccordionContent>
                     </AccordionItem>
