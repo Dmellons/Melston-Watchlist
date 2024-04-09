@@ -44,19 +44,32 @@ const SearchMovie = ({
                 placeholder="Movie, TV Show, Person..."
                 value={query}
                 className="bg-white/90  text-black w-80"
-                onChange={(e) => setQuery(e.target.value)}
+                onChange={(e) => {
+                    setQuery(e.target.value)
+                    movieList()
+                }}
                 onKeyDown={(e) => {
                     if (e.key === "Enter") {
                         movieList()
                     }
                 }}
             />
-            <Button
-                className="my-5 w-24 align-middle"
-                onClick={() => movieList()}
-            >
-                Search
-            </Button>
+            <div className="flex gap-2">
+
+                <Button
+                    className="my-5 w-24 align-middle"
+                    onClick={() => movieList()}
+                >
+                    Search
+                </Button>
+                <Button
+                    className="my-5 w-24 align-middle"
+                    onClick={() => setResults([])}
+                >
+                    Clear
+                </Button>
+            </div>
+
 
             <div className="p-3 my-4 w-full">
                 {/* <div className="flex flex-col w-full gap-4 items-center"> */}
