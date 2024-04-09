@@ -61,10 +61,10 @@ const MediaSearchCard = ({
     }
 
     return (
-        <Card className="flex flex-col sm:flex-row justify-between items-center w-full sm:w-[400px] p-2 hover:z-0 hover:border hover:border-primary/50 sm:hover:scale-100  ">
-            <div className=" hover:ease-in-out hover:duration-300 w-full">
+        <Card className="flex flex-col sm:flex-row justify-between items-center w-full sm:w-[400px] p-2 hover:z-0 hover:border hover:border-primary/50 sm:hover:scale-100 hover:shadow-xs hover:shadow-primary ">
 
             <CardHeader className="flex flex-col  justify-between items-center sm:flex-row sm:justify-center sm:gap-4 sm:min-w-48">
+            <div className=" hover:ease-in-out hover:duration-300 w-full">
                 <div className="flex flex-col items-center gap-1">
                     {
                         media.poster_path ? <Image
@@ -89,6 +89,7 @@ const MediaSearchCard = ({
                     <CardTitle className="text-center text-2xl block sm:hidden">{data.title}</CardTitle>
                     <CardDescription className="font-subtitle block sm:hidden">Year: {data.year.substring(0, 4)}</CardDescription>
                     <CardDescription className="font-subtitle block sm:hidden ">Type: {`${data.tmdb_type.charAt(0).toUpperCase()}${data.content_type.slice(1)}`}</CardDescription>
+                </div>
                 </div>
             </CardHeader>
             <Separator className="block  sm:hidden" />
@@ -123,7 +124,6 @@ const MediaSearchCard = ({
                     
                     />
             </CardContent>
-                    </div>
         </Card>
     )
 }
