@@ -27,10 +27,10 @@ const SearchMovie = ({
 
     useEffect(() => {
         setLoading(true)
-        console.log(loading)
+        
         movieList()
 
-        console.log(loading)
+        
     }, [query])
     const movieList = async () => {
         setResults([])
@@ -92,38 +92,40 @@ const SearchMovie = ({
             </div>
 
 
+              
+    {
+        results.length > 0 &&
             <div className="p-3 my-4 w-full">
-                {loading ? (
-                    <div className="flex flex-row p-3 gap-4 items-center w-full">
-                    <SearchSkeleton />
-                    </div>
-                ) : (
-
-                    results.length > 0 &&
                     <Accordion type="single" collapsible defaultValue="item-1" className="w-full sm:min-w-96" >
                         <AccordionItem value="item-1" >
                             <AccordionTrigger>Results!</AccordionTrigger>
                             <AccordionContent>
-                            <div className="grid grid-cols-2 gap-4 items-center place-items-center w-xl">
+                            <div className="flex flex-col  lg:flex-row gap-4 items-center place-items-center lg:w-full m-auto">
+                            {loading ? (
+                   
+                    <SearchSkeleton />
 
-                                    {results.map((result) => (
+                ) : (
+                                    results.slice(0,10).map((result) => (
                                         <MediaSearchCard key={result.id} media={result} />
-                                    ))}
+                                    ))
+                )}
                                 </div>
 
                             </AccordionContent>
                         </AccordionItem>
                     </Accordion>
 
-                )
+                </div>
+                // )
 
                 }
-                {/*
-<Carousel >
+                
+<Carousel className="w-full lg:max-w-screen-xl " >
 <CarouselContent >
 
                         {results.map((result) => (
-                            <CarouselItem className="basis-1/4  hover:z-0 pl-4 -ml-4" key={result.id}>
+                            <CarouselItem className=" md:basis-1/2 lg:basis-1/3   hover:z-0 lg:-ml-4  " key={result.id}>
                                 <MediaSearchCard key={result.id} media={result} />
                             </CarouselItem>
                         ))}
@@ -131,8 +133,7 @@ const SearchMovie = ({
                     <CarouselPrevious />
                     <CarouselNext />
                 </Carousel>
-                 </div> */}
-            </div>
+                 
 
         </div>
     )
