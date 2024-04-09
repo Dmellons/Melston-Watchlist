@@ -20,17 +20,17 @@ const SearchMovie = ({
     const [results, setResults] = useState<TMDBMultiSearchResult[]>([])
 
     const SearchSkeleton = () => {
-        const skeletonArray = [1, 2, 3,4,5 ]
+        const skeletonArray = [1, 2, 3, 4, 5]
 
-        return skeletonArray.map((item) => <SkeletonMediaSearchCard key={item}/>)
+        return skeletonArray.map((item) => <SkeletonMediaSearchCard key={item} />)
     }
 
     useEffect(() => {
         setLoading(true)
-        
+
         movieList()
 
-        
+
     }, [query])
     const movieList = async () => {
         setResults([])
@@ -92,24 +92,24 @@ const SearchMovie = ({
             </div>
 
 
-              
-    {
-        results.length > 0 &&
-            <div className="p-3 my-4 w-full">
+
+            {/* {
+                results.length > 0 &&
+                <div className="p-3 my-4 w-full">
                     <Accordion type="single" collapsible defaultValue="item-1" className="w-full sm:min-w-96" >
                         <AccordionItem value="item-1" >
                             <AccordionTrigger>Results!</AccordionTrigger>
                             <AccordionContent>
-                            <div className="flex flex-col  lg:flex-row gap-4 items-center place-items-center lg:w-full m-auto">
-                            {loading ? (
-                   
-                    <SearchSkeleton />
+                                <div className="flex flex-col  lg:flex-row gap-4 items-center place-items-center lg:w-full m-auto">
+                                    {loading ? (
 
-                ) : (
-                                    results.slice(0,10).map((result) => (
-                                        <MediaSearchCard key={result.id} media={result} />
-                                    ))
-                )}
+                                        <SearchSkeleton />
+
+                                    ) : (
+                                        results.slice(0, 10).map((result) => (
+                                            <MediaSearchCard key={result.id} media={result} />
+                                        ))
+                                    )}
                                 </div>
 
                             </AccordionContent>
@@ -119,21 +119,21 @@ const SearchMovie = ({
                 </div>
                 // )
 
-                }
-                
-<Carousel className="w-full lg:max-w-screen-xl " >
-<CarouselContent >
+            } */}
 
-                        {results.map((result) => (
-                            <CarouselItem className=" md:basis-1/2 lg:basis-1/3   hover:z-0 lg:-ml-4  " key={result.id}>
-                                <MediaSearchCard key={result.id} media={result} />
-                            </CarouselItem>
-                        ))}
-                    </CarouselContent>
-                    <CarouselPrevious />
-                    <CarouselNext />
-                </Carousel>
-                 
+            <Carousel className="w-full lg:max-w-screen-xl " >
+                <CarouselContent >
+
+                    {results.map((result) => (
+                        <CarouselItem className=" md:basis-1/2 lg:basis-1/3   hover:z-0 lg:-ml-4  " key={result.id}>
+                            <MediaSearchCard key={result.id} media={result} />
+                        </CarouselItem>
+                    ))}
+                </CarouselContent>
+                <CarouselPrevious />
+                <CarouselNext />
+            </Carousel>
+
 
         </div>
     )
