@@ -48,13 +48,13 @@ const ProvidersBlock = (
   }
   return (
     <div className='w-full m-auto'>
-      <h3 className='text-xl font-bold text-center mb-2'>Streaming on</h3>
+      <h3 className='text-sm font-bold text-center mb-2 '>Streaming on</h3>
       <div className='flex gap-4 justify-center flex-wrap'>
         {loading ? (
           <div className='text-center'>Loading...</div>
         ) : ( 
           data?.results[country]?.flatrate?.map((provider: StreamingInfo, key: number) => (
-            <div key={key} className='flex items-center justify-center'>
+            <div key={key} className='flex items-center justify-center z-10'>
               <Image
                 src={`https://image.tmdb.org/t/p/w500${provider.logo_path}`}
                 alt={provider.provider_name}
@@ -62,19 +62,13 @@ const ProvidersBlock = (
                 height={50}
                 className='rounded-lg '
               />
-              {/* <Avatar className='rounded'>
-                <AvatarImage src={`https://image.tmdb.org/t/p/w500${provider.logo_path}`} />
-                <AvatarFallback>
-                  {provider.provider_name}
-                </AvatarFallback>              
-              </Avatar> */}
             </div>
           ))
 
         )
         }
       </div>
-      <div className='font-extralight text-[10px] text-center text-muted '>
+      <div className='font-extralight text-[10px] text-center text-muted z-10 '>
         Streaming results provided by <a className='hover:cursor-text' href="https://www.justwatch.com/">JustWatch</a>
       </div>
     </div>
