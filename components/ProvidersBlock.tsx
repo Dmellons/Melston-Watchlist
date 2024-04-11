@@ -41,14 +41,16 @@ const ProvidersBlock = (
   }, []);
   if (!data) {
     return null;
-  } else if (data.results[country] === undefined) {
+  } 
+  else if (data?.results[country] === undefined) {
     return null;
-  } else if (!data.results[country].flatrate) {
+  }
+   else if (!data.results[country]?.flatrate) {
     return null;
   }
   return (
     <div className='w-full m-auto'>
-      <h3 className='text-sm font-bold text-center mb-2 '>Streaming on</h3>
+      <h3 className='text-sm text-muted-foreground font-bold text-center mb-2 '>Streaming on</h3>
       <div className='flex gap-4 justify-center flex-wrap'>
         {loading ? (
           <div className='text-center'>Loading...</div>
