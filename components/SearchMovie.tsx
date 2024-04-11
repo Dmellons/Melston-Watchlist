@@ -19,19 +19,32 @@ const SearchMovie = ({
     const [loading, setLoading] = useState(true)
     const [query, setQuery] = useState<string>("")
     const [results, setResults] = useState<TMDBMultiSearchResult[]>([])
+    // const [isPhoneScreen, setIsPhoneScreen] = useState(false);
 
-    const SearchSkeleton = () => {
-        const skeletonArray = [1, 2, 3, 4, 5]
+    // useEffect(() => {
+    //     const mediaQuery = window.matchMedia('(max-width: 768px)'); // Example media query for phone size
 
-        return skeletonArray.map((item) => <SkeletonMediaSearchCard key={item} />)
-    }
+    //     // Check if the media query matches initially
+    //     setIsPhoneScreen(mediaQuery.matches);
+
+    //     // Add event listener to update state when screen size changes
+    //     const handleScreenSizeChange = () => {
+    //         setIsPhoneScreen(mediaQuery.matches);
+    //     };
+    //     mediaQuery.addListener(handleScreenSizeChange);
+    //     console.log({isPhoneScreen})
+    //     // Clean up the event listener
+    //     return () => {
+    //         mediaQuery.removeListener(handleScreenSizeChange);
+    //     };
+    // }, [])
 
     useEffect(() => {
         setLoading(true)
-
+        
         movieList()
-
-
+        
+        
     }, [query])
     const movieList = async () => {
         setResults([])
@@ -124,7 +137,7 @@ const SearchMovie = ({
 
             <Carousel className="w-full lg:max-w-screen-xl " >
                 <CarouselContent >
-                    {loading ? (
+                    {(!results || results.length === 0) && loading ? (
                         <>
                             {
 
@@ -136,7 +149,7 @@ const SearchMovie = ({
                             }
 
                         </>
-                    ) : (
+                    ) : (results &&
                         results.map((result) => (
                             <CarouselItem className=" md:basis-1/2 lg:basis-1/3 align-middle   hover:z-0 lg:-ml-4  " key={result.id}>
                                 <MediaSearchCard key={result.id} media={result} />
