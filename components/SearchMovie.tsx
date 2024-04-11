@@ -8,6 +8,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "./ui/carousel"
 import { Skeleton } from "./ui/skeleton"
 import SkeletonMediaSearchCard from "./skeletons/SkeletonMediaSearchCard"
+import NewSearchCard from "./NewSearchCard"
 
 
 const SearchMovie = ({
@@ -123,12 +124,25 @@ const SearchMovie = ({
 
             <Carousel className="w-full lg:max-w-screen-xl " >
                 <CarouselContent >
+                    {loading ? (
+                        <>
+                            {
 
-                    {results.map((result) => (
-                        <CarouselItem className=" md:basis-1/2 lg:basis-1/3   hover:z-0 lg:-ml-4  " key={result.id}>
-                            <MediaSearchCard key={result.id} media={result} />
-                        </CarouselItem>
-                    ))}
+                                [1, 2, 3, 4].map((item) => (
+                                    <CarouselItem className=" md:basis-1/2 lg:basis-1/3 align-middle   hover:z-0 lg:-ml-4  " key={item}>
+                                        <SkeletonMediaSearchCard key={item} />
+                                    </CarouselItem>
+                                ))
+                            }
+
+                        </>
+                    ) : (
+                        results.map((result) => (
+                            <CarouselItem className=" md:basis-1/2 lg:basis-1/3 align-middle   hover:z-0 lg:-ml-4  " key={result.id}>
+                                <MediaSearchCard key={result.id} media={result} />
+                                {/* <NewSearchCard key={result.id} media={result} /> */}
+                            </CarouselItem>
+                        )))}
                 </CarouselContent>
                 <CarouselPrevious />
                 <CarouselNext />

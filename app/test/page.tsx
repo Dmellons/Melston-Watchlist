@@ -25,8 +25,8 @@ function TestPage() {
     }
 
     return (
-        <div className="flex flex-col items-center w-full h-full justify-center">
-            <NewSearchCard />
+        <div className="flex flex-col items-center w-full h- justify-center">
+            <NewSearchCard media={movie}/>
         </div>
     )
 }

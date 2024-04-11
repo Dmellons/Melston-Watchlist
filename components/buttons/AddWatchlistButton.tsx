@@ -7,7 +7,12 @@ import { TMDBMultiSearchResult } from "@/types/tmdbApi"
 
 import { toast } from "sonner"
 
-const AddWatchlistButton = ({ media, width = "w-full" }: { media: TMDBMultiSearchResult, width: string }) => {
+const AddWatchlistButton = ({ 
+    media, 
+    width = "w-full" 
+}: { 
+    media: TMDBMultiSearchResult, 
+    width?: string }) => {
     const { user, setUser } = useUser()
    
     if (!user) return null
@@ -75,7 +80,7 @@ const AddWatchlistButton = ({ media, width = "w-full" }: { media: TMDBMultiSearc
 
         <Button
             variant="default"
-            className={`min-w-16 ${width} text-primary-foreground hover:bg-primary/70`}
+            className={`${width} min-w-16 text-primary-foreground hover:bg-primary/70`}
             onClick={handleAddWatchlist}
         >
             +Add
