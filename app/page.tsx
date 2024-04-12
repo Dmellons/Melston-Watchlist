@@ -5,14 +5,13 @@ import { useUser } from "@/hooks/User";
 import Image from "next/image";
 
 export default function Home() {
-  const { user } = useUser()
+  const { user, loginWithGoogle } = useUser()
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-2 sm:p-18">
-      {/* {user && */}
-        <SearchMovie resultsLength={100} />
-      {/* } */}
+    <main className="flex min-h-screen flex-col items-center  p-2 sm:p-18">
+      <SearchMovie resultsLength={100} />
+      
       {!user &&
-        <p>Please sign in</p>
+        <Button variant={"link"} onClick={() => loginWithGoogle()}>Please sign in</Button>
       }
     </main>  
   )
