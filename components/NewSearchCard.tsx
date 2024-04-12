@@ -50,16 +50,16 @@ const NewSearchCard = ({
             description: media.overview ? media.overview : "No description available"
         }
     }
-    const imageUrl = `https://image.tmdb.org/t/p/w500/${data.backdrop_path}`
+    const imageUrl = `https://image.tmdb.org/t/p/w500/${data.poster_path}`
     return (
         <Card className="h-72 w-80  rounded m-2 border-none group hover:border hover:border-primary hover:ease-in-out hover:duration-300">
-            <CardHeader>
+            <CardHeader className="h-48 w-36 m-auto">
 
                 <Image
                     src={imageUrl}
                     alt={data.title}
-                    className="rounded-lg group-hover:border group-hover:border-primary group-hover:scale-105 group-hover:ease-in-out group-hover:duration-300 w-full h-full"
-                    width={100}
+                    className="rounded-lg contain group-hover:border-2 group-hover:border-primary group-hover:scale-105 group-hover:ease-in-out group-hover:duration-300 w-full h-full"
+                    width={50}
                     height={50}
                     />
                     
@@ -73,7 +73,7 @@ const NewSearchCard = ({
                 <AddWatchlistButton media={media} width="w-1/6" />
 
             </CardContent>
-            <CardFooter className="flex justify-between align-middle">
+            <CardFooter className="flex justify-between align-middle -mt-6">
 
 
                 <ProvidersBlock tmdbId={data.tmdb_id} tmdbType={data.tmdb_type} />

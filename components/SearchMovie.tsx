@@ -12,9 +12,12 @@ import NewSearchCard from "@/components/NewSearchCard"
 
 
 const SearchMovie = ({
+    resultsLength=10
     // query
 }: {
+    resultsLength?: number
         // query:string
+        
     }) => {
     const [loading, setLoading] = useState(true)
     const [query, setQuery] = useState<string>("")
@@ -121,7 +124,7 @@ const SearchMovie = ({
                                     ) : (
                                    
 
-                                        results.slice(0, 10).map((result) => (
+                                        results.slice(0, resultsLength).map((result) => (
                                             <NewSearchCard key={result.id} media={result} />
                                         ))
                                     )}
