@@ -38,7 +38,7 @@ const WatchlistMediaCard = ({
 
 }: {
     media: WatchlistDocument;
-    setWatchlist: Dispatch<SetStateAction<Models.DocumentList<WatchlistDocument>>>
+    setWatchlist?: Dispatch<SetStateAction<Models.DocumentList<WatchlistDocument>>> | undefined
    
 }) => {
 
@@ -122,6 +122,7 @@ const WatchlistMediaCard = ({
                 <DeleteButton
                     title={data.title}
                     document_id={media.$id}
+                    // @ts-ignore
                     setWatchlist={setWatchlist}
                 />
 
