@@ -32,7 +32,7 @@ function WatchlistPage() {
                 user ?
                     (watchlist && watchlist?.total > 0 ? (
                         <div className="flex flex-col w-full gap-4 p-10  sm:p-18  ">
-                            <SearchMovie />
+                            <SearchMovie resultsLength={5}/>
                             <Accordion type="single" className="w-full" collapsible defaultValue="item-1">
                                 <AccordionItem value="item-1">
                                     <AccordionTrigger className="w-full">Watchlist</AccordionTrigger>
@@ -43,7 +43,8 @@ function WatchlistPage() {
                                                     <WatchlistMediaCard 
                                                         key={document.$id} 
                                                         media={document} 
-                                                        setWatchlist={setWatchlist}/>
+                                                        setWatchlist={setWatchlist}
+                                                    />
                                                 ))
                                             }
                                         </div>
