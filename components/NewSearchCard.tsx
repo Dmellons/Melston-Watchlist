@@ -1,12 +1,9 @@
-'use client'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import Image from "next/image";
-import Link from "next/link"
-import ProvidersBlock from "@/components/ProvidersBlock";
-import { TMDBMultiSearchResult } from "@/types/tmdbApi";
-import { AspectRatio } from "@radix-ui/react-aspect-ratio";
-import AddWatchlist from "./buttons/AddWatchlist";
-import AddWatchlistButton from "./buttons/AddWatchlistButton";
+import { TMDBMultiSearchResult } from "@/types/tmdbApi"
+import Image from "next/image"
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
+import ProvidersBlock from "./ProvidersBlock"
+import AddWatchlistButton from "./buttons/AddWatchlistButton"
+import { AspectRatio } from "@radix-ui/react-aspect-ratio"
 
 type CardData = {
     title: string,
@@ -14,17 +11,18 @@ type CardData = {
     tmdb_id: number,
     tmdb_type: string,
     year: string,
-    image_url: string,
+    poster_path: string,
+    backdrop_path: string,
     description: string,
 
 }
 let data: CardData
+
 const NewSearchCard = ({
     media
 }: {
     media: TMDBMultiSearchResult
 }) => {
-    console.log({ media })
 
     if (media.media_type === 'tv') {
         data = {
@@ -33,7 +31,8 @@ const NewSearchCard = ({
             tmdb_id: media.id,
             tmdb_type: media.media_type,
             year: media.first_air_date,
-            image_url: media.poster_path,
+            poster_path: media.poster_path,
+            backdrop_path: media.backdrop_path,
             description: media.overview ? media.overview : "No description available"
         }
 
@@ -46,66 +45,41 @@ const NewSearchCard = ({
             tmdb_id: media.id,
             tmdb_type: media.media_type,
             year: media.release_date,
-            image_url: media.poster_path,
+            poster_path: media.poster_path,
+            backdrop_path: media.backdrop_path,
             description: media.overview ? media.overview : "No description available"
         }
     }
-    const imageUrl = 'https://image.tmdb.org/t/p/w500/' + data.image_url
-    console.log(imageUrl)
-
+    const imageUrl = `https://image.tmdb.org/t/p/w500/${data.backdrop_path}`
     return (
+        <Card className="h-72 w-80  rounded m-2 border-none group hover:border hover:border-primary hover:ease-in-out hover:duration-300">
+            <CardHeader>
 
-        <>
+                <Image
+                    src={imageUrl}
+                    alt={data.title}
+                    className="rounded-lg group-hover:border group-hover:border-primary group-hover:scale-105 group-hover:ease-in-out group-hover:duration-300 w-full h-full"
+                    width={100}
+                    height={50}
+                    />
+                    
+            </CardHeader>
+            <CardContent className="flex align-middle -mt-4 justify-between">
+                <div className="flex flex-col top-0 h-8 justify-between mr-2 ">
 
-            <Card
-                key={data.title}
-                className="group w-64 rounded-xl bg-black min-h-[200px] hover:transition-all h-96 hover:ease-in-out hover:scale-105 hover:duration-500 overflow-hidden border border-primary z-1 relative"
+                    <h2 className="text-sm font-black text-foreground/80">{data.title}</h2>
+                    <p className="text-xs font-extralight">{data.year.split('-')[0]}</p>
+                </div>
+                <AddWatchlistButton media={media} width="w-1/6" />
 
-            >
-                <CardHeader
-                    className="h-32 bg-gradient-to-b from-black  z-10 text-center"
-                >
-                    <CardTitle
-                        className="text-white z-10"
-                    >
-                        {data.title}
-                    </CardTitle>
-                    <CardDescription className=" text-center z-10 ">
-                        {data.year}
-                        <p>{data.description}</p>
-                    </CardDescription>
-
-                </CardHeader>
-                <CardContent className="z-20">
-                </CardContent>
-                <CardFooter className="z-20 absolute bottom-0">
-                </CardFooter>
-               
-                    <Image
-                        src={imageUrl}
-                        alt={data.title}
-                        width={200}
-                        height={300}
-                        // sizes="100vw"
-                        style={{
-                            width: '10rem%',
-                            height: 'auto',
-                            objectFit: 'contain',    
-                        }}
-                        
-                        className="w-full h-auto z-1 absolute top-0 left-0 opacity-40 hover:opacity-5 object-cover hover:scale-105 hover:ease-in-out hover:duration-500"
-                        />
-                  
+            </CardContent>
+            <CardFooter className="flex justify-between align-middle">
 
 
-            </Card>
-            <div className="p-4 absolute top-64 z-0">
+                <ProvidersBlock tmdbId={data.tmdb_id} tmdbType={data.tmdb_type} />
 
-            <ProvidersBlock tmdbId={19995} tmdbType="movie" />
-            <AddWatchlistButton media={media}  />
-            </div>
-        </>
-
+            </CardFooter>
+        </Card>
     )
 }
 
