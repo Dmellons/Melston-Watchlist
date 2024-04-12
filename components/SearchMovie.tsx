@@ -8,7 +8,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "./ui/carousel"
 import { Skeleton } from "./ui/skeleton"
 import SkeletonMediaSearchCard from "./skeletons/SkeletonMediaSearchCard"
-import NewSearchCard from "./NewSearchCard"
+import NewSearchCard from "@/components/NewSearchCard"
 
 
 const SearchMovie = ({
@@ -107,59 +107,34 @@ const SearchMovie = ({
 
 
 
-            {/* {
+            {
                 results.length > 0 &&
+                     
+                                                                               
                 <div className="p-3 my-4 w-full">
-                    <Accordion type="single" collapsible defaultValue="item-1" className="w-full sm:min-w-96" >
-                        <AccordionItem value="item-1" >
-                            <AccordionTrigger>Results!</AccordionTrigger>
-                            <AccordionContent>
-                                <div className="flex flex-col  lg:flex-row gap-4 items-center place-items-center lg:w-full m-auto">
+                   
+                                <div className="flex flex-col lg:flex-row lg:flex-wrap justify-center gap-4 items-center place-items-center lg:w-full m-auto">
                                     {loading ? (
 
-                                        <SearchSkeleton />
+                                        <SkeletonMediaSearchCard />
 
                                     ) : (
+                                   
+
                                         results.slice(0, 10).map((result) => (
-                                            <MediaSearchCard key={result.id} media={result} />
+                                            <NewSearchCard key={result.id} media={result} />
                                         ))
                                     )}
                                 </div>
 
-                            </AccordionContent>
-                        </AccordionItem>
-                    </Accordion>
+    
 
                 </div>
                 // )
 
-            } */}
+            }
 
-            <Carousel className="w-full lg:max-w-screen-xl " >
-                <CarouselContent >
-                    {(!results || results.length === 0) && loading ? (
-                        <>
-                            {
-
-                                [1, 2, 3, 4].map((item) => (
-                                    <CarouselItem className=" md:basis-1/2 lg:basis-1/3 align-middle   hover:z-0 lg:-ml-4  " key={item}>
-                                        <SkeletonMediaSearchCard key={item} />
-                                    </CarouselItem>
-                                ))
-                            }
-
-                        </>
-                    ) : (results &&
-                        results.map((result) => (
-                            <CarouselItem className=" md:basis-1/2 lg:basis-1/3 align-middle   hover:z-0 lg:-ml-4  " key={result.id}>
-                                <MediaSearchCard key={result.id} media={result} />
-                                {/* <NewSearchCard key={result.id} media={result} /> */}
-                            </CarouselItem>
-                        )))}
-                </CarouselContent>
-                <CarouselPrevious />
-                <CarouselNext />
-            </Carousel>
+           
 
 
         </div>
