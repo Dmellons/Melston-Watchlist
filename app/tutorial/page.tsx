@@ -7,8 +7,7 @@ import { FormEventHandler, useState } from 'react'
 
 
 export default function TutorialPage() {
-    const user = useUser()
-    // console.log(user)
+    const { user } =  useUser()
     return (
         <div className='flex flex-col items-center justify-center '>
             <h1 className='text-4xl font-bold text-center mb-10'>Tutorial</h1>
@@ -95,6 +94,7 @@ const Signup = () => {
 
     return (
         <> 
+        
             <h2 className="text-2xl font-bold text-center mb-5">Signup</h2>
         <form onSubmit={handleSignup} className="w-60">
             <Input

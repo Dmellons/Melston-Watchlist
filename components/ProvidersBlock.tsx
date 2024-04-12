@@ -53,7 +53,7 @@ const ProvidersBlock = (
     <div className='w-full m-auto '>
       {/* <h3 className='text-sm text-muted-foreground font-bold text-center mb-2 '>Streaming on</h3> */}
         <div className='text-center text-xs mb-1  font-light'>Streaming on</div>
-      <div className='flex gap-4 justify-center max-w-64 '>
+      <div className='flex gap-4 justify-center '>
         {loading ? (
           <div className='text-center'>Loading...</div>
         ) : ( 
