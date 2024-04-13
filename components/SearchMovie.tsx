@@ -22,34 +22,17 @@ const SearchMovie = ({
     const [loading, setLoading] = useState(true)
     const [query, setQuery] = useState<string>("")
     const [results, setResults] = useState<TMDBMultiSearchResult[]>([])
-    // const [isPhoneScreen, setIsPhoneScreen] = useState(false);
 
-    // useEffect(() => {
-    //     const mediaQuery = window.matchMedia('(max-width: 768px)'); // Example media query for phone size
-
-    //     // Check if the media query matches initially
-    //     setIsPhoneScreen(mediaQuery.matches);
-
-    //     // Add event listener to update state when screen size changes
-    //     const handleScreenSizeChange = () => {
-    //         setIsPhoneScreen(mediaQuery.matches);
-    //     };
-    //     mediaQuery.addListener(handleScreenSizeChange);
-    //     console.log({isPhoneScreen})
-    //     // Clean up the event listener
-    //     return () => {
-    //         mediaQuery.removeListener(handleScreenSizeChange);
-    //     };
-    // }, [])
 
     // useEffect(() => {
     //     setLoading(true)
-        
+     
     //     movieList()
         
         
     // }, [query])
     const movieList = async () => {
+        setLoading(true)
         setResults([])
 
         const options = {
