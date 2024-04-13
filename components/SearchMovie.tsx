@@ -42,13 +42,13 @@ const SearchMovie = ({
     //     };
     // }, [])
 
-    useEffect(() => {
-        setLoading(true)
+    // useEffect(() => {
+    //     setLoading(true)
         
-        movieList()
+    //     movieList()
         
         
-    }, [query])
+    // }, [query])
     const movieList = async () => {
         setResults([])
 
