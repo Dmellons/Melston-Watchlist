@@ -20,6 +20,7 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { Dispatch, SetStateAction, useState } from "react"
 import ProvidersBlock from "@/components/ProvidersBlock"
 import { Models } from "@/lib/appwrite"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 
 type CardData = {
     title: string,
@@ -73,23 +74,46 @@ const WatchlistMediaCard = ({
         md:max-h-96 
         
         ">
-            <CardHeader className="flex flex-col w-full justify-between items-center sm:flex-row sm:justify-center sm:gap-4 sm:min-w-48">
+            <CardHeader className="group flex flex-col w-full justify-between items-center sm:flex-row sm:justify-center sm:gap-4 sm:min-w-48">
                 <div className="flex flex-col items-center gap-1">
                     {
-                        data.poster_url ? <Image
-                            src={data.poster_url}
-                            width={175}
-                            height={200}
-                            alt={`${data.title} poster`}
-                            className="rounded-md"
-                            objectFit="cover"
-                            placeholder="empty"
-                            sizes="100%"
-                        /> : (
-                            <div className="w-24 h-32 flex flex-col justify-center items-center bg-background/50 border border-black-1 rounded-md text-primary font-bold " >
-                                Poster<br />Missing
-                            </div>
-                        )
+                        <Dialog>
+                        <DialogTrigger>
+                        <Image
+                    src={data.poster_url}
+                    alt={data.title}
+                    className="rounded-lg contain  group-hover:border-2 group-hover:border-primary  group-hover:ease-in-out group-hover:duration-100 w-full h-full"
+                    width={175}
+                    height={200}
+                />
+    
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogHeader>
+                                    {/* <Image
+                                        src={`https://image.tmdb.org/t/p/w500/${data.backdrop_path}`}
+                                        alt={data.title}
+                                        className="rounded-lg w-full my-4"
+                                        width={200}
+                                        height={50} /> */}
+                                <DialogTitle className="flex justify-between mt-4">
+    
+                                        {data.title}
+                                    
+                                    <div className="text-card-foreground text-sm pl-2">
+                                        {data.year?.split('-')[0]}
+                                    </div>
+    
+    
+                                </DialogTitle>
+                            </DialogHeader>
+                            <DialogDescription>
+                                <h3 className="underline">Description:</h3>
+                                <p>{data.description}</p>
+                            </DialogDescription>
+                            <ProvidersBlock tmdbId={data.tmdb_id} tmdbType={data.tmdb_type} />
+                        </DialogContent>
+                    </Dialog>
                     } 
                  
 
