@@ -69,27 +69,28 @@ const NewSearchCard = ({
 
                 <Dialog>
                     <DialogTrigger>
-                        <MediaImage data={data} />
+                    <Image
+                src={`https://image.tmdb.org/t/p/w500/${data.poster_path}`}
+                alt={data.title}
+                className="rounded-lg contain group-hover:border-2 group-hover:border-primary group-hover:scale-105 group-hover:ease-in-out group-hover:duration-300 w-full h-full"
+                width={50}
+                height={50}
+            />
 
                     </DialogTrigger>
                     <DialogContent>
                         <DialogHeader>
-                            <DialogTitle className="flex justify-between mt-4">
-
-
-
-
-                                <div className="">
-
-                                    {data.title}
-                                </div>
                                 <Image
                                     src={`https://image.tmdb.org/t/p/w500/${data.backdrop_path}`}
                                     alt={data.title}
-                                    className="rounded-lg contain group-hover:border-2 group-hover:border-primary group-hover:scale-105 group-hover:ease-in-out group-hover:duration-300 w-full h-full"
+                                    className="rounded-lg w-full my-4"
                                     width={200}
                                     height={50} />
-                                <div className="text-secondary text-sm pl-2">
+                            <DialogTitle className="flex justify-between ">
+
+                                    {data.title}
+                                
+                                <div className="text-card-foreground text-sm pl-2">
                                     {data.year.split('-')[0]}
                                 </div>
 
