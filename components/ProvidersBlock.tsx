@@ -1,8 +1,8 @@
 'use client'
-import { ProvidersApiCall, Results, StreamingInfo, tmdbFetchOptions } from '@/lib/tmdb';
+import { ProvidersApiCall,  StreamingInfo, tmdbFetchOptions } from '@/lib/tmdb';
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+
 
 const ProvidersBlock = (
   {

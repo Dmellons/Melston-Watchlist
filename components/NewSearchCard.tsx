@@ -4,6 +4,7 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import ProvidersBlock from "./ProvidersBlock"
 import AddWatchlistButton from "./buttons/AddWatchlistButton"
 import { AspectRatio } from "@radix-ui/react-aspect-ratio"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 
 type CardData = {
     title: string,
@@ -50,19 +51,59 @@ const NewSearchCard = ({
             description: media.overview ? media.overview : "No description available"
         }
     }
-    const imageUrl = `https://image.tmdb.org/t/p/w500/${data.poster_path}`
+    const MediaImage = ({ data }: { data: CardData }) => {
+        const imageUrl = `https://image.tmdb.org/t/p/w500/${data.poster_path}`
+        return (
+            <Image
+                src={imageUrl}
+                alt={data.title}
+                className="rounded-lg contain group-hover:border-2 group-hover:border-primary group-hover:scale-105 group-hover:ease-in-out group-hover:duration-300 w-full h-full"
+                width={50}
+                height={50}
+            />
+        )
+    }
     return (
         <Card className="h-80 w-80  rounded m-2 border-none group hover:border hover:border-primary hover:ease-in-out hover:duration-300">
             <CardHeader className="h-48 w-36 m-auto">
 
-                <Image
-                    src={imageUrl}
-                    alt={data.title}
-                    className="rounded-lg contain group-hover:border-2 group-hover:border-primary group-hover:scale-105 group-hover:ease-in-out group-hover:duration-300 w-full h-full"
-                    width={50}
-                    height={50}
-                    />
-                    
+                <Dialog>
+                    <DialogTrigger>
+                        <MediaImage data={data} />
+
+                    </DialogTrigger>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle className="flex justify-between mt-4">
+
+
+
+
+                                <div className="">
+
+                                    {data.title}
+                                </div>
+                                <Image
+                                    src={`https://image.tmdb.org/t/p/w500/${data.backdrop_path}`}
+                                    alt={data.title}
+                                    className="rounded-lg contain group-hover:border-2 group-hover:border-primary group-hover:scale-105 group-hover:ease-in-out group-hover:duration-300 w-full h-full"
+                                    width={200}
+                                    height={50} />
+                                <div className="text-secondary text-sm pl-2">
+                                    {data.year.split('-')[0]}
+                                </div>
+
+
+                            </DialogTitle>
+                        </DialogHeader>
+                        <DialogDescription>
+                            <h3 className="underline">Description:</h3>
+                            <p>{data.description}</p>
+                        </DialogDescription>
+                        <ProvidersBlock tmdbId={data.tmdb_id} tmdbType={data.tmdb_type} />
+                    </DialogContent>
+                </Dialog>
+
             </CardHeader>
             <CardContent className="flex align-middle -mt-4 justify-between">
                 <div className="flex flex-col top-0 h-8 justify-between mr-2 ">
