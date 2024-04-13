@@ -69,27 +69,27 @@ const NewSearchCard = ({
 
                 <Dialog>
                     <DialogTrigger>
-                    <Image
-                src={`https://image.tmdb.org/t/p/w500/${data.poster_path}`}
-                alt={data.title}
-                className="rounded-lg contain group-hover:border-2 group-hover:border-primary group-hover:scale-105 group-hover:ease-in-out group-hover:duration-300 w-full h-full"
-                width={50}
-                height={50}
-            />
+                        <Image
+                            src={`https://image.tmdb.org/t/p/w500/${data.poster_path}`}
+                            alt={data.title}
+                            className="rounded-lg contain group-hover:border-2 group-hover:border-primary group-hover:scale-105 group-hover:ease-in-out group-hover:duration-300 w-full h-full"
+                            width={50}
+                            height={50}
+                        />
 
                     </DialogTrigger>
-                    <DialogContent>
+                    <DialogContent className="w-4/5">
                         <DialogHeader>
-                                <Image
-                                    src={`https://image.tmdb.org/t/p/w500/${data.backdrop_path}`}
-                                    alt={data.title}
-                                    className="rounded-lg w-full my-4"
-                                    width={200}
-                                    height={50} />
+                            <Image
+                                src={`https://image.tmdb.org/t/p/w500/${data.backdrop_path}`}
+                                alt={data.title}
+                                className="rounded-lg w-full my-4"
+                                width={200}
+                                height={50} />
                             <DialogTitle className="flex justify-between ">
 
-                                    {data.title}
-                                
+                                {data.title}
+
                                 <div className="text-card-foreground text-sm pl-2">
                                     {data.year.split('-')[0]}
                                 </div>
@@ -109,8 +109,8 @@ const NewSearchCard = ({
             <CardContent className="flex align-middle -mt-4 justify-between">
                 <div className="flex flex-col top-0 h-8 justify-between mr-2 ">
 
-                    <h2 className="text-sm font-black text-foreground/80">{data.title}</h2>
-                    <p className="text-xs font-extralight">{data.year.split('-')[0]}</p>
+                    <h2 className="font-bold text-md ">{data.title}</h2>
+                    <p className="text-xs font-light text-foreground/60">{data.year.split('-')[0]}</p>
                 </div>
                 <AddWatchlistButton media={media} width="w-1/6" />
 

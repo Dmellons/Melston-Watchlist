@@ -30,8 +30,10 @@ const AddWatchlistButton = ({
                 tmdb_type: media.media_type,
                 release_date: media.first_air_date,
                 poster_url: `https://image.tmdb.org/t/p/w500${media.poster_path}`,
+                backdrop_url: media.poster_path ? `https://image.tmdb.org/t/p/w500${media.backdrop_path}` : null,
                 description: media.overview ? media.overview : "No description available",
-                genre_ids: media.genre_ids ? media.genre_ids : []
+                genre_ids: media.genre_ids ? media.genre_ids : [],
+                plex_request: false
             }
         }
 
@@ -44,8 +46,10 @@ const AddWatchlistButton = ({
                 tmdb_type: media.media_type,
                 release_date: media.release_date,
                 poster_url: media.poster_path ? `https://image.tmdb.org/t/p/w500${media.poster_path}` : null,
+                backdrop_url: media.poster_path ? `https://image.tmdb.org/t/p/w500${media.backdrop_path}` : null,
                 description: media.overview ? media.overview : "No description available",
-                genre_ids: media.genre_ids ? media.genre_ids : []
+                genre_ids: media.genre_ids ? media.genre_ids : [],
+                plex_request: false
             }
         }
 
