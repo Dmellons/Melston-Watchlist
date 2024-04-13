@@ -33,8 +33,8 @@ export default function RootLayout({
             disableTransitionOnChange
           >
 
+            <main className="w-full m-auto">
             <MainHeader />
-            <main>
               {children}
             </main>
             <Toaster

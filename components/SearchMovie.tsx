@@ -85,7 +85,7 @@ const SearchMovie = ({
                     setQuery(e.target.value)
 
                 }}
-                onKeyDown={(e) => {
+                onKeyUp={(e) => {
                     if (e.key === "Enter") {
                         movieList()
                     }

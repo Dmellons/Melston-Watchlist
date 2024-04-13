@@ -27,7 +27,7 @@ const ProvidersBlock = (
         / Streaming results provided by JustWatch - https://www.justwatch.com/
         */
         const url = `https://api.themoviedb.org/3/${tmdbType}/${tmdbId.toString()}/watch/providers`;
-        console.log(url)
+        
         const response = await fetch(url, tmdbFetchOptions);
         const result = await response.json();
         setData(result);
@@ -38,7 +38,7 @@ const ProvidersBlock = (
     };
 
     fetchData();
-  }, []);
+    }, [tmdbId, tmdbType]);
   if (!data) {
     return null;
   }
@@ -62,6 +62,7 @@ const ProvidersBlock = (
 
 
           <div className='flex flex-wrap gap-2 min-w-36 w-4/5 items-center justify-center z-10 '>
+            {/* @ts-ignore */}
             {data?.results[country]?.flatrate?.map((provider: StreamingInfo, key: number) => (
               <Image
                 key={key}

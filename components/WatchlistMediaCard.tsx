@@ -21,6 +21,7 @@ import { Dispatch, SetStateAction, useState } from "react"
 import ProvidersBlock from "@/components/ProvidersBlock"
 import { Models } from "@/lib/appwrite"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import PosterDialog from "@/components/PosterDialog"
 
 type CardData = {
     title: string,
@@ -30,6 +31,7 @@ type CardData = {
     year?: string,
     poster_url?: string,
     description: string,
+    backdrop_url?: string,
 
 }
 let data: CardData
@@ -51,6 +53,7 @@ const WatchlistMediaCard = ({
             tmdb_type: media.tmdb_type,
             year: media.release_date,
             poster_url: media.poster_url ? media.poster_url : undefined,
+            backdrop_url: media.backdrop_url ? media.backdrop_url : undefined,
             description: media.description ? media.description : "No description available"
         }
 
@@ -76,46 +79,9 @@ const WatchlistMediaCard = ({
         ">
             <CardHeader className="group flex flex-col w-full justify-between items-center sm:flex-row sm:justify-center sm:gap-4 sm:min-w-48">
                 <div className="flex flex-col items-center gap-1">
-                    {
-                        <Dialog>
-                        <DialogTrigger>
-                        <Image
-                    src={data.poster_url}
-                    alt={data.title}
-                    className="rounded-lg contain  group-hover:border-2 group-hover:border-primary  group-hover:ease-in-out group-hover:duration-100 w-full h-full"
-                    width={175}
-                    height={200}
-                />
-    
-                        </DialogTrigger>
-                        <DialogContent>
-                            <DialogHeader>
-                                    {/* <Image
-                                        src={`https://image.tmdb.org/t/p/w500/${data.backdrop_path}`}
-                                        alt={data.title}
-                                        className="rounded-lg w-full my-4"
-                                        width={200}
-                                        height={50} /> */}
-                                <DialogTitle className="flex justify-between mt-4">
-    
-                                        {data.title}
-                                    
-                                    <div className="text-card-foreground text-sm pl-2">
-                                        {data.year?.split('-')[0]}
-                                    </div>
-    
-    
-                                </DialogTitle>
-                            </DialogHeader>
-                            <DialogDescription>
-                                <h3 className="underline">Description:</h3>
-                                <p>{data.description}</p>
-                            </DialogDescription>
-                            <ProvidersBlock tmdbId={data.tmdb_id} tmdbType={data.tmdb_type} />
-                        </DialogContent>
-                    </Dialog>
-                    } 
-                 
+                
+                        <PosterDialog media={media} />
+                                
 
                     <CardTitle className="text-center text-2xl block sm:hidden">{data.title}</CardTitle>
                     <CardDescription className="font-subtitle block sm:hidden">Year: {data.year?.substring(0, 4)}</CardDescription>
