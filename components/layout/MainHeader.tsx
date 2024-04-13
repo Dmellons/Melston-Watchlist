@@ -30,7 +30,7 @@ export default function MainHeader() {
                 </Button>
             </div>
 
-
+            {/* Hamburger menu */}
             <div className=" py-3 hidden md:hidden">
                 <button
                     className="text-title-foreground inline-flex items-center justify-center rounded-md p-2"
@@ -51,21 +51,21 @@ export default function MainHeader() {
                 </button>
             </div>
 
-            <div className="hidden flex-1 items-center justify-center lg:flex order-first lg:order-none"
+            {/* Normal Menu */}
+            {/* <div className="hidden flex-1 items-center  justify-around lg:flex order-first lg:order-none"
                 id="menu">
                 <ul
-                    className="
-              text-base 
-              text-secondary
-              md:flex
-              md:pt-0"
+                    className="flex  divide-x divide-gray-200 text-title-foreground w-96" 
+                                       
                 >
+                    <li className="px-4 mx-auto text-center">Watchlist</li>
+                    <li className="px-4 mx-auto text-center">New</li>
                 </ul>
-            </div>
+            </div> */}
 
-                <div className="py-3">
-                    <LoginButton />
-                </div>
+            <div className="py-3">
+                <LoginButton />
+            </div>
         </nav>
     )
 }
