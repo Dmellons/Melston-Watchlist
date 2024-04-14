@@ -2,10 +2,14 @@
 
 import AddWatchlistButton from '@/components/buttons/AddWatchlistButton';
 import BackButton from '@/components/buttons/BackButton';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
 import { TMDBApiMovieDetail } from '@/lib/tmdb';
 import { tmdbFetchOptions } from '@/lib/tmdb';
 import { TMDBMultiSearchResult } from '@/types/tmdbApi';
 import Image from 'next/image';
+import Link from 'next/link';
 
 interface DetailPageProps {
 
@@ -23,41 +27,109 @@ export const DetailPage = async ({ params }: DetailPageProps) => {
   const response = await fetch(url, tmdbFetchOptions);
   const data: TMDBApiMovieDetail = await response.json();
   console.log({ data })
-  
-  const addButtonData:TMDBMovieSearchResult = {
+
+  const addButtonData: Partial<TMDBMultiSearchResult> = {
     id: data.id,
     title: data.title,
     poster_path: data.poster_path
   }
-  
+
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8 flex flex-col md:flex-row">
-      <div className="md:w-1/2 md:mr-4">
-      <BackButton />
-        <Image 
-          src={`https://image.tmdb.org/t/p/w500${data.poster_path}`} 
-          alt={data.title} 
-          className="w-full" 
-          width={500} 
-          height={500}
+    <div className="container mx-auto px-4 py-8 md:px-8">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div className="relative">
+          <BackButton />
+          <Image
+            src={`https://image.tmdb.org/t/p/w500${data.poster_path}`}
+            alt={data.title}
+            className="w-full rounded-lg shadow-md"
+            width={500}
+            height={500}
           />
-        <p className="text-center text-sm text-gray-500 mt-4">Release Date: {data.release_date}</p>
-      </div>
-      <div className="md:w-1/2">
-        <h1 className="text-3xl font-bold">{data.title}</h1>
-        <p className="text-md italic text-gray-600 mt-2">{data.tagline}</p>
-        <p className="text-md mt-4">{data.overview}</p>
-        <p className="text-md mt-4">Genres: {data.genres.map(genre => genre.name).join(', ')}</p>
-        <p className="text-md mt-4">Status: {data.status}</p>
-        <p className="text-md mt-4">Average Vote: {data.vote_average}</p>
-        <p className="text-md mt-4">Vote Count: {data.vote_count}</p>
-        <p className="text-md mt-4">Budget: ${data.budget}</p>
-        <p className="text-md mt-4">Revenue: ${data.revenue}</p>
-        <p className="text-md mt-4">Runtime: {data.runtime} minutes</p>
-        <p className="text-md mt-4">IMDB ID: {data.imdb_id}</p>
-        <p className="text-md mt-4">Homepage: <a href={data.homepage} target="_blank" rel="noopener noreferrer">{data.homepage}</a></p>
-      <AddWatchlistButton
-       media={addButtonData}  tmdbId={tmdbId} width='hidden' />
+          <div className="absolute bottom-0 left-0 p-2">
+            <p className="text-white text-xs font-bold bg-black bg-opacity-70 rounded-b-lg px-1">
+              Release Date: {data.release_date}
+            </p>
+          </div>
+        </div>
+        <div className="space-y-4 sm:mt-10">
+          <h1 className="text-3xl font-bold">{data.title}</h1>
+          <p className="text-gray-700">{data.tagline}</p>
+          <p>{data.overview}</p>
+          <p>Score: {data.vote_average.toFixed(1)}/10 <span className="text-foreground/20 text-xs">({data.vote_count} votes)</span></p>
+          <p>Genres: {data.genres.map(genre => genre.name).join(', ')}</p>
+          <p>Status: {data.status}</p>
+          <p>Runtime: {data.runtime} minutes</p>
+          <p>Revenue: ${data.revenue}</p>
+          <div className="p-4 text-center sm:text-left">
+
+            <h3 className="text-lg font-bold">External Links</h3>
+            <div className="flex divide-x justify-center sm:justify-normal">
+
+              <Button
+                variant={"link"}
+                asChild
+              >
+
+                <Link
+                  href={`https://www.imdb.com/title/${data.imdb_id}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  IMDB
+                </Link>
+              </Button>
+              <Button
+                variant={"link"}
+                asChild
+              >
+
+                <Link
+                  href={data.homepage}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Homepage
+                </Link>
+              </Button>
+            </div>
+          </div>
+          <Accordion type='single' collapsible className=''>
+            <AccordionItem value={'Production Countries'} className='w-full sm:w-fit'>
+              <AccordionTrigger className='text-center justify-center sm:justify-start'>
+                <h3 className="text-lg font-bold text-center sm:text-left mr-2">Production Countries:</h3>
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className='sm:mr-4'>
+                  {data.production_countries.map(country => (
+                    <div className="text-sm text-center sm:ml-4 sm:text-left" key={country.iso_3166_1}>{country.name}</div>
+                  ))}
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+          <Accordion type='single' collapsible className=''>
+            <AccordionItem value={'Production Countries'} className='w-full sm:w-fit'>
+              <AccordionTrigger className='text-center justify-center sm:justify-start'>
+                <h3 className="text-lg font-bold text-center sm:text-left mr-2">Production Companies:</h3>
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className='sm:mr-4'>
+                  {data.production_companies.map(company => (
+                    <div className="text-sm text-center sm:ml-4 sm:text-left" key={company.id}>{company.name}</div>
+                  ))}
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+          
+          <AddWatchlistButton
+            media={addButtonData}
+            tmdbId={tmdbId}
+            width=""
+            query
+          />
+        </div>
       </div>
     </div>
   );
