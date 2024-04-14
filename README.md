@@ -30,6 +30,9 @@
 
 - [ ] Admin view to see users with requests
 
+### User
+
+- [ ] Add access_to_plex label to user account to grant access to request from Plex switch
 ### API
 
 - [ ] Add Watchmode API
