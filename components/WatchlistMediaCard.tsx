@@ -22,6 +22,8 @@ import ProvidersBlock from "@/components/ProvidersBlock"
 import { Models } from "@/lib/appwrite"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import PosterDialog from "@/components/PosterDialog"
+import { Button } from "./ui/button"
+import Link from "next/link"
 
 type CardData = {
     title: string,
@@ -97,7 +99,11 @@ const WatchlistMediaCard = ({
                     <CardDescription className="font-subtitle hidden sm:block ">Year: {data.year?.substring(0, 4)}</CardDescription>
                     <CardDescription className="font-subtitle hidden sm:block ">Type: {`${data.tmdb_type?.charAt(0).toUpperCase()}${data.content_type?.slice(1)}`}</CardDescription>
                 </div>
-                <Accordion type="single" collapsible className="w-full"> 
+                {data.tmdb_type === 'movie' &&
+                    <Link href={`/movie/${media.tmdb_id}`} >View Details</Link>
+                }
+                
+                {/* <Accordion type="single" collapsible className="w-full"> 
                     <AccordionItem value="item-1">
                         <AccordionTrigger>Description</AccordionTrigger>
                         <AccordionContent>
@@ -107,7 +113,7 @@ const WatchlistMediaCard = ({
                             </ScrollArea>
                         </AccordionContent>
                     </AccordionItem>
-                </Accordion>
+                </Accordion> */}
                 
                 <DeleteButton
                     title={data.title}
