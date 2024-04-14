@@ -7,13 +7,18 @@ import { TMDBMultiSearchResult } from "@/types/tmdbApi";
 import { AspectRatio } from "@radix-ui/react-aspect-ratio";
 import AddWatchlist from "./buttons/AddWatchlist";
 import AddWatchlistButton from "./buttons/AddWatchlistButton";
+import { Button } from "@/components/ui/button";
+import DeleteButton from "./DeleteButton";
+import { WatchlistDocument } from "@/types/appwrite";
+import { useEffect, useState } from "react";
+import { Skeleton } from "./ui/skeleton";
 
 type CardData = {
     title: string,
     content_type: string,
     tmdb_id: number,
     tmdb_type: string,
-    year: string,
+    year?: string,
     image_url: string,
     description: string,
 
@@ -22,65 +27,107 @@ let data: CardData
 const NewWatchlistCard = ({
     media
 }: {
-    media: TMDBMultiSearchResult
+    media: WatchlistDocument
 }) => {
-    console.log({ media })
 
-    if (media.media_type === 'tv') {
-        data = {
-            title: media.name,
-            content_type: media.media_type,
-            tmdb_id: media.id,
-            tmdb_type: media.media_type,
-            year: media.first_air_date,
-            image_url: media.poster_path,
-            description: media.overview ? media.overview : "No description available"
+
+    const [data, setData] = useState<CardData | null>(null)
+    const [isLoading, setIsLoading] = useState(true)
+    const [hasProviders, setHasProviders] = useState(false)
+    useEffect(() => {
+
+     
+        if (media.content_type === 'tv') {
+            // setData({
+
+            //     title: media.name,
+            //     content_type: media.content_type,
+            //     tmdb_id: media.id,
+            //     tmdb_type: media.content_type,
+            //     year: media.first_air_date,
+            //     image_url: media.poster_path,
+            //     description: media.overview ? media.overview : "No description available"
+            // })
+
+            // setIsLoading(false)
+
         }
 
+        if (media.content_type === 'movie') {
+            setData({
+                title: media.title,
+                content_type: media.content_type,
+                tmdb_id: media.tmdb_id,
+                tmdb_type: media.content_type,
+                year: media.release_date,
+                image_url: media.poster_path,
+                description: media.overview ? media.overview : "No description available"
+            })
+            
+            
+            setIsLoading(false)
+        }
+    }, [media, isLoading, hasProviders, setHasProviders])
+
+    if (
+        // isLoading ||
+        !data
+    ) {
+        return (
+            <Skeleton
+                className="w-64 h-[200px]"
+            />
+        )
     }
 
-    if (media.media_type === 'movie') {
-        data = {
-            title: media.title,
-            content_type: media.media_type,
-            tmdb_id: media.id,
-            tmdb_type: media.media_type,
-            year: media.release_date,
-            image_url: media.poster_path,
-            description: media.overview ? media.overview : "No description available"
-        }
-    }
-    const imageUrl = 'https://image.tmdb.org/t/p/w500/' + data.image_url
-    console.log(imageUrl)
+    console.log({ data })
+    // const imageUrl = 'https://image.tmdb.org/t/p/w500/' + data.image_url
+
+    const imageUrl = media.poster_url
+
 
     return (
 
-        <>
 
+        <>
             <Card
                 key={data.title}
-                className="group w-64 rounded-xl bg-black min-h-[200px] hover:transition-all h-96 hover:ease-in-out hover:scale-105 hover:duration-500 overflow-hidden border border-primary z-1 relative"
+                className="group w-64 bg-black rounded-xl  min-h-[200px] hover:transition-all h-96 hover:ease-in-out hover:scale-105 hover:duration-500 overflow-hidden border border-primary relative"
 
             >
                 <CardHeader
-                    className="h-32 bg-gradient-to-b from-black  z-10 text-center"
+                    className="opacity-0 group-hover:opacity-100 transition-all duration-500 ease-in-out h-32 bg-gradient-to-b from-black  text-center"
                 >
                     <CardTitle
-                        className="text-white z-10"
+                        className="text-white "
                     >
                         {data.title}
                     </CardTitle>
-                    <CardDescription className=" text-center z-10 ">
+                    <CardDescription className=" text-center" >
                         {data.year}
-                        <p>{data.description}</p>
+
                     </CardDescription>
 
                 </CardHeader>
-                <CardContent className="z-20">
+                 <CardContent >
+                 <div className=" transition-all duration-500 ease-in-out  flex flex-col items-center w-full h-full gap-4 group-hover:z-10">
+                    
+                    <Button asChild
+                        className="hover:shadow-2xl">
+                     <Link href={`/${data.tmdb_type}/${data.tmdb_id}`} >
+                            More Info
+                        </Link>
+                    </Button>
+                    
+                    <DeleteButton title={data.title} document_id={media.$id} />
+                </div>
                 </CardContent>
-                <CardFooter className="z-20 absolute bottom-0">
-                </CardFooter>
-               
+                
+
+                {/*
+                <CardFooter className="absolute bottom-0">
+                </CardFooter> */}
+
                     <Image
                         src={imageUrl}
                         alt={data.title}
@@ -90,19 +137,23 @@ const NewWatchlistCard = ({
                         style={{
                             width: '10rem%',
                             height: 'auto',
-                            objectFit: 'contain',    
+                            objectFit: 'contain',
                         }}
-                        
-                        className="w-full h-auto z-1 absolute top-0 left-0 opacity-40 hover:opacity-5 object-cover hover:scale-105 hover:ease-in-out hover:duration-500"
-                        />
-                  
+    
+                        className="w-full h-auto absolute hover:z-0 top-0 left-0 opacity-100 group-hover:opacity-35 transition-all duration-500 ease-in-out"
+                    />
+                
+                    
+                    {/* {hasProviders && */}
+                    
+                <div className="absolute bottom-0 m-auto w-full bg-gradient-to-t from-black min-h-56 z-20">
 
+                    <div className="absolute left-2 right-2 flex flex-row bottom-2 ">
 
-            <div className="p-4 absolute top-64 z-0">
-
-            <ProvidersBlock tmdbId={data.tmdb_id} tmdbType={data.tmdb_type} />
-            <AddWatchlistButton media={media}  />
-            </div>
+                        <ProvidersBlock tmdbId={data.tmdb_id} tmdbType={data.tmdb_type}  />
+                    </div>
+                </div>
+                {/* } */}
             </Card>
         </>
 

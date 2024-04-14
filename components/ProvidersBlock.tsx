@@ -9,12 +9,14 @@ const ProvidersBlock = (
     tmdbId,
     tmdbType,
     country = 'US',
-    userProviders
+    userProviders,
+    // setHasProviders
   }: {
     tmdbId: number
     tmdbType: string
     country?: string,
-    userProviders?: string[]
+    userProviders?: string[],
+    // setHasProviders?: (hasProviders: boolean) => void
   }
 ) => {
   const [data, setData] = useState<ProvidersApiCall | undefined>(undefined);
@@ -31,14 +33,16 @@ const ProvidersBlock = (
         const response = await fetch(url, tmdbFetchOptions);
         const result = await response.json();
         setData(result);
+        // if(setHasProviders){}
+        // setHasProviders(true); 
         setLoading(false);
       } catch (error) {
         console.error({ error })
       }
     };
-
+    
     fetchData();
-    }, [tmdbId, tmdbType]);
+  }, [tmdbId, tmdbType]);
   if (!data) {
     return null;
   }
@@ -49,9 +53,10 @@ const ProvidersBlock = (
   else if (!data.results[country]?.flatrate) {
     return null;
   }
+  
   return (
       <>
-    <div className='w-full m-auto flex justify-center items-center z-10 '>
+    <div className='w-full m-auto flex max-w-12 justify-center items-center z-10 '>
       {/* <h3 className='text-sm text-muted-foreground font-bold text-center mb-2 '>Streaming on</h3> */}
       <h2 className='text-center text-xs mb-1 mr-2  font-light bottom-0'>Streaming <br /> on</h2>
       <div className='flex gap-4 justify-center flex-wrap '>

@@ -3,8 +3,9 @@ import Image from "next/image"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import ProvidersBlock from "./ProvidersBlock"
 import AddWatchlistButton from "./buttons/AddWatchlistButton"
-import { AspectRatio } from "@radix-ui/react-aspect-ratio"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Button } from "./ui/button"
+import Link from "next/link"
 
 type CardData = {
     title: string,
@@ -100,7 +101,23 @@ const NewSearchCard = ({
                         <DialogDescription>
                             <h3 className="underline">Description:</h3>
                             <p>{data.description}</p>
+
+
                         </DialogDescription>
+                        {data.tmdb_type === 'movie' &&
+                            <Button asChild >
+                                <Link href={`/${data.tmdb_type}/${data.tmdb_id}`} >
+                                    More Info
+                                </Link>
+                            </Button>
+                        }
+                        {/* {data.tmdb_type === 'tv' &&
+                            <Button asChild variant={"ghost"} >
+                                <Link href={`/${data.tmdb_type}/${data.tmdb_id}`} >
+                                    More Info
+                                </Link>
+                            </Button>
+                        } */}
                         <ProvidersBlock tmdbId={data.tmdb_id} tmdbType={data.tmdb_type} />
                     </DialogContent>
                 </Dialog>

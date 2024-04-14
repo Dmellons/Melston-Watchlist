@@ -56,11 +56,26 @@ export const DetailPage = async ({ params }: DetailPageProps) => {
           <h1 className="text-3xl font-bold">{data.title}</h1>
           <p className="text-gray-700">{data.tagline}</p>
           <p>{data.overview}</p>
-          <p>Score: {data.vote_average.toFixed(1)}/10 <span className="text-foreground/20 text-xs">({data.vote_count} votes)</span></p>
-          <p>Genres: {data.genres.map(genre => genre.name).join(', ')}</p>
-          <p>Status: {data.status}</p>
-          <p>Runtime: {data.runtime} minutes</p>
+          {data.vote_average > 0 && (
+            <p>Score: {data.vote_average.toFixed(1)}/10 <span className="text-foreground/20 text-xs">({data.vote_count} votes)</span></p>
+          )}
+          {
+            data.genres?.length > 0 ? (
+              <p>Genres: {data.genres.map((genre) => genre.name).join(', ')}</p>
+            ) : (
+              <p>No genres available</p>
+            )
+          }
+
+          <p>Language: {data.original_language}</p>          
           <p>Revenue: ${data.revenue}</p>
+          <p>Budget: ${data.budget}</p>
+                    
+          <p>Status: {data.status}</p>
+          
+          <p>Runtime: {data.runtime} minutes</p>
+          
+          
           <div className="p-4 text-center sm:text-left">
 
             <h3 className="text-lg font-bold">External Links</h3>
@@ -95,20 +110,47 @@ export const DetailPage = async ({ params }: DetailPageProps) => {
             </div>
           </div>
           <Accordion type='single' collapsible className=''>
+          {
+            data.production_countries?.length > 0 ? (
+              
+           
             <AccordionItem value={'Production Countries'} className='w-full sm:w-fit'>
               <AccordionTrigger className='text-center justify-center sm:justify-start'>
                 <h3 className="text-lg font-bold text-center sm:text-left mr-2">Production Countries:</h3>
               </AccordionTrigger>
               <AccordionContent>
                 <div className='sm:mr-4'>
-                  {data.production_countries.map(country => (
+                  {data.production_countries?.map(country => (
                     <div className="text-sm text-center sm:ml-4 sm:text-left" key={country.iso_3166_1}>{country.name}</div>
                   ))}
                 </div>
               </AccordionContent>
             </AccordionItem>
+           ) : (
+             <div>No production countries available</div>
+            )
+          }
+          {
+            data.production_companies?.length > 0 ? (
+          
+          <AccordionItem value={'Production Companies'} className='w-full sm:w-fit'>
+              <AccordionTrigger className='text-center justify-center sm:justify-start'>
+                <h3 className="text-lg font-bold text-center sm:text-left mr-2">Production Companies:</h3>
+              </AccordionTrigger>
+              <AccordionContent>
+                <div className='sm:mr-4'>
+                  {data.production_companies.map(company => (
+                    <div className="text-sm text-center sm:ml-4 sm:text-left" key={company.id}>{company.name}</div>
+                  ))}
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+            ):(
+              <div>No production companies available</div>
+            )
+          }
           </Accordion>
-          <Accordion type='single' collapsible className=''>
+          {/* <Accordion type='single' collapsible className=''>
             <AccordionItem value={'Production Countries'} className='w-full sm:w-fit'>
               <AccordionTrigger className='text-center justify-center sm:justify-start'>
                 <h3 className="text-lg font-bold text-center sm:text-left mr-2">Production Companies:</h3>
@@ -121,7 +163,7 @@ export const DetailPage = async ({ params }: DetailPageProps) => {
                 </div>
               </AccordionContent>
             </AccordionItem>
-          </Accordion>
+          </Accordion> */}
           
           <AddWatchlistButton
             media={addButtonData}
