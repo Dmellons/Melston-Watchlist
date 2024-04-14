@@ -124,6 +124,13 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
 
+    const setUserLabels = async (labels: string[]) => {
+        try {
+            await account.updatePrefs({ labels })
+        } catch (error) {
+            console.error(`Set User Labels Error: ${error}`)
+        }
+    }
     const logout = async () => {
         try {
             await account.deleteSession('current');

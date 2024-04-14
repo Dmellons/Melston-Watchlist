@@ -1,10 +1,31 @@
 'use client'
 import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { useUser } from "@/hooks/User";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
 const ProfilePage = () => {
   const { user } = useUser();
+  const [isTester, setIsTester] = useState(undefined);
+
+  const handleToggleTester = () => {
+    setIsTester(!isTester);
+  };
+
+  useEffect(() => {
+    if (user) {
+      const labels = user.labels || [];
+      if (labels.includes('tester')) {
+        setIsTester(true);
+      } else {
+        setIsTester(false);
+      }
+      console.log(labels.includes('tester'));
+      
+    }
+  }, [user]);
 
 
   return (
@@ -15,6 +36,11 @@ const ProfilePage = () => {
           <p>Name: {user.name}</p>
           <p>Email: {user.email}</p>
           <p>Admin: {user.admin ? "Yes" : "No"}</p>
+          <div className="flex items-center space-x-2">
+
+          <Label htmlFor="tester">Tester: </Label>
+          <Switch id="tester" value={isTester}/>
+          </div>
           <h2 className="text-md">Labels:</h2>
           <div className="border flex  gap-2 p-2 border-gray-200 rounded-lg">
             {user.labels?.map(label => (

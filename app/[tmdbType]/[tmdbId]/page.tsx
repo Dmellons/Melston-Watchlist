@@ -67,15 +67,15 @@ export const DetailPage = async ({ params }: DetailPageProps) => {
             )
           }
 
-          <p>Language: {data.original_language}</p>          
+          <p>Language: {data.original_language}</p>
           <p>Revenue: ${data.revenue}</p>
           <p>Budget: ${data.budget}</p>
-                    
+
           <p>Status: {data.status}</p>
-          
+
           <p>Runtime: {data.runtime} minutes</p>
-          
-          
+
+
           <div className="p-4 text-center sm:text-left">
 
             <h3 className="text-lg font-bold">External Links</h3>
@@ -110,45 +110,45 @@ export const DetailPage = async ({ params }: DetailPageProps) => {
             </div>
           </div>
           <Accordion type='single' collapsible className=''>
-          {
-            data.production_countries?.length > 0 ? (
-              
-           
-            <AccordionItem value={'Production Countries'} className='w-full sm:w-fit'>
-              <AccordionTrigger className='text-center justify-center sm:justify-start'>
-                <h3 className="text-lg font-bold text-center sm:text-left mr-2">Production Countries:</h3>
-              </AccordionTrigger>
-              <AccordionContent>
-                <div className='sm:mr-4'>
-                  {data.production_countries?.map(country => (
-                    <div className="text-sm text-center sm:ml-4 sm:text-left" key={country.iso_3166_1}>{country.name}</div>
-                  ))}
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-           ) : (
-             <div>No production countries available</div>
-            )
-          }
-          {
-            data.production_companies?.length > 0 ? (
-          
-          <AccordionItem value={'Production Companies'} className='w-full sm:w-fit'>
-              <AccordionTrigger className='text-center justify-center sm:justify-start'>
-                <h3 className="text-lg font-bold text-center sm:text-left mr-2">Production Companies:</h3>
-              </AccordionTrigger>
-              <AccordionContent>
-                <div className='sm:mr-4'>
-                  {data.production_companies.map(company => (
-                    <div className="text-sm text-center sm:ml-4 sm:text-left" key={company.id}>{company.name}</div>
-                  ))}
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-            ):(
-              <div>No production companies available</div>
-            )
-          }
+            {
+              data.production_countries?.length > 0 ? (
+
+
+                <AccordionItem value={'Production Countries'} className='w-full sm:w-fit'>
+                  <AccordionTrigger className='text-center justify-center sm:justify-start'>
+                    <h3 className="text-lg font-bold text-center sm:text-left mr-2">Production Countries:</h3>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className='sm:mr-4'>
+                      {data.production_countries?.map(country => (
+                        <div className="text-sm text-center sm:ml-4 sm:text-left" key={country.iso_3166_1}>{country.name}</div>
+                      ))}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              ) : (
+                <div>No production countries available</div>
+              )
+            }
+            {
+              data.production_companies?.length > 0 ? (
+
+                <AccordionItem value={'Production Companies'} className='w-full sm:w-fit'>
+                  <AccordionTrigger className='text-center justify-center sm:justify-start'>
+                    <h3 className="text-lg font-bold text-center sm:text-left mr-2">Production Companies:</h3>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <div className='sm:mr-4'>
+                      {data.production_companies.map(company => (
+                        <div className="text-sm text-center sm:ml-4 sm:text-left" key={company.id}>{company.name}</div>
+                      ))}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+              ) : (
+                <div>No production companies available</div>
+              )
+            }
           </Accordion>
           {/* <Accordion type='single' collapsible className=''>
             <AccordionItem value={'Production Countries'} className='w-full sm:w-fit'>
@@ -164,13 +164,15 @@ export const DetailPage = async ({ params }: DetailPageProps) => {
               </AccordionContent>
             </AccordionItem>
           </Accordion> */}
-          
-          <AddWatchlistButton
-            media={addButtonData}
-            tmdbId={tmdbId}
-            width=""
-            query
-          />
+          <div className="hidden">
+
+            <AddWatchlistButton
+              media={addButtonData}
+              tmdbId={tmdbId}
+              width=""
+              query
+            />
+          </div>
         </div>
       </div>
     </div>
