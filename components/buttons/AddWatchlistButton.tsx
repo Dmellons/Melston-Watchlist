@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button"
 import { useUser } from "@/hooks/User"
 import { ID, database } from "@/lib/appwrite"
+import { tmdbFetchOptions } from "@/lib/tmdb"
 import { WatchlistDocumentCreate } from "@/types/appwrite"
 import { TMDBMultiSearchResult } from "@/types/tmdbApi"
 
@@ -14,7 +15,7 @@ const AddWatchlistButton = ({
 }: {
     media: TMDBMultiSearchResult,
     width?: string
-    query: boolean
+    query?: boolean
 }) => {
     const { user, setUser } = useUser()
 
@@ -24,11 +25,24 @@ const AddWatchlistButton = ({
     let data: WatchlistDocumentCreate
     function handleAddWatchlist() {
         if (query) {
-            
-            const res = await fetch(`https://api.themoviedb.org/3/search/multi?query=${query}`, options)
-            .then(res => res.json())
-            .then(data => setResults(data.results))
-            .catch(error => console.log(error))
+            const fetchData = async ():TMDBMultiSearchResult => {
+                try {
+                    const response = await fetch(`https://api.themoviedb.org/3/search/multi?query=${media.id}`, tmdbFetchOptions);
+                    const data = await response.json();
+                    console.log({ res: data.results });
+
+
+                    const response2 = await fetch(`https://api.themoviedb.org/3/search/multi?query=${media.id}`, tmdbFetchOptions);
+                    const data2 = await response2.json();
+                    console.log({ res2: data2.results });
+                    return data.results;
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+
+            media = fetchData()
+            console.log(media)
 
             data = {
                 title: media.title,
@@ -42,7 +56,11 @@ const AddWatchlistButton = ({
                 genre_ids: media.genre_ids ? media.genre_ids : [],
                 plex_request: false
             }
-        } else {
+        }
+
+
+
+        else {
 
             if (media.media_type === 'tv') {
 

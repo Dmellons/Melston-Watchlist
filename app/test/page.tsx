@@ -5,6 +5,7 @@ import SearchMovie from "@/components/SearchMovie"
 import NewSearchCard from "@/components/NewSearchCard"
 import { TMDBMultiSearchResult } from "@/types/tmdbApi"
 import Image from "next/image"
+import NewWatchlistCard from "@/components/NewWatchlistCard"
 
 function TestPage() {
     const { user } = useUser()
@@ -36,6 +37,7 @@ function TestPage() {
     return (
         <div className="flex flex-col items-center w-full h- justify-center">
             <NewSearchCard media={movie}/>
+            <NewWatchlistCard media={movie}/>
             
         </div>
     )
