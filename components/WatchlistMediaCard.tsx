@@ -44,7 +44,7 @@ const WatchlistMediaCard = ({
 }: {
     media: WatchlistDocument;
     setWatchlist?: Dispatch<SetStateAction<Models.DocumentList<WatchlistDocument>>> | undefined
-   
+
 }) => {
 
     if (media.content_type === 'tv' || media.content_type === 'movie') {
@@ -81,52 +81,62 @@ const WatchlistMediaCard = ({
         ">
             <CardHeader className="group flex flex-col w-full justify-between items-center sm:flex-row sm:justify-center sm:gap-4 sm:min-w-48">
                 <div className="flex flex-col items-center gap-1">
-                
-                        <PosterDialog media={media} />
-                                
+
+                    <PosterDialog media={media} />
+
 
                     <CardTitle className="text-center text-2xl block sm:hidden">{data.title}</CardTitle>
                     <CardDescription className="font-subtitle block sm:hidden">Year: {data.year?.substring(0, 4)}</CardDescription>
                     <CardDescription className="font-subtitle block sm:hidden ">Type: {`${data.tmdb_type?.charAt(0).toUpperCase()}${data.content_type?.slice(1)}`}</CardDescription>
-              
+
                 </div>
             </CardHeader>
             <Separator className="block  sm:hidden" />
             <CardContent className="flex flex-col w-full gap-2">
+                {/* Mobile Title */}
                 <CardTitle className="text-center text-2xl hidden min-w-48 sm:block">{data.title}</CardTitle>
                 <div className="flex flex-row justify-between">
 
                     <CardDescription className="font-subtitle hidden sm:block ">Year: {data.year?.substring(0, 4)}</CardDescription>
                     <CardDescription className="font-subtitle hidden sm:block ">Type: {`${data.tmdb_type?.charAt(0).toUpperCase()}${data.content_type?.slice(1)}`}</CardDescription>
                 </div>
-                {data.tmdb_type === 'movie' &&
-                    <Link href={`/movie/${media.tmdb_id}`} >View Details</Link>
-                }
+                {/* TODO!! */}
+                {/* <div className="flex flex-col  justify-between items-center w-full"> */}
+
                 
+                {data.tmdb_type === 'movie' &&
+                    <Link 
+                    href={`/movie/${media.tmdb_id}`} 
+                    >
+                        <Button className="w-full my-2">View Details</Button>
+                    </Link>
+                }
+
                 {/* <Accordion type="single" collapsible className="w-full"> 
                     <AccordionItem value="item-1">
-                        <AccordionTrigger>Description</AccordionTrigger>
-                        <AccordionContent>
-                            <ScrollArea className="max-h-36 w-full">
-                                    {data.description}
-                                <ScrollBar orientation="vertical"/>
-                            </ScrollArea>
-                        </AccordionContent>
+                    <AccordionTrigger>Description</AccordionTrigger>
+                    <AccordionContent>
+                    <ScrollArea className="max-h-36 w-full">
+                    {data.description}
+                    <ScrollBar orientation="vertical"/>
+                    </ScrollArea>
+                    </AccordionContent>
                     </AccordionItem>
                 </Accordion> */}
-                
+
                 <DeleteButton
                     title={data.title}
                     document_id={media.$id}
                     // @ts-ignore
                     setWatchlist={setWatchlist}
-                />
+                    />
 
-                <ProvidersBlock 
+                <ProvidersBlock
                     tmdbId={data.tmdb_id}
                     tmdbType={data.tmdb_type}
                     country="US"
-                                        />
+                    />
+                    {/* </div> */}
             </CardContent>
         </Card>
     )
