@@ -8,7 +8,7 @@ import { AspectRatio } from "@radix-ui/react-aspect-ratio";
 import AddWatchlist from "./buttons/AddWatchlist";
 import AddWatchlistButton from "./buttons/AddWatchlistButton";
 import { Button } from "@/components/ui/button";
-import DeleteButton from "./DeleteButton";
+import DeleteButton from "@/components/DeleteButton";
 import { WatchlistDocument } from "@/types/appwrite";
 import { useEffect, useState } from "react";
 import { Skeleton } from "./ui/skeleton";
@@ -36,7 +36,7 @@ const NewWatchlistCard = ({
     const [hasProviders, setHasProviders] = useState(false)
     useEffect(() => {
 
-     
+
         if (media.content_type === 'tv') {
             // setData({
 
@@ -63,8 +63,8 @@ const NewWatchlistCard = ({
                 image_url: media.poster_path,
                 description: media.overview ? media.overview : "No description available"
             })
-            
-            
+
+
             setIsLoading(false)
         }
     }, [media, isLoading, hasProviders, setHasProviders])
@@ -92,68 +92,68 @@ const NewWatchlistCard = ({
         <>
             <Card
                 key={data.title}
-                className="group w-64 bg-black rounded-xl  min-h-[200px] hover:transition-all h-96 hover:ease-in-out hover:scale-105 hover:duration-500 overflow-hidden border border-primary relative"
+                className="group w-64 bg-transparent rounded-xl  min-h-[200px] hover:transition-all h-96 hover:ease-in-out hover:scale-105 hover:duration-500 overflow-hidden border border-primary relative"
 
             >
+                <div className="absolute bottom-0 m-auto w-full bg-gradient-to-t from-background/75  min-h-24 ">
+                    <div className="absolute left-2 right-2 flex flex-row bottom-2 ">
+                        <ProvidersBlock tmdbId={data.tmdb_id} tmdbType={data.tmdb_type} />
+                    </div>
+                </div>
                 <CardHeader
-                    className="opacity-0 group-hover:opacity-100 transition-all duration-500 ease-in-out h-32 bg-gradient-to-b from-black  text-center"
+                    className="opacity-0 group-hover:opacity-100 transition-all duration-500 ease-in-out h-32 bg-gradient-to-b from-card  text-center"
                 >
                     <CardTitle
-                        className="text-white "
+                        className="text-card-foreground text-center"
                     >
                         {data.title}
                     </CardTitle>
-                    <CardDescription className=" text-center" >
+                    <CardDescription className=" text-center text-card-foreground" >
                         {data.year}
 
                     </CardDescription>
 
                 </CardHeader>
-                 <CardContent >
-                 <div className=" transition-all duration-500 ease-in-out  flex flex-col items-center w-full h-full gap-4 group-hover:z-10">
-                    
-                    <Button asChild
+                <CardContent className="opacity-0 group-hover:opacity-100 transition-all duration-500 ease-in-out  flex flex-col items-center w-full h-full gap-4 ">
+                    {/* <div > */}
+
+                    <Button
                         className="hover:shadow-2xl">
-                     <Link href={`/${data.tmdb_type}/${data.tmdb_id}`} >
+                        <Link href={`/${data.tmdb_type}/${data.tmdb_id}`} >
                             More Info
                         </Link>
                     </Button>
-                    
+
                     <DeleteButton title={data.title} document_id={media.$id} />
-                </div>
+                    {/* </div> */}
                 </CardContent>
-                
+
 
                 {/*
                 <CardFooter className="absolute bottom-0">
                 </CardFooter> */}
 
-                    <Image
-                        src={imageUrl}
-                        alt={data.title}
-                        width={200}
-                        height={300}
-                        // sizes="100vw"
-                        style={{
-                            width: '10rem%',
-                            height: 'auto',
-                            objectFit: 'contain',
-                        }}
-    
-                        className="w-full h-auto absolute hover:z-0 top-0 left-0 opacity-100 group-hover:opacity-35 transition-all duration-500 ease-in-out"
-                    />
+
+
                 
-                    
-                    {/* {hasProviders && */}
-                    
-                <div className="absolute bottom-0 m-auto w-full bg-gradient-to-t from-black min-h-56 z-20">
 
-                    <div className="absolute left-2 right-2 flex flex-row bottom-2 ">
-
-                        <ProvidersBlock tmdbId={data.tmdb_id} tmdbType={data.tmdb_type}  />
-                    </div>
-                </div>
                 {/* } */}
+                <Image
+                    src={imageUrl}
+                    alt={data.title}
+                    width={200}
+                    height={300}
+                    // sizes="100vw"
+                    style={{
+                        width: '100%',
+                        height: 'auto',
+                        objectFit: 'contain',
+                        zIndex: -1
+
+                    }}
+
+                    className="w-full h-auto absolute top-0 left-0 opacity-100 group-hover:opacity-25 transition-all duration-500 ease-in-out"
+                />
             </Card>
         </>
 

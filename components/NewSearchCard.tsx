@@ -132,7 +132,7 @@ const NewSearchCard = ({
                 <AddWatchlistButton media={media} width="w-1/6" />
 
             </CardContent>
-            <CardFooter className="flex justify-between align-middle w-full max-h-12overflow-hidden ">
+            <CardFooter className="flex justify-between align-middle w-full max-h-24 -mt-4 overflow-hidden ">
 
 
                 <ProvidersBlock tmdbId={data.tmdb_id} tmdbType={data.tmdb_type} />
