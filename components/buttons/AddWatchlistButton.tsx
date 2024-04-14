@@ -7,37 +7,28 @@ import { TMDBMultiSearchResult } from "@/types/tmdbApi"
 
 import { toast } from "sonner"
 
-const AddWatchlistButton = ({ 
-    media, 
-    width = "w-full" 
-}: { 
-    media: TMDBMultiSearchResult, 
-    width?: string }) => {
+const AddWatchlistButton = ({
+    media,
+    width = "w-full",
+    query
+}: {
+    media: TMDBMultiSearchResult,
+    width?: string
+    query: boolean
+}) => {
     const { user, setUser } = useUser()
-   
+
     if (!user) return null
 
 
     let data: WatchlistDocumentCreate
     function handleAddWatchlist() {
-
-        if (media.media_type === 'tv') {
-
-            data = {
-                title: media.name,
-                content_type: media.media_type,
-                tmdb_id: media.id,
-                tmdb_type: media.media_type,
-                release_date: media.first_air_date,
-                poster_url: `https://image.tmdb.org/t/p/w500${media.poster_path}`,
-                backdrop_url: media.poster_path ? `https://image.tmdb.org/t/p/w500${media.backdrop_path}` : null,
-                description: media.overview ? media.overview : "No description available",
-                genre_ids: media.genre_ids ? media.genre_ids : [],
-                plex_request: false
-            }
-        }
-
-        if (media.media_type === 'movie') {
+        if (query) {
+            
+            const res = await fetch(`https://api.themoviedb.org/3/search/multi?query=${query}`, options)
+            .then(res => res.json())
+            .then(data => setResults(data.results))
+            .catch(error => console.log(error))
 
             data = {
                 title: media.title,
@@ -51,9 +42,43 @@ const AddWatchlistButton = ({
                 genre_ids: media.genre_ids ? media.genre_ids : [],
                 plex_request: false
             }
+        } else {
+
+            if (media.media_type === 'tv') {
+
+                data = {
+                    title: media.name,
+                    content_type: media.media_type,
+                    tmdb_id: media.id,
+                    tmdb_type: media.media_type,
+                    release_date: media.first_air_date,
+                    poster_url: `https://image.tmdb.org/t/p/w500${media.poster_path}`,
+                    backdrop_url: media.poster_path ? `https://image.tmdb.org/t/p/w500${media.backdrop_path}` : null,
+                    description: media.overview ? media.overview : "No description available",
+                    genre_ids: media.genre_ids ? media.genre_ids : [],
+                    plex_request: false
+                }
+            }
+
+            if (media.media_type === 'movie') {
+
+                data = {
+                    title: media.title,
+                    content_type: media.media_type,
+                    tmdb_id: media.id,
+                    tmdb_type: media.media_type,
+                    release_date: media.release_date,
+                    poster_url: media.poster_path ? `https://image.tmdb.org/t/p/w500${media.poster_path}` : null,
+                    backdrop_url: media.poster_path ? `https://image.tmdb.org/t/p/w500${media.backdrop_path}` : null,
+                    description: media.overview ? media.overview : "No description available",
+                    genre_ids: media.genre_ids ? media.genre_ids : [],
+                    plex_request: false
+                }
+            }
         }
 
         toast.promise(database.createDocument('watchlist', 'watchlist', ID.unique(), data), {
+
             loading: 'Adding...',
             success: (res) => {
                 const title = data.title

@@ -27,14 +27,13 @@
 ### Plex Request
 
 - [ ] if title not in your providers then display add to Plex rew
-
 - [ ] Admin view to see users with requests
 
 ### User
 
-- [ ] Add access_to_plex label to user account to grant access to request from Plex switch
+- [ ] Add `plex` label to user account to grant access to request from Plex switch
+
 ### API
 
-- [ ] Add Watchmode API
-- [ ] Add TMDb API
-  - [ ] Add TMDB autofill for watchlist add title box
+- [X] Add TMDb API
+  - [X] Add TMDB autofill for watchlist add title box
