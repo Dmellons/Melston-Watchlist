@@ -23,7 +23,12 @@
 - [ ] Add details page
   - [x] Add for Movies
   - [ ] Add for TV
-  
+
+### Plex Request
+
+- [ ] if title not in your providers then display add to Plex rew
+
+- [ ] Admin view to see users with requests
 
 ### API
 
