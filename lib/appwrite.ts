@@ -1,6 +1,6 @@
 import { WatchlistDocumentCreate } from '@/types/appwrite';
 import { AutocompleteResult } from '@/types/watchmodeApi';
-import { Client, Account, Databases, ID } from 'appwrite';
+import { Client, Account, Databases,  ID } from 'appwrite';
 import { toast } from 'sonner';
 
 export const client = new Client();
@@ -12,6 +12,7 @@ client
 
 export const account = new Account(client);
 export const database = new Databases(client)
+
 export { ID,  type Models } from 'appwrite';
 
 // export function handleAddWatchlist({ media }: { media: AutocompleteResult }) {

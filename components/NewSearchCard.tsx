@@ -65,7 +65,7 @@ const NewSearchCard = ({
         )
     }
     return (
-        <Card className="h-80 w-80  rounded m-2 border-none group hover:border hover:border-primary hover:ease-in-out hover:duration-300">
+        <Card className="h-96 w-80  rounded m-2 border-none group hover:border hover:border-primary hover:ease-in-out hover:duration-300">
             <CardHeader className="h-48 w-36 m-auto">
 
                 <Dialog>
@@ -111,6 +111,7 @@ const NewSearchCard = ({
                                 </Link>
                             </Button>
                         }
+                        <AddWatchlistButton media={media}  />
                         {/* {data.tmdb_type === 'tv' &&
                             <Button asChild variant={"ghost"} >
                                 <Link href={`/${data.tmdb_type}/${data.tmdb_id}`} >
