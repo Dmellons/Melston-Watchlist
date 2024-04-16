@@ -65,7 +65,7 @@ const NewSearchCard = ({
         )
     }
     return (
-        <Card className="h-96 w-80  rounded m-2 border-none group hover:border hover:border-primary hover:ease-in-out hover:duration-300">
+        <Card className="min-h-80 w-80  rounded m-2 border-none group hover:border hover:border-primary hover:ease-in-out hover:duration-300">
             <CardHeader className="h-48 w-36 m-auto">
 
                 <Dialog>
@@ -133,7 +133,7 @@ const NewSearchCard = ({
                 <AddWatchlistButton media={media} width="w-1/6" />
 
             </CardContent>
-            <CardFooter className="flex justify-between align-middle w-full max-h-24 -mt-4 overflow-hidden ">
+            <CardFooter className="flex justify-between align-middle w-full max-h-24 overflow-hidden ">
 
 
                 <ProvidersBlock tmdbId={data.tmdb_id} tmdbType={data.tmdb_type} />

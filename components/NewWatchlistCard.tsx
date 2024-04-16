@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import Image from "next/image";
 import Link from "next/link"
 import ProvidersBlock from "@/components/ProvidersBlock";
-import { TMDBMultiSearchResult } from "@/types/tmdbApi";
+import { Credits, TMDBMultiSearchResult } from "@/types/tmdbApi";
 import { AspectRatio } from "@radix-ui/react-aspect-ratio";
 import AddWatchlist from "./buttons/AddWatchlist";
 import AddWatchlistButton from "./buttons/AddWatchlistButton";
@@ -21,6 +21,7 @@ type CardData = {
     year?: string,
     image_url: string,
     description: string,
+    credits: Credits
 
 }
 let data: CardData
@@ -54,6 +55,7 @@ const NewWatchlistCard = ({
         }
 
         if (media.content_type === 'movie') {
+
             setData({
                 title: media.title,
                 content_type: media.content_type,
@@ -61,7 +63,8 @@ const NewWatchlistCard = ({
                 tmdb_type: media.content_type,
                 year: media.release_date,
                 image_url: media.poster_path,
-                description: media.overview ? media.overview : "No description available"
+                description: media.overview ? media.overview : "No description available",
+                credits: media.credits
             })
 
 
@@ -80,7 +83,7 @@ const NewWatchlistCard = ({
         )
     }
 
-    console.log({ data })
+    // console.log({ data?.cast })
     // const imageUrl = 'https://image.tmdb.org/t/p/w500/' + data.image_url
 
     const imageUrl = media.poster_url
@@ -95,7 +98,7 @@ const NewWatchlistCard = ({
                 className="group w-64 bg-transparent rounded-xl  min-h-[200px] hover:transition-all h-96 hover:ease-in-out hover:scale-105 hover:duration-500 overflow-hidden border border-primary relative"
 
             >
-                <div className="absolute bottom-0 m-auto w-full bg-gradient-to-t from-background/75  min-h-24 ">
+                <div className="absolute bottom-0 m-auto w-full bg-gradient-to-t from-background/75  min-h-24">
                     <div className="absolute left-2 right-2 flex flex-row bottom-2 ">
                         <ProvidersBlock tmdbId={data.tmdb_id} tmdbType={data.tmdb_type} />
                     </div>

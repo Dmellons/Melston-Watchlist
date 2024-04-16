@@ -23,7 +23,7 @@ export const DetailPage = async ({ params }: DetailPageProps) => {
   const { tmdbType, tmdbId } = params;
 
   console.log({ tmdbType, tmdbId })
-  const url = `https://api.themoviedb.org/3/${tmdbType}/${tmdbId}?language=en-US`;
+  const url = `https://api.themoviedb.org/3/${tmdbType}/${tmdbId}?append_to_response=credits&language=en-US`;
   const response = await fetch(url, tmdbFetchOptions);
   const data: TMDBApiMovieDetail = await response.json();
   console.log({ data })

@@ -64,7 +64,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
                     labels,
                     image: prefs.image ? prefs.image : null,
                     watchlist: watchlist,
-                    // debug: rest
+                    debug: rest
                 });
             } catch (error) {
                 console.error(`Check User Error: ${error}`)

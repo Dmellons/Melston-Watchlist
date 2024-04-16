@@ -1,3 +1,5 @@
+import { Credits } from "@/types/tmdbApi";
+
 export const tmdbFetchOptions = {
     method: 'GET',
     headers: {
@@ -48,6 +50,7 @@ export const tmdbFetchOptions = {
     poster_path: string;
     production_companies: ProductionCompany[];
     production_countries: ProductionCountry[];
+    credits: Credits;
     release_date: string;
     revenue: number;
     runtime: number;
