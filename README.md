@@ -37,3 +37,6 @@
 
 - [X] Add TMDb API
   - [X] Add TMDB autofill for watchlist add title box
+
+- [ ] [Add PSN-api](https://www.npmjs.com/package/psn-api)
+- [ ] Add Steam API
