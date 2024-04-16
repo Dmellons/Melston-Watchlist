@@ -44,7 +44,7 @@ function TestPage() {
 
     return (
         <main className="flex min-h-screen flex-col items-center p- sm:p-18">
-            {user?.admin &&
+            {user && user?.admin &&
             <Button
             className="bg-red-500 hover:bg-red-600"
             onClick={async () => {
