@@ -1,5 +1,6 @@
 'use server'
 
+import ProvidersBlock from '@/components/ProvidersBlock';
 import AddWatchlistButton from '@/components/buttons/AddWatchlistButton';
 import BackButton from '@/components/buttons/BackButton';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
@@ -56,6 +57,7 @@ export const DetailPage = async ({ params }: DetailPageProps) => {
           <h1 className="text-3xl font-bold">{data.title}</h1>
           <p className="text-gray-700">{data.tagline}</p>
           <p>{data.overview}</p>
+          <ProvidersBlock tmdbId={data.id} tmdbType={tmdbType}/>
           {data.vote_average > 0 && (
             <p>Score: {data.vote_average.toFixed(1)}/10 <span className="text-foreground/20 text-xs">({data.vote_count} votes)</span></p>
           )}
