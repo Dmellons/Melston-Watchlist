@@ -16,12 +16,14 @@ const ProvidersBlock = (
     tmdbType,
     country = 'US',
     userProviders,
+    maxWidth = 'max-w-36',
     // setHasProviders
   }: {
     tmdbId: number
     tmdbType: string
     country?: string,
     userProviders?: string[],
+    maxWidth?: string
     // setHasProviders?: (hasProviders: boolean) => void
   }
 ) => {
@@ -66,7 +68,7 @@ const ProvidersBlock = (
         <TooltipTrigger asChild>
 
 
-          <div className='w-full m-auto flex-col flex max-w-36 justify-center items-center z-10 '>
+          <div className={`w-full m-auto flex-col flex justify-center items-center z-10 ${maxWidth}`}>
             <div className='flex gap-4 justify-center flex-wrap  '>
               {loading ? (
                 <div className='text-center'>Loading...</div>
@@ -100,10 +102,25 @@ const ProvidersBlock = (
 
           </div >
         </TooltipTrigger>
-        <TooltipContent className='max-w-52'>
+        <TooltipContent className='max-w-52 shadow-md  border border-primary'>
 
-          <h4 className='text-center text-xs mb-1 mr-2 font-bold '>Available to stream on these platforms</h4>
-          <p className='font-foreground/50 text-[10px] text-center  z-10 '>
+          <h4 className='text-center text-xs mb-1 mr-2 font-bold '>
+            Available to stream on these platforms
+          </h4>
+          <div className="div flex flex-wrap gap-2 justify-center my-2">
+
+          {data?.results[country]?.flatrate?.map((provider: StreamingInfo, key: number) => (
+            <Image
+            key={key}
+            src={`https://image.tmdb.org/t/p/w500${provider.logo_path}`}
+            alt={provider.provider_name}
+            width={30}
+            height={30}
+            className='rounded '
+            />
+          ))}
+          </div>
+          <p className='font-foreground/10 text-[10px] text-center  z-10 font-thin'>
 
             Streaming results provided by <a className='' href="https://www.justwatch.com/">JustWatch</a>
           </p>
