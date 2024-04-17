@@ -1,5 +1,3 @@
-'use server'
-
 import ProvidersBlock from '@/components/ProvidersBlock';
 import AddWatchlistButton from '@/components/buttons/AddWatchlistButton';
 import BackButton from '@/components/buttons/BackButton';
@@ -15,13 +13,13 @@ import Link from 'next/link';
 interface DetailPageProps {
 
   params: {
-    tmdbType: string;
-    tmdbId: string;
+      tmdbId: string;
   }
 }
 
 export const DetailPage = async ({ params }: DetailPageProps) => {
-  const { tmdbType, tmdbId } = params;
+  const {  tmdbId } = params;
+  const tmdbType = 'movie'
 
   console.log({ tmdbType, tmdbId })
   const url = `https://api.themoviedb.org/3/${tmdbType}/${tmdbId}?append_to_response=credits&language=en-US`;
@@ -57,7 +55,11 @@ export const DetailPage = async ({ params }: DetailPageProps) => {
           <h1 className="text-3xl font-bold">{data.title}</h1>
           <p className="text-gray-700">{data.tagline}</p>
           <p>{data.overview}</p>
-          <ProvidersBlock tmdbId={data.id} tmdbType={tmdbType}/>
+          <div className="flex items-start gap-2">
+
+            <Label className="" htmlFor='streaming' >Streaming on</Label>
+            <ProvidersBlock  tmdbId={data.id} tmdbType={tmdbType} maxWidth='' />
+          </div>
           {data.vote_average > 0 && (
             <p>Score: {data.vote_average.toFixed(1)}/10 <span className="text-foreground/20 text-xs">({data.vote_count} votes)</span></p>
           )}
@@ -70,14 +72,12 @@ export const DetailPage = async ({ params }: DetailPageProps) => {
           }
 
           <p>Language: {data.original_language}</p>
-          <p>Revenue: ${data.revenue}</p>
-          <p>Budget: ${data.budget}</p>
+          <p>Revenue: ${data.revenue.toLocaleString()}</p>
+          <p>Budget: ${data.budget.toLocaleString()}</p>
 
           <p>Status: {data.status}</p>
 
           <p>Runtime: {data.runtime} minutes</p>
-
-
           <div className="p-4 text-center sm:text-left">
 
             <h3 className="text-lg font-bold">External Links</h3>
@@ -111,6 +111,8 @@ export const DetailPage = async ({ params }: DetailPageProps) => {
               </Button>
             </div>
           </div>
+
+
           <Accordion type='single' collapsible className=''>
             {
               data.production_countries?.length > 0 ? (
