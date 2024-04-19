@@ -35,7 +35,7 @@ export default function LoginButton() {
                         <AvatarFallback className="bg-popover text-popover-foreground">{userInitials}</AvatarFallback>
                     </Avatar>
                 </PopoverTrigger>
-                <PopoverContent className="grid justify-items-center w-80 bg-popover">
+                <PopoverContent className="grid justify-items-center w-80 bg-popover sm:mr-10 sm:mt-2">
                     <p>Welcome, {user.name}</p>
                     <p className="text-card-foreground/50 font-thin text-sm">{user.email}</p>
                     <div className="py-2">
