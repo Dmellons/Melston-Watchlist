@@ -33,7 +33,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
 
-            <main className="w-full m-auto">
+            <main className="w-full m-auto px-2">
             <MainHeader />
               {children}
             </main>
