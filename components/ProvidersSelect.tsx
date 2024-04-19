@@ -58,9 +58,9 @@ export default function ProvidersSelect() {
 
     useEffect(() => {
         const handleSave = async () => {
-            if (providers.length > 0) {
+            // if (providers.length > 0) {
                 await account.updatePrefs({ providers });
-            }
+            // }
         };
         handleSave();
     }, [providers]);
