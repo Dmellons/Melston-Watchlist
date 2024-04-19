@@ -37,6 +37,7 @@ export default function LoginButton() {
                 </PopoverTrigger>
                 <PopoverContent className="grid justify-items-center w-80 bg-popover">
                     <p>Welcome, {user.name}</p>
+                    <p className="text-card-foreground/50 font-thin text-sm">{user.email}</p>
                     <div className="py-2">
 
                         <ModeToggle />
