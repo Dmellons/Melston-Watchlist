@@ -17,6 +17,7 @@ const ProvidersBlock = (
     country = 'US',
     userProviders,
     maxWidth = 'max-w-36',
+    iconSize = 22
     // setHasProviders
   }: {
     tmdbId: number
@@ -24,6 +25,7 @@ const ProvidersBlock = (
     country?: string,
     userProviders?: string[],
     maxWidth?: string
+    iconSize?: number
     // setHasProviders?: (hasProviders: boolean) => void
   }
 ) => {
@@ -74,15 +76,15 @@ const ProvidersBlock = (
                 <div className='text-center'>Loading...</div>
               ) : (
                 // @ts-ignore
-                <div className='flex flex-wrap gap-2 min-w-36 w-4/5 items-center justify-center z-10 bg-card/50 p-2 rounded-lg border border-primary'>
+                <div className='flex flex-wrap gap-2 min-w-48 w-4/5 items-center justify-center z-10 bg-card/50 p-2 rounded-lg border border-primary'>
                   {/* @ts-ignore */}
                   {data?.results[country]?.flatrate?.slice(0, 5).map((provider: StreamingInfo, key: number) => (
                     <Image
                       key={key}
                       src={`https://image.tmdb.org/t/p/w500${provider.logo_path}`}
                       alt={provider.provider_name}
-                      width={30}
-                      height={30}
+                      width={iconSize}
+                      height={iconSize}
                       className='rounded '
                     />
                   ))}

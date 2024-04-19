@@ -16,6 +16,28 @@ export const database = new Databases(client)
 export { ID,  type Models } from 'appwrite';
 
 
+export async function updateUserPreferences(preferences: object): Promise<object> {
+    try {
+        const response = await account.updatePrefs(preferences);
+        return response;
+    } catch (error) {
+        console.log(error); // Failure
+        throw error;
+    }
+}
+
+
+export async function getCurrentPreferences(): Promise<object> {
+    try {
+        const response = await account.getPrefs();
+        return response;
+    } catch (error) {
+        console.log(error); // Failure
+        throw error;
+    }
+}
+
+
 export function handleWatchlistDelete({ id }: { id: string }) {
     toast.promise(database.deleteDocument('watchlist', 'watchlist', id), {
         loading: 'Deleting...',

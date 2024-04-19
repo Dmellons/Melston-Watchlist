@@ -8,6 +8,7 @@ import Image from "next/image"
 import NewWatchlistCard from "@/components/NewWatchlistCard"
 import { Button } from "@/components/ui/button"
 import { account } from "@/lib/appwrite"
+import ProvidersSelect from "@/components/ProvidersSelect"
 
 export async function asyncFunc(): Promise<void> {
     const session = await account.getSession('current')
@@ -45,6 +46,7 @@ function TestPage() {
     return (
         <main className="flex min-h-screen flex-col items-center p- sm:p-18">
             {user && user?.admin &&
+            <>
             <Button
             className="bg-red-500 hover:bg-red-600"
             onClick={async () => {
@@ -53,6 +55,14 @@ function TestPage() {
             }}>
                 Test
             </Button>
+            <Button 
+                onClick={() => {
+                    account.updatePrefs({ providers: [] })
+                }}
+            >Clear Perfs</Button>
+
+            <ProvidersSelect  />
+                </>
         }
         </main>
     )

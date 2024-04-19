@@ -99,7 +99,8 @@ const NewWatchlistCard = ({
 
             >
                 <div className="absolute bottom-0 m-auto w-full bg-gradient-to-t from-background/75  min-h-24">
-                    <div className="absolute left-2 right-2 flex flex-row bottom-2 ">
+                    <div className="absolute left-2 right-2 flex flex-col bottom-2 ">
+                        <h1 className="hover:opacity-0 opacity-100 transition-all text-card-foreground text-2xl font-bold ml-2 bg-gradient-to-t from-background/75 rounded-lg w-fit px-2 ">{data.title}</h1>
                         <ProvidersBlock tmdbId={data.tmdb_id} tmdbType={data.tmdb_type} />
                     </div>
                 </div>
