@@ -55,13 +55,14 @@ export default function ProvidersSelect() {
       setProviders(prevProviders => [...prevProviders, provider]);
     }
   };
-
+  console.log({providers})
   return (
     <>
     <div>
-      {availableProviders?.filter(provider => providers.includes(provider.provider_id)).map((provider) => (
-          <div key={provider.provider_id}>{provider.provider_name}</div>
-        ))}
+      {providers.map((providerId) => {
+        const provider = availableProviders?.find((p) => p.provider_id === providerId);
+        return provider ? <div key={providerId}>{provider.provider_name}</div> : null;
+      })}
       </div>
       <Input value={search} onChange={(e) => setSearch(e.target.value)} />
       <div className="flex flex-col gap-2">
@@ -73,6 +74,8 @@ export default function ProvidersSelect() {
     .sort((a, b) => a.provider_name.localeCompare(b.provider_name))
     .map((provider) => (
         <Label key={provider.provider_id}>
+            {/* <Image
+                src */}
               <Checkbox
                 onCheckedChange={() => handleCheck(provider.provider_id)}
                 checked={providers.includes(provider.provider_id)}
