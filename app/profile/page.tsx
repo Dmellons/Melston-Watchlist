@@ -1,4 +1,6 @@
 'use client'
+import ProvidersBlock from "@/components/ProvidersBlock";
+import ProvidersSelect from "@/components/ProvidersSelect";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -36,6 +38,7 @@ const ProfilePage = () => {
           <p>Name: {user.name}</p>
           <p>Email: {user.email}</p>
           <p>Admin: {user.admin ? "Yes" : "No"}</p>
+          <ProvidersSelect />
           <div className="flex items-center space-x-2">
 
           <Label htmlFor="tester">Tester: </Label>
