@@ -80,7 +80,7 @@ export default function ProvidersSelect() {
             <div className="gap-2 flex flex-col my-4 border rounded-lg border-gray-300 p-2">
                 <Label className="text-sm text-center">Your Providers</Label>
                 <div className="flex flex-wrap gap-3 max-w-96  items-center justify-center w-full m-auto">
-                    {providers.map((providerId) => {
+                    {providers && providers.map((providerId) => {
                         const provider = availableProviders?.find((p) => p.provider_id === providerId);
                         return provider ? (
 
