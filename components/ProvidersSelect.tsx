@@ -177,7 +177,7 @@ export default function ProvidersSelect() {
                     />
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-8 place-items-center h-96 overflow-y-auto overflow-x-hidden scroll-m-1">
                        
-                            {availableProviders &&
+                            {availableProviders && providers &&
                                 availableProviders
                                     .filter((provider) =>
                                         provider.provider_name.toLowerCase().includes(search.toLowerCase())
