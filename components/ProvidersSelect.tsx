@@ -58,9 +58,9 @@ export default function ProvidersSelect() {
 
     useEffect(() => {
         const handleSave = async () => {
-            // if (providers.length > 0) {
+            if (providers.length > 0) {
                 await account.updatePrefs({ providers });
-            // }
+            }
         };
         handleSave();
     }, [providers]);
@@ -131,8 +131,8 @@ export default function ProvidersSelect() {
                     </DialogTitle>
                     <DialogDescription>
                         <div className="gap-2 flex flex-col mt-4">
-                            <Label className="text-sm text-center">Your Providers</Label>
-                            <div className="flex flex-wrap gap-3 max-w-96  items-center justify-center w-full m-auto">
+                            <Label className="text-sm text-center">Tap to remove</Label>
+                            <div className="flex flex-wrap gap-3 max-w-96  justify-center w-full m-auto">
                                 {providers && providers.map((providerId) => {
                                     const provider = availableProviders?.find((p) => p.provider_id === providerId);
                                     return provider ? (
@@ -175,7 +175,7 @@ export default function ProvidersSelect() {
                         value={search} onChange={(e) => setSearch(e.target.value)}
                         className="max-w-lg"
                     />
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mt-8 place-items-center h-96 overflow-y-auto overflow-x-hidden scroll-m-1">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2sm:gap-4 mt-8 place-items-center h-96 overflow-y-auto overflow-x-hidden ">
                        
                             {availableProviders && providers &&
                                 availableProviders
@@ -184,6 +184,7 @@ export default function ProvidersSelect() {
                                     )
                                     .sort((a, b) => a.provider_name.localeCompare(b.provider_name))
                                     .map((provider) => (
+                                        
                                         <div
                                             key={provider.provider_id}
                                             onClick={() => {
