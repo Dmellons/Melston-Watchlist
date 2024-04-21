@@ -24,7 +24,7 @@ export default function RootLayout({
       <head >
         <link rel="icon" href="/logo.svg" sizes="any" />
       </head>
-      <body className={inter.className}>
+      <body className={`${inter.className} bg-foreground/10`}>
         <UserProvider>
           <ThemeProvider
             attribute="class"
@@ -34,8 +34,8 @@ export default function RootLayout({
           >
            
            
-              <main className="w-full max-w-7xl mx-auto min-h-screen  m-auto px-2 ">
-                <header className="sticky top-0 z-20 bg-background border-b-2 border-foreground/40 px-2 mb-4">
+              <main className="relative z-0 w-full bg-background max-w-7xl mx-auto min-h-screen bg-bacground border-x-2 border-x-primary/10 m-auto ">
+                <header className="sticky top-0 z-20 bg-background border-b-2 border-primary/40 mb-4">
 
                 <MainHeader />
                 </header>
