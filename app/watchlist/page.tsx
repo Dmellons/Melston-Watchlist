@@ -43,7 +43,9 @@ function WatchlistPage() {
                                             { 
                                                 watchlist.documents.map((document) => {
                                                     document.content_type === 'movie' ? document.content_type = 'movie' : document.content_type = 'tv'
-                                                    if (document.content_type === 'movie' && user.labels?.includes('tester')) {
+                                                    if (
+                                                        // document.content_type === 'movie' && 
+                                                        user.labels?.includes('tester')) {
                                                         return (
                                                         
                                                         <NewWatchlistCard 
