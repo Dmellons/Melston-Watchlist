@@ -44,6 +44,7 @@ const ProvidersBlock = (
 
   useEffect(() => {
     const fetchData = async () => {
+      console.log({ tmdbId, tmdbType })
       try {
         /*
         / Streaming results provided by JustWatch - https://www.justwatch.com/
