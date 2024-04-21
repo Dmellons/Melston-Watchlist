@@ -74,7 +74,7 @@ const ProvidersBlock = (
     return null;
   }
 
-  if (userProviders) {
+  if (userProviders && userProviders.length > 0) {
 
     const canStream = data?.results[country]?.flatrate?.filter((provider: StreamingInfo) =>
       userProviders?.includes(provider.provider_id)
