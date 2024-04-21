@@ -21,9 +21,11 @@ type CardData = {
 let data: CardData
 
 const NewSearchCard = ({
-    media
+    media,
+    userProviders
 }: {
     media: TMDBMultiSearchResult
+    userProviders?: number[]
 }) => {
 
     if (media.media_type === 'tv') {
@@ -119,7 +121,7 @@ const NewSearchCard = ({
                                 </Link>
                             </Button>
                         } */}
-                        <ProvidersBlock tmdbId={data.tmdb_id} tmdbType={data.tmdb_type} />
+                        <ProvidersBlock tmdbId={data.tmdb_id} tmdbType={data.tmdb_type} userProviders={userProviders} />
                     </DialogContent>
                 </Dialog>
 
@@ -136,7 +138,11 @@ const NewSearchCard = ({
             <CardFooter className="flex justify-between align-middle w-full max-h-24 overflow-hidden ">
 
 
-                <ProvidersBlock tmdbId={data.tmdb_id} tmdbType={data.tmdb_type} />
+                <ProvidersBlock 
+                    tmdbId={data.tmdb_id} 
+                    tmdbType={data.tmdb_type} 
+                    userProviders={userProviders} 
+                    />
 
             </CardFooter>
         </Card>

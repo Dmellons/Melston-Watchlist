@@ -9,6 +9,7 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import { Skeleton } from "./ui/skeleton"
 import SkeletonMediaSearchCard from "./skeletons/SkeletonMediaSearchCard"
 import NewSearchCard from "@/components/NewSearchCard"
+import { useUser } from "@/hooks/User"
 
 
 const SearchMovie = ({
@@ -22,6 +23,8 @@ const SearchMovie = ({
     const [loading, setLoading] = useState(true)
     const [query, setQuery] = useState<string>("")
     const [results, setResults] = useState<TMDBMultiSearchResult[]>([])
+
+    const { user } = useUser()
 
 
     // useEffect(() => {
@@ -108,7 +111,7 @@ const SearchMovie = ({
                                    
 
                                         results.slice(0, resultsLength).map((result) => (
-                                            <NewSearchCard key={result.id} media={result} />
+                                            <NewSearchCard key={result.id} media={result} userProviders={user?.providers}/>
                                         ))
                                     )}
                                 </div>
