@@ -13,13 +13,13 @@ import { useUser } from "@/hooks/User"
 
 
 const SearchMovie = ({
-    resultsLength=10
+    resultsLength = 10
     // query
 }: {
     resultsLength?: number
-        // query:string
-        
-    }) => {
+    // query:string
+
+}) => {
     const [loading, setLoading] = useState(true)
     const [query, setQuery] = useState<string>("")
     const [results, setResults] = useState<TMDBMultiSearchResult[]>([])
@@ -29,10 +29,10 @@ const SearchMovie = ({
 
     // useEffect(() => {
     //     setLoading(true)
-     
+
     //     movieList()
-        
-        
+
+
     // }, [query])
     const movieList = async () => {
         setLoading(true)
@@ -59,74 +59,93 @@ const SearchMovie = ({
 
 
     return (
-        <div className="p-3 flex flex-col items-center">
-            <h1 className="text-3xl mb-4">Search Movies & TV</h1>
+        <>
 
-            <Input
-                placeholder="Movie, TV Show, Person..."
-                value={query}
-                className="bg-white/90  text-black w-80"
-                onChange={(e) => {
+            <div className="p-3 flex flex-col items-center">
+                <h1 className="text-3xl mb-4">Search Movies & TV</h1>
 
-                    setQuery(e.target.value)
+                <Input
+                    placeholder="Movie, TV Show, Person..."
+                    value={query}
+                    className="bg-white/90  text-black w-80"
+                    onChange={(e) => {
 
-                }}
-                onKeyUp={(e) => {
-                    if (e.key === "Enter") {
-                        movieList()
-                    }
-                }}
-            />
-            <div className="flex gap-2">
+                        setQuery(e.target.value)
 
-                <Button
-                    className="my-5 w-24 align-middle"
-                    onClick={() => movieList()}
-                >
-                    Search
-                </Button>
-                <Button
-                    variant="secondary"
-                    className="my-5 w-24 align-middle"
-                    onClick={() => setResults([])}
-                >
-                    Clear
-                </Button>
-            </div>
+                    }}
+                    onKeyUp={(e) => {
+                        if (e.key === "Enter") {
+                            movieList()
+                        }
+                    }}
+                />
+                <div className="flex gap-2">
 
-
-
-            {
-                results.length > 0 &&
-                     
-                                                                               
-                <div className="p-3 my-4 w-full">
-                   
-                                <div className="flex flex-col lg:flex-row lg:flex-wrap justify-center gap-4 items-center place-items-center lg:w-full m-auto">
-                                    {loading ? (
-
-                                        <SkeletonMediaSearchCard />
-
-                                    ) : (
-                                   
-
-                                        results.slice(0, resultsLength).map((result) => (
-                                            <NewSearchCard key={result.id} media={result} userProviders={user?.providers}/>
-                                        ))
-                                    )}
-                                </div>
-
-    
-
+                    <Button
+                        className="my-5 w-24 align-middle"
+                        onClick={() => movieList()}
+                    >
+                        Search
+                    </Button>
+                    <Button
+                        variant="secondary"
+                        className="my-5 w-24 align-middle"
+                        onClick={() => setResults([])}
+                    >
+                        Clear
+                    </Button>
                 </div>
-                // )
-
-            }
-
-           
 
 
-        </div>
+
+                {
+                    results.length > 0 &&
+                    <>
+
+
+                        <div className="p-3 my-4 w-full">
+
+                            <div className="flex flex-col lg:flex-row lg:flex-wrap justify-center gap-4 items-center place-items-center lg:w-full m-auto">
+                                {loading ? (
+
+                                    <SkeletonMediaSearchCard />
+
+                                ) : (
+
+
+                                    results.slice(0, resultsLength).map((result) => (
+                                        <NewSearchCard key={result.id} media={result} userProviders={user?.providers} />
+                                    ))
+                                )}
+
+                            </div>
+
+
+
+
+                        {/* <div className="w-full">
+                            <Carousel className="w-4/5">
+                                <CarouselContent>
+                                    {results.slice(0, resultsLength).map((result) => (
+                                        <CarouselItem key={result.id} className="basis-1/2">
+                                            <NewSearchCard key={result.id} media={result} userProviders={user?.providers} />
+                                        </CarouselItem>
+                                    ))}
+                                </CarouselContent>
+                                <CarouselNext />
+                                <CarouselPrevious />
+                            </Carousel>
+                        </div> */}
+                        </div>
+
+                    </>
+                }
+
+
+
+
+            </div>
+        </>
     )
 }
 

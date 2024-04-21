@@ -74,5 +74,6 @@ export type CastMember = {
   }
   
   export type Credits = {
-    cast: CastMember[];
+    cast?: CastMember[];
+    crew?: CastMember[];
   }
