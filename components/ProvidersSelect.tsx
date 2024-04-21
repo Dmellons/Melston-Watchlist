@@ -125,7 +125,7 @@ export default function ProvidersSelect() {
                     </Button>
                     <Label className="text-xs text-center">Edit Providers</Label>
                 </DialogTrigger>
-                <DialogContent>
+                <DialogContent className="w-4/5 rounded-xl sm:w-full ">
                     <DialogTitle>
                         Add Providers
                     </DialogTitle>
@@ -170,12 +170,12 @@ export default function ProvidersSelect() {
                             </div>
                         </div>
                     </DialogDescription>
-                    <Label className="my-4">Provider Search</Label>
+                    <Label className="mt-4">Filter</Label>
                     <Input
                         value={search} onChange={(e) => setSearch(e.target.value)}
-                        className="max-w-lg"
+                        className="max-w-lg bg-popover/75"
                     />
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2sm:gap-4 mt-8 place-items-center h-96 overflow-y-auto overflow-x-hidden ">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2sm:gap-4 mt-8 place-items-center max-h-96 overflow-y-auto overflow-x-hidden ">
                        
                             {availableProviders && providers &&
                                 availableProviders

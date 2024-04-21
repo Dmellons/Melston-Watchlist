@@ -32,20 +32,21 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-
-            <main className="w-full m-auto px-2">
-            <MainHeader />
-              {children}
-            </main>
-            <Toaster
-              toastOptions={{
-                // unstyled: true,
-                classNames: {
-                  // toast: "bg-slate-900 text-slate-50",
-                  error: "bg-destructive text-destructive-foreground",
-                  success: "bg-success text-success-foreground",
-                }
-              }} />
+            <main className="bg-background/10">
+              <main className="w-full max-w-7xl mx-auto min-h-screen  m-auto px-2">
+                <MainHeader />
+                {children}
+              </main>
+              </main>
+              <Toaster
+                toastOptions={{
+                  // unstyled: true,
+                  classNames: {
+                    // toast: "bg-slate-900 text-slate-50",
+                    error: "bg-destructive text-destructive-foreground",
+                    success: "bg-success text-success-foreground",
+                  }
+                }} />
 
           </ThemeProvider>
         </UserProvider>

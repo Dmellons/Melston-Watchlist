@@ -23,6 +23,7 @@ export type UserType = {
     labels?: string[]
     watchlist?: Models.DocumentList<WatchlistDocument> | Models.DocumentList<Models.Document>
     image?: string;
+    providers?: number[]
     debug?: any;
 }
 
@@ -63,6 +64,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
                     status,
                     labels,
                     image: prefs.image ? prefs.image : null,
+                    providers: prefs.providers ? prefs.providers : [],
                     watchlist: watchlist,
                     debug: rest
                 });
