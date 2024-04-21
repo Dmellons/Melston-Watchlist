@@ -12,6 +12,7 @@ import DeleteButton from "@/components/DeleteButton";
 import { WatchlistDocument } from "@/types/appwrite";
 import { useEffect, useState } from "react";
 import { Skeleton } from "./ui/skeleton";
+import { useUser } from "@/hooks/User";
 
 type CardData = {
     title: string,
@@ -30,6 +31,8 @@ const NewWatchlistCard = ({
 }: {
     media: WatchlistDocument
 }) => {
+
+    const { user } = useUser()
 
 
     const [data, setData] = useState<CardData | null>(null)
@@ -92,21 +95,17 @@ const NewWatchlistCard = ({
     return (
 
 
-        <>
+        <div className="flex flex-col">
             <Card
                 key={data.title}
-                className="group w-64 bg-transparent rounded-xl  min-h-[200px] hover:transition-all h-96 hover:ease-in-out hover:scale-105 hover:duration-500 overflow-hidden border border-primary relative"
+                className="group w-64 bg-transparent hover:bg-card/70 rounded-xl  min-h-[200px] hover:transition-all h-96 hover:ease-in-out  hover:duration-500 overflow-hidden border border-primary relative"
 
             >
-                <div className="absolute bottom-0 m-auto w-full bg-gradient-to-t from-background/75  min-h-24">
-                    <div className="absolute left-2 right-2 flex flex-col bottom-2 ">
-                        <h1 className="hover:opacity-0 opacity-100 transition-all text-card-foreground text-2xl font-bold ml-2 bg-gradient-to-t from-background/75 rounded-lg w-fit px-2 ">{data.title}</h1>
-                        <ProvidersBlock tmdbId={data.tmdb_id} tmdbType={data.tmdb_type} />
-                    </div>
-                </div>
+
                 <CardHeader
-                    className="opacity-0 group-hover:opacity-100 transition-all duration-500 ease-in-out h-32 bg-gradient-to-b from-card  text-center"
+                    className="opacity-0 group-hover:opacity-100 transition-all duration-500 ease-in-out h-32   text-center"
                 >
+
                     <CardTitle
                         className="text-card-foreground text-center"
                     >
@@ -118,8 +117,8 @@ const NewWatchlistCard = ({
                     </CardDescription>
 
                 </CardHeader>
-                <CardContent className="opacity-0 group-hover:opacity-100 transition-all duration-500 ease-in-out  flex flex-col items-center w-full h-full gap-4 ">
-                    {/* <div > */}
+                <CardContent className=" opacity-0 group-hover:opacity-100  transition-all duration-500 ease-in-out  flex flex-col items-center w-full h-full gap-4 ">
+                    {/* <div className=" " > */}
 
                     <Button
                         className="hover:shadow-2xl">
@@ -139,9 +138,16 @@ const NewWatchlistCard = ({
 
 
 
-                
+
 
                 {/* } */}
+
+                {/* <div
+                    className="absolute top-0 left-0 w-full h-full bg-card 
+                    opacity-0 group-hover:opacity-80 transition-all duration-500 ease-in-out"
+                >
+                </div> */}
+
                 <Image
                     src={imageUrl}
                     alt={data.title}
@@ -156,10 +162,14 @@ const NewWatchlistCard = ({
 
                     }}
 
-                    className="w-full h-auto absolute top-0 left-0 opacity-100 group-hover:opacity-25 transition-all duration-500 ease-in-out"
+                    className="w-full h-auto absolute top-0 left-0 opacity-100  group-hover:scale-110 transition-all duration-500 ease-in-out"
                 />
             </Card>
-        </>
+            <div className="h-10 p-1">
+
+                <ProvidersBlock tmdbId={data.tmdb_id} tmdbType={data.tmdb_type} userProviders={user?.providers} />
+            </div>
+        </div>
 
     )
 }
