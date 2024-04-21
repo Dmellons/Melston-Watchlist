@@ -13,12 +13,12 @@ import Link from 'next/link';
 interface DetailPageProps {
 
   params: {
-      tmdbId: string;
+    tmdbId: string;
   }
 }
 
 export const DetailPage = async ({ params }: DetailPageProps) => {
-  const {  tmdbId } = params;
+  const { tmdbId } = params;
   const tmdbType = 'movie'
 
   console.log({ tmdbType, tmdbId })
@@ -58,12 +58,14 @@ export const DetailPage = async ({ params }: DetailPageProps) => {
           <div className="flex items-start gap-2">
 
             <Label className='flex-1 text-right justify-end'
- htmlFor='streaming' >Streaming on</Label>
-            <ProvidersBlock 
-              tmdbId={data.id} 
-              tmdbType={tmdbType} 
+              htmlFor='streaming' >Streaming on</Label>
+            <ProvidersBlock
+              tmdbId={data.id}
+              tmdbType={tmdbType}
               maxWidth='96'
-              iconSize={48} />
+              iconSize={48} 
+              userProviders
+              />
           </div>
           {data.vote_average > 0 && (
             <p>Score: {data.vote_average.toFixed(1)}/10 <span className="text-foreground/20 text-xs">({data.vote_count} votes)</span></p>

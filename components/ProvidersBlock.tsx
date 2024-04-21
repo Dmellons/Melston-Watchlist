@@ -8,6 +8,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { useUser } from '@/hooks/User';
 
 
 const ProvidersBlock = (
@@ -24,7 +25,7 @@ const ProvidersBlock = (
     tmdbId: number
     tmdbType: string
     country?: string,
-    userProviders?: number[], 
+    userProviders?: number[] | boolean, 
     maxWidth?: string
     iconSize?: number
     // setHasProviders?: (hasProviders: boolean) => void
@@ -33,6 +34,12 @@ const ProvidersBlock = (
   const [data, setData] = useState<ProvidersApiCall | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   
+  const { user } = useUser()
+  
+  
+  if (userProviders === true) {
+    userProviders = user?.providers || [];
+  }
 
   useEffect(() => {
     const fetchData = async () => {

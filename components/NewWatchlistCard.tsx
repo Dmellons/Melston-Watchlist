@@ -111,13 +111,13 @@ const NewWatchlistCard = ({
                     >
                         {data.title}
                     </CardTitle>
-                    <CardDescription className=" text-center text-card-foreground" >
-                        {data.year}
+                    <CardDescription className=" text-center text-sm font-light text-card-foreground" >
+                        {new Date(data.year).toLocaleDateString()}
 
                     </CardDescription>
 
                 </CardHeader>
-                <CardContent className=" opacity-0 group-hover:opacity-100  transition-all duration-500 ease-in-out  flex flex-col items-center w-full h-full gap-4 ">
+                <CardContent className=" opacity-0 group-hover:opacity-100  transition-all duration-600 ease-in-out  flex flex-col items-center w-full h-full gap-4 ">
                     {/* <div className=" " > */}
 
                     <Button
