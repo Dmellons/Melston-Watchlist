@@ -27,7 +27,7 @@ type ProviderInfo = {
 export default function ProvidersSelect() {
 
     // Base Providers = [8,15,9,337,1899,283]
-    const [providers, setProviders] = useState<number[]>([]);
+    const [providers, setProviders] = useState<number[] | undefined>();
     const [search, setSearch] = useState<string>('');
     const [availableProviders, setAvailableProviders] = useState<ProviderInfo[] | null>(null);
 
@@ -58,7 +58,7 @@ export default function ProvidersSelect() {
 
     useEffect(() => {
         const handleSave = async () => {
-            if (providers.length > 0) {
+            if (providers) {
                 await account.updatePrefs({ providers });
             }
         };
@@ -66,9 +66,9 @@ export default function ProvidersSelect() {
     }, [providers]);
 
     const handleCheck = (provider: number) => {
-        if (providers.includes(provider)) {
+        if (providers?.includes(provider)) {
             setProviders(prevProviders =>
-                prevProviders.filter(p => p !== provider)
+                prevProviders?.filter(p => p !== provider)
             );
         } else {
             setProviders(prevProviders => [...prevProviders, provider]);
