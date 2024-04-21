@@ -42,22 +42,26 @@ const NewWatchlistCard = ({
 
 
         if (media.content_type === 'tv') {
-            // setData({
+            console.log({ media })
+            setData({
 
-            //     title: media.name,
-            //     content_type: media.content_type,
-            //     tmdb_id: media.id,
-            //     tmdb_type: media.content_type,
-            //     year: media.first_air_date,
-            //     image_url: media.poster_path,
-            //     description: media.overview ? media.overview : "No description available"
-            // })
+                title: media.title,
+                content_type: media.content_type,
+                tmdb_id: media.tmdb_id,
+                tmdb_type: media.content_type,
+                year: media.release_date,
+                image_url: media.poster_url,
+                description: media.overview ? media.overview : "No description available",
+                credits: media.credits ? media.credits : null
+            })
+            console.log({ data })
 
-            // setIsLoading(false)
+            setIsLoading(false)
 
         }
 
         if (media.content_type === 'movie') {
+            console.log({ media })
 
             setData({
                 title: media.title,
@@ -103,7 +107,7 @@ const NewWatchlistCard = ({
             >
 
                 <CardHeader
-                    className="opacity-0 group-hover:opacity-100 transition-all duration-500 ease-in-out h-32   text-center"
+                    className="opacity-0 group-hover:opacity-100 transition-all duration-500 ease-in-out text-center"
                 >
 
                     <CardTitle
@@ -111,8 +115,16 @@ const NewWatchlistCard = ({
                     >
                         {data.title}
                     </CardTitle>
-                    <CardDescription className=" text-center text-sm font-light text-card-foreground" >
-                        {new Date(data.year).toLocaleDateString()}
+                    <CardDescription className=" flex justify-between text-center text-sm font-light text-card-foreground" >
+
+                        <p className="capitalize">
+                            Type: {data.content_type}
+                        </p>
+                        <p>
+                            {console.log({data})}
+
+                        Year: {new Date(data.year).getFullYear()}
+                        </p>
 
                     </CardDescription>
 
