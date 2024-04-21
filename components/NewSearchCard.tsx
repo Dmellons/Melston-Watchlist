@@ -106,13 +106,13 @@ const NewSearchCard = ({
 
 
                         </DialogDescription>
-                        {data.tmdb_type === 'movie' &&
+                        
                             <Button asChild >
                                 <Link href={`/${data.tmdb_type}/${data.tmdb_id}`} >
                                     More Info
                                 </Link>
                             </Button>
-                        }
+                        
                         <AddWatchlistButton media={media}  />
                         {/* {data.tmdb_type === 'tv' &&
                             <Button asChild variant={"ghost"} >
