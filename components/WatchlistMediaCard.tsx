@@ -135,6 +135,7 @@ const WatchlistMediaCard = ({
                     tmdbId={data.tmdb_id}
                     tmdbType={data.tmdb_type}
                     country="US"
+                    userProviders
                     />
                     {/* </div> */}
             </CardContent>

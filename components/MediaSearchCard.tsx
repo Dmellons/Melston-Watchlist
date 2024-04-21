@@ -117,6 +117,7 @@ const MediaSearchCard = ({
                 <ProvidersBlock
                     tmdbId={data.tmdb_id}
                     tmdbType={data.tmdb_type}
+                    userProviders
                     />
                 <AddWatchlistButton
                     media={media}
