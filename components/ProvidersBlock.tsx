@@ -9,6 +9,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { useUser } from '@/hooks/User';
+import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 
 
 const ProvidersBlock = (
@@ -82,13 +83,16 @@ const ProvidersBlock = (
     console.log({ canStream })
 
     return (
-      <TooltipProvider>
-        <Tooltip>
-          <TooltipTrigger asChild>
+
+        <Popover>
+          <PopoverTrigger 
+            asChild
+            className=''
+            >
   
   
             <div className={`w-full m-auto flex-col flex justify-center items-center z-10 ${maxWidth}`}>
-              <div className='flex gap-4 justify-center flex-wrap  '>
+              <div className='flex hover:cursor-pointer gap-4 justify-center flex-wrap  '>
                 {loading ? (
                   <div className='text-center'>Loading...</div>
                 ) : (
@@ -124,8 +128,13 @@ const ProvidersBlock = (
   
   
             </div >
-          </TooltipTrigger>
-          <TooltipContent className='max-w-52 shadow-md  border border-primary'>
+          </PopoverTrigger>
+          <PopoverContent 
+            side='top' 
+            sideOffset={10} 
+            hideWhenDetached
+            className='max-w-52 shadow-md  border border-primary'
+            >
   
             <h4 className='text-center text-xs mb-1 mr-2 font-bold '>
               Available to stream on these platforms
@@ -148,10 +157,9 @@ const ProvidersBlock = (
               Streaming results provided by <a className='' href="https://www.justwatch.com/">JustWatch</a>
             </p>
   
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-  
+          </PopoverContent>
+        </Popover>
+ 
   
     )
   }

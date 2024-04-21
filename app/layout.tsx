@@ -32,12 +32,16 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <main className="bg-background/10">
-              <main className="w-full max-w-7xl mx-auto min-h-screen  m-auto px-2">
+           
+           
+              <main className="w-full max-w-7xl mx-auto min-h-screen  m-auto px-2 ">
+                <header className="sticky top-0 z-20 bg-background border-b-2 border-foreground/40 px-2 mb-4">
+
                 <MainHeader />
+                </header>
                 {children}
               </main>
-              </main>
+          
               <Toaster
                 toastOptions={{
                   // unstyled: true,
