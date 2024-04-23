@@ -44,7 +44,7 @@ const ProvidersBlock = (
 
   useEffect(() => {
     const fetchData = async () => {
-      console.log({ tmdbId, tmdbType })
+      
       try {
         /*
         / Streaming results provided by JustWatch - https://www.justwatch.com/
@@ -81,8 +81,7 @@ const ProvidersBlock = (
       userProviders?.includes(provider.provider_id)
     )
 
-    console.log({ canStream })
-
+    
     return (
 
         <Popover>

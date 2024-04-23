@@ -25,7 +25,7 @@ const AddWatchlistButton = ({
     let data: WatchlistDocumentCreate
     function handleAddWatchlist() {
         if (query) {
-            const fetchData = async ():TMDBMultiSearchResult => {
+            const fetchData = async (): TMDBMultiSearchResult => {
                 try {
                     const response = await fetch(`https://api.themoviedb.org/3/search/multi?query=${media.id}`, tmdbFetchOptions);
                     const data = await response.json();
@@ -95,13 +95,13 @@ const AddWatchlistButton = ({
             }
         }
 
-        toast.promise(database.createDocument('watchlist', 'watchlist', ID.unique(), data), {
+        toast.promise(database.createDocument('watchlist', process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID, ID.unique(), data), {
 
             loading: 'Adding...',
             success: (res) => {
                 const title = data.title
                 async function addToWatchlist() {
-                    const newWatchlist = await database.listDocuments('watchlist', 'watchlist');
+                    const newWatchlist = await database.listDocuments('watchlist', process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID);
                     // @ts-ignore
                     setUser({
                         ...user,

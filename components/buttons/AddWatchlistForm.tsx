@@ -64,7 +64,7 @@ const AddWatchlist = () => {
             platform: undefined
         }
 
-        const promise = database.createDocument('watchlist', 'watchlist', ID.unique(), data)
+        const promise = database.createDocument('watchlist', process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID, ID.unique(), data)
         promise.then(function (response) {
             // add toast on success
             console.log(response)

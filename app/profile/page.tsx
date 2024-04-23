@@ -1,4 +1,5 @@
 'use client'
+import PlexRequestsBlock from "@/components/PlexRequestsBlock";
 import ProvidersBlock from "@/components/ProvidersBlock";
 import ProvidersSelect from "@/components/ProvidersSelect";
 import { Badge } from "@/components/ui/badge";
@@ -57,6 +58,10 @@ const ProfilePage = () => {
           }
         </div>
       )} {!user && <p>No user found</p>}
+
+      {user && user.admin && (
+        <PlexRequestsBlock />
+      )}
     </div>
   );
 };
