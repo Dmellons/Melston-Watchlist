@@ -126,14 +126,18 @@ const NewWatchlistCard = ({
 
                         Year: {new Date(data.year).getFullYear()}
                         </p>
-                        <PlexRequestToggle documentId={media.$id} requested={media.plex_request}/>
 
                     </CardDescription>
 
                 </CardHeader>
                 <CardContent className=" opacity-0 group-hover:opacity-100  transition-all duration-600 ease-in-out  flex flex-col items-center w-full h-full gap-4 ">
-                    {/* <div className=" " > */}
 
+
+                    <PlexRequestToggle 
+                        documentId={media.$id} 
+                        requested={media.plex_request} 
+                        mediaTitle={data.title} 
+                        />
                     <Button
                         className="hover:shadow-2xl">
                         <Link href={`/${data.tmdb_type}/${data.tmdb_id}`} >
@@ -142,25 +146,8 @@ const NewWatchlistCard = ({
                     </Button>
 
                     <DeleteButton title={data.title} document_id={media.$id} />
-                    {/* </div> */}
+
                 </CardContent>
-
-
-                {/*
-                <CardFooter className="absolute bottom-0">
-                </CardFooter> */}
-
-
-
-
-
-                {/* } */}
-
-                {/* <div
-                    className="absolute top-0 left-0 w-full h-full bg-card 
-                    opacity-0 group-hover:opacity-80 transition-all duration-500 ease-in-out"
-                >
-                </div> */}
 
                 <Image
                     src={imageUrl}
