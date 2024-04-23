@@ -51,7 +51,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
         const checkUser = async () => {
             try {
                 const { $id, email, name, prefs, status, labels, ...rest } = await account.get()
-                const watchlist: Models.DocumentList<WatchlistDocument> | Models.DocumentList<Models.Document> = await database.listDocuments('watchlist', 'watchlist').then((data) => {
+                const watchlist: Models.DocumentList<WatchlistDocument> | Models.DocumentList<Models.Document> = await database.listDocuments('watchlist', process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID).then((data) => {
 
                     return data
                 })

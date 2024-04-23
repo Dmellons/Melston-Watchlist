@@ -42,7 +42,7 @@ export default function DeleteButton({
   const buttonContent = <div className="flex gap-1">{iconMarkup}{buttonText}</div>;
   function deleteDocument({ id, title }: { id: string, title?: string }) {
 
-    toast.promise(database.deleteDocument('watchlist', 'watchlist', id), {
+    toast.promise(database.deleteDocument('watchlist', process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID, id), {
       loading: 'Deleting...',
       success:  () => {
         async function deleteDocument() {

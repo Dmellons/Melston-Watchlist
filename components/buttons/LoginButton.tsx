@@ -35,12 +35,13 @@ export default function LoginButton() {
                         <AvatarFallback className="bg-popover text-popover-foreground">{userInitials}</AvatarFallback>
                     </Avatar>
                 </PopoverTrigger>
-                <PopoverContent className="grid justify-items-center w-80 bg-popover sm:mr-10 sm:mt-2">
+                <PopoverContent className="flex flex-col items-center justify-items-center w-80 bg-popover sm:mr-10 sm:mt-2">
                     <p>Welcome, {user.name}</p>
                     <p className="text-card-foreground/50 font-thin text-sm">{user.email}</p>
-                    <div className="py-2">
+                    <div className="">
 
-                        <ModeToggle />
+                    <div className="flex gap-1 w-2/3">
+
                         <Button asChild variant="link" >
                             <Link href="/profile" className="text-popover-foreground">User Profile</Link>
                         </Button>
@@ -48,13 +49,25 @@ export default function LoginButton() {
                         <Button asChild variant="link" >
                             <Link href="/watchlist" className="text-popover-foreground">Watchlist</Link>
                         </Button>
+
+                        { user.admin &&
+                            <Button asChild variant="link" >
+                            <Link href="/admin" className="text-popover-foreground">Admin</Link>
+                        </Button>
+                        }
+
                     </div>
+                        </div>
+                    <div className="flex w-full justify-between ">
+
+                        <ModeToggle />
                     <Button
                         onClick={handleLogout}
                         className="m-auto bg-destructive text-destructive-foreground hover:bg-muted hover:text-muted-foreground "
-                    >
+                        >
                         Sign out
                     </Button>
+                        </div>
                 </PopoverContent>
             </Popover>
         </div>

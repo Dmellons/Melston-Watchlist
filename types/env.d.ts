@@ -5,6 +5,8 @@ namespace NodeJS {
 
         NEXT_PUBLIC_APPWRITE_ENDPOINT_URL: string;
         NEXT_PUBLIC_APPWRITE_PROJECT_ID: string;
+        APPWRITE_API_KEY: string;
+        NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID: string;
 
         NEXT_PUBLIC_WATCHMODE_API_KEY: string;
 

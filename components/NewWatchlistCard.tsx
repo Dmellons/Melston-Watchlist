@@ -13,6 +13,7 @@ import { WatchlistDocument } from "@/types/appwrite";
 import { useEffect, useState } from "react";
 import { Skeleton } from "./ui/skeleton";
 import { useUser } from "@/hooks/User";
+import PlexRequestToggle from "./PlexRequestToggle";
 
 type CardData = {
     title: string,
@@ -121,10 +122,11 @@ const NewWatchlistCard = ({
                             Type: {data.content_type}
                         </p>
                         <p>
-                            {console.log({data})}
+                            
 
                         Year: {new Date(data.year).getFullYear()}
                         </p>
+                        <PlexRequestToggle documentId={media.$id} requested={media.plex_request}/>
 
                     </CardDescription>
 
