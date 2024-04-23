@@ -46,7 +46,7 @@ const ProfilePage = () => {
           <Switch id="tester" value={isTester}/>
           </div>
           <h2 className="text-md">Labels:</h2>
-          <div className="border flex  gap-2 p-2 border-gray-200 rounded-lg">
+          <div className="border flex justify-center gap-2 p-2 border-gray-200 rounded-lg">
             {user.labels?.map(label => (
               <Badge key={label}>{label}</Badge>
             ))}
@@ -59,9 +59,7 @@ const ProfilePage = () => {
         </div>
       )} {!user && <p>No user found</p>}
 
-      {user && user.admin && (
-        <PlexRequestsBlock />
-      )}
+     
     </div>
   );
 };
