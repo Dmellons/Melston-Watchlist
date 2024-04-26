@@ -55,6 +55,19 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
                     return data
                 })
+
+                const userData = {
+                    id: $id,
+                    admin: labels?.includes('admin') ? true : false,
+                    email,
+                    name,
+                    status,
+                    labels,
+                    image: prefs.image ? prefs.image : null,
+                    providers: prefs.providers ? prefs.providers : [],
+                    watchlist: watchlist,
+                    debug: rest
+                }
                
                 setUserState({
                     id: $id,
