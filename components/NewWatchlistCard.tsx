@@ -78,7 +78,7 @@ const NewWatchlistCard = ({
 
             setIsLoading(false)
         }
-    }, [media, isLoading, hasProviders, setHasProviders])
+    },[])
 
     if (
         // isLoading ||
