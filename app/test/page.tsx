@@ -1,19 +1,33 @@
 
-import PlexLibrary from "@/components/PlexSearch"
-import { adminClient, adminServerAccount, adminServerDatabases, adminServerUsers } from "@/lib/appwriteServer"
-import { TMDBMultiSearchResult } from "@/types/tmdbApi"
+import { getLoggedInUser } from '@/lib/server/appwriteServer';
+import { signInWithGoogle } from '@/lib/server/oauth'
+import { redirect } from 'next/navigation';
 
 
 
 
-async function TestPage() {
-   
+export default async function TestPage() {
+   const user = await getLoggedInUser();
+
+
    return (
-        <main className="flex min-h-screen flex-col m-auto sm:p-18">
-           <PlexLibrary />
+      <>
+         {/* ... existing form */}
+         <form action={signInWithGoogle}>
+            <button type="submit">Sign up with GitHub</button>
+         </form>
 
-        </main >
-    )
+         {user ?
+            <div className='p-2'>
+               <p>You are signed in</p>
+               {user?.email}
+               {user?.name}
+            </div>
+               :
+               <p>You are not signed in</p>
+            }
+      </>
+   )
 }
 
-export default TestPage
+

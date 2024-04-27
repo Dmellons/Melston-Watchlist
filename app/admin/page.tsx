@@ -1,6 +1,6 @@
 
 import AdminGatekeeper from "@/components/GateKeeper";
-import { adminClient, adminServerAccount, adminServerDatabases, adminServerUsers } from "@/lib/appwriteServer"
+import { adminClient, adminServerAccount, adminServerDatabases, adminServerUsers } from "@/lib/server/appwriteServer"
 import { WatchlistDocument } from "@/types/appwrite";
 import { TMDBMultiSearchResult } from "@/types/tmdbApi"
 import { Models } from "appwrite";
