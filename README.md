@@ -5,9 +5,7 @@
 
 ## TODO
 
-- [ ] Add to watchlist button
-  - [x] Add toast for success and error
-  - [ ] Add / Delete button based on watchlist status
+- [ ] Add multiple watchlists per user
 
 
 ### Watchlist

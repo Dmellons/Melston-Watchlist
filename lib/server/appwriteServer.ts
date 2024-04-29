@@ -18,17 +18,14 @@ export async function createSessionClient() {
 
   // client.setSession(session.value);
 
-  return {
-    get account() {
-      return {
-        "account": new Account(client),
-        "databases": new Databases(client),
-        
-      } 
-    },
+  const returnObj = {
+    "account": new Account(client),
+    "databases": new Databases(client),
+    }
+    
+    return returnObj;
   };
-}
-
+    
 
 
 export async function createAdminClient() {
