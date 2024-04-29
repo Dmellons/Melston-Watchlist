@@ -2,6 +2,7 @@
 import { account, database } from "@/lib/appwrite";
 import { WatchlistDocument } from "@/types/appwrite";
 import { Models, OAuthProvider } from "appwrite";
+import { redirect, useRouter } from "next/navigation";
 import { SetStateAction, createContext, useContext, useEffect, useState, Dispatch } from "react";
 
 export interface UserState {
@@ -21,7 +22,7 @@ export type UserType = {
     admin?: boolean;
     status: boolean;
     labels?: string[]
-    
+
     watchlist?: Models.DocumentList<WatchlistDocument> | Models.DocumentList<Models.Document>
     image?: string;
     providers?: number[]
@@ -57,20 +58,7 @@ export const UserProvider = ({ children, serverUser }: { children: React.ReactNo
         const checkUser = async () => {
             if (serverUser) {
                 console.log({ serverUser })
-                // const userData = {
-                //     id: serverUser.$id,
-                //     admin: serverUser.labels?.includes('admin') ? true : false,
-                //     email: serverUser.email,
-                //     name: serverUser.name,
-                //     status: serverUser.status,
-                //     labels: serverUser.labels,
-                //     image: serverUser.prefs.image ? serverUser.prefs.image : null,
-                //     providers: serverUser.prefs.providers ? serverUser.prefs.providers : [],
-                //     watchlist: serverUser.watchlist,
-                //     debug: serverUser.rest
-                // }
-                
-                // console.log({ userData })
+
                 try {
                     setUserState(serverUser)
 
@@ -85,6 +73,12 @@ export const UserProvider = ({ children, serverUser }: { children: React.ReactNo
 
                 try {
                     const { $id, email, name, prefs, status, labels, ...rest } = await account.get()
+                    const jwt = await account.createJWT();
+                    fetch(`http://localhost:3000/api/jwt/set`, {
+                        method: 'POST',
+                        body: JSON.stringify(jwt),
+                        headers: { 'Content-Type': 'application/json' }
+                    })
                     const watchlist: Models.DocumentList<WatchlistDocument> | Models.DocumentList<Models.Document> = await database.listDocuments('watchlist', process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID).then((data) => {
 
                         return data
@@ -147,9 +141,10 @@ export const UserProvider = ({ children, serverUser }: { children: React.ReactNo
     const loginWithGoogle = async () => {
 
         try {
-            await account.createOAuth2Session(
+            const session = await account.createOAuth2Session(
                 OAuthProvider.Google,
-                `${process.env.NEXT_PUBLIC_URL_BASE}/watchlist`,
+                // `${process.env.NEXT_PUBLIC_URL_BASE}/watchlist`,
+                `${process.env.NEXT_PUBLIC_URL_BASE}/`,
                 `${process.env.NEXT_PUBLIC_URL_BASE}/failure`,
                 [
                     'https://www.googleapis.com/auth/userinfo.email',
@@ -157,7 +152,17 @@ export const UserProvider = ({ children, serverUser }: { children: React.ReactNo
                 ]
             );
 
+            console.log(`Login With Google session: ${session}`)
+
             const { $id, name, email, prefs, status, ...debug } = await account.get()
+
+            const jwt = await account.createJWT();
+
+            fetch(`http://localhost:3000/api/jwt/set`, {
+                method: 'POST',
+                body: JSON.stringify(jwt),
+                headers: { 'Content-Type': 'application/json' }
+            })
 
             console.log(`Login With Google debug: ${debug}`)
 
@@ -169,6 +174,7 @@ export const UserProvider = ({ children, serverUser }: { children: React.ReactNo
                 status,
                 debug
             });
+            
         } catch (error) {
             console.error(`Login With Google Error: ${error}`)
         }
@@ -185,8 +191,11 @@ export const UserProvider = ({ children, serverUser }: { children: React.ReactNo
     const logout = async () => {
         try {
             await account.deleteSession('current');
-            await 
             setUserState(null)
+            await fetch(`http://localhost:3000/api/jwt/delete`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            })
         } catch (error) {
             console.error(`Logout Error: ${error}`)
         }

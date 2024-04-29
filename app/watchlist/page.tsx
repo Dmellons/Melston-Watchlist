@@ -5,7 +5,7 @@ import WatchlistMediaCard from "@/components/WatchlistMediaCard";
 import WatchlistGrid from "@/components/buttons/WatchlistGrid";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { UserState, useUser } from "@/hooks/User";
-import { getLoggedInUser } from "@/lib/server/appwriteServer";
+import { createSessionClient, getLoggedInUser } from "@/lib/server/appwriteServer";
 // import { database } from "@/lib/appwrite";
 import { WatchlistDocument } from "@/types/appwrite";
 import { Models, Query } from "appwrite";
@@ -14,19 +14,27 @@ import { useMemo } from "react";
 
 export default async function WatchlistPage() {
     
-    const user = await getLoggedInUser()
+    // const user = await getLoggedInUser()
+    const serverAuth = await createSessionClient()
+    const {account, databases} = ...serverAuth
+    const user = await account.account.get()
+
+    console.log({user})
     // const [watchlist, setWatchlist] = useState<Models.DocumentList<WatchlistDocument> | undefined>(user?.watchlist)
-    const watchlist = await user?.watchlist
+    const watchlist = user?.watchlist
+
+    console.log({watchlist})
+
     
     // useEffect(() => {
     //         setWatchlist(user?.watchlist)
     //  }, [user?.watchlist])
     
     if (!user) {
-        return <div className="text-3xl font-bold">please sign in </div>
+        return <div className="text-3xl font-bold m-auto w-full text-center">please sign in </div>
     }
 
-    console.log({ user })
+    console.log('watchlist', { user })
 
     return (
         <main className="flex min-h-screen flex-col items-center p- sm:p-18">

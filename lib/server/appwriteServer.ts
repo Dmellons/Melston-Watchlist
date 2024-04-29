@@ -6,23 +6,30 @@ import { WatchlistDocument } from "@/types/appwrite";
 import { type UserType } from "@/hooks/User";
 
 export async function createSessionClient() {
-  const client = new Client()
-    .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT_URL)
-    .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID);
-
-  const session = cookies().get(process.env.COOKIE_NAME);
-  if (!session || !session.value) {
+  const jwt = cookies().get(process.env.COOKIE_NAME)?.value;
+  
+  if (!jwt) {
     throw new Error("No session");
   }
+  const client = new Client()
+    .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT_URL)
+    .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID)
+    .setJWT(jwt);
 
-  client.setSession(session.value);
+  // client.setSession(session.value);
 
   return {
     get account() {
-      return new Account(client);
+      return {
+        "account": new Account(client),
+        "databases": new Databases(client),
+        
+      } 
     },
   };
 }
+
+
 
 export async function createAdminClient() {
   const client = new Client()
