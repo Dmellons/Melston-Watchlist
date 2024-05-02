@@ -34,36 +34,36 @@ const CastAndCrew = ({
         <div className="w-full">
             <h2 className="text-2xl font-bold mb-4 text-center capitalize">{type}</h2>
             <Carousel className="w-4/5 mx-auto">
-                <CarouselContent>
+                <CarouselContent className="-ml-4">
 
 
                     {cast?.map(member => (
-                        <CarouselItem key={member.id} className="basis-1/2">
-                            <Card key={member.id} className="w-full flex flex-col items-center">
-                                <CardHeader>
-                                    <Link 
-                                        href={`https://www.google.com/search?q=${member.name}`}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                    >
+                        <CarouselItem key={member.id} className="basis-1/6 pl-4">
+                            <Link
+                                href={`https://www.google.com/search?q=${member.name}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <Card key={member.id} className="group w-full flex flex-col items-center max-h-72 group-hover:border group-hover:border-primary  group-hover:ease-in-out group-hover:duration-300">
+                                    <CardHeader>
 
-                                    <Image
-                                        src={`https://image.tmdb.org/t/p/w500${member.profile_path}`}
-                                        alt={member.name}
-                                        className="rounded-t-lg"
-                                        width={125}
-                                        height={250}
+                                        <Image
+                                            src={`https://image.tmdb.org/t/p/w500${member.profile_path}`}
+                                            alt={member.name}
+                                            className="rounded-lg "
+                                            width={125}
+                                            height={250}
                                         />
-                                        </Link>
-                                </CardHeader>
-                                <CardContent>
-                                    <CardTitle className='text-lg'>{member.name}</CardTitle>
-                                    <CardDescription className='text-sm text-gray-600'>{member.character}</CardDescription>
-                                   
-                                </CardContent>
-                                <CardFooter>
-                                </CardFooter>
-                            </Card>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <div className='font-bold text-center'>{member.name}</div>
+                                        <CardDescription className='text-sm text-muted-foreground/80 text-center'>{member.character}</CardDescription>
+
+                                    </CardContent>
+                                    <CardFooter>
+                                    </CardFooter>
+                                </Card>
+                            </Link>
                         </CarouselItem>
                     ))}
                 </CarouselContent>
