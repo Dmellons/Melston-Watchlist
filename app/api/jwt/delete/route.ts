@@ -7,9 +7,9 @@ export async function POST(request: NextRequest, res:Response) {
 
   const url = new URL(request.nextUrl.toString());
 
-  console.log({ url })
+ 
   
-  cookies().delete(process.env.COOKIE_NAME);
+  // cookies().delete(process.env.COOKIE_NAME);
   // return Response.json({
   //   status: 200,
   //   message: 'success',

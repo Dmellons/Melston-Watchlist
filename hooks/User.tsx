@@ -54,8 +54,11 @@ export const UserProvider = ({ children, serverUser }: { children: React.ReactNo
     const [userState, setUserState] = useState<null | UserType>(null);
     const [loading, setLoading] = useState(true)
 
-    useEffect(() => {
-        const checkUser = async () => {
+    
+
+    useEffect((serverUser) => {
+        const checkUser = async (serverUser) => {
+            console.log({serverUser})
             if (serverUser) {
                 console.log({ serverUser })
 
@@ -73,6 +76,7 @@ export const UserProvider = ({ children, serverUser }: { children: React.ReactNo
 
                 try {
                     const { $id, email, name, prefs, status, labels, ...rest } = await account.get()
+                    
                     const jwt = await account.createJWT();
                     fetch(`http://localhost:3000/api/jwt/set`, {
                         method: 'POST',
@@ -109,7 +113,7 @@ export const UserProvider = ({ children, serverUser }: { children: React.ReactNo
                         watchlist: watchlist,
                         debug: rest
                     });
-                    console.log({ userState })
+                    
                 } catch (error) {
                     console.error(`Check User Error: ${error}`)
                     setUserState(null)
@@ -118,7 +122,7 @@ export const UserProvider = ({ children, serverUser }: { children: React.ReactNo
                 }
             }
         };
-        checkUser();
+        checkUser(serverUser);
     }, []);
 
     const login = async (email: string, password: string) => {
