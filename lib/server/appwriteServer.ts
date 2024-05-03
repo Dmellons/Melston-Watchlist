@@ -6,24 +6,32 @@ import { type UserType } from "@/hooks/User";
 
 export async function createSessionClient() {
   const jwt = cookies().get(process.env.COOKIE_NAME)?.value;
-  // console.log({ jwt });
+  // // console.log({ jwt });
   if (!jwt) {
-    throw new Error("No session");
+    return {
+      "client": undefined,
+      "account": undefined,
+      "databases": undefined,
+      "users": undefined
+      };
   }
   const client = new Client()
     .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT_URL)
     .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID)
     .setJWT(jwt);
-  console.log("Client: ", { client });
+  // console.log("Client: ", { client });
   client.setSession(jwt);
 
-  console.log("Client: ", { client });
+  // console.log("Client: ", { client });
 
   const account = new Account(client);
-  console.log("Account: ", { account });
+  // console.log("Account: ", { account });
   const databases = new Databases(client)
   const users = new Users(client)
-  const user = await account.get().catch((error) => {
+ try {
+  const user = await account.get()
+  
+}catch (error){(error) => {
     if (error.code === 401 && error.type === "user_jwt_invalid") {
       async () => {
         await fetch(`http://localhost:3000/api/jwt/delete`, {
@@ -31,20 +39,20 @@ export async function createSessionClient() {
           headers: { "Content-Type": "application/json" },
         });
       };
-      throw new Error("Invalid JWT");
+      // throw new Error("Invalid JWT");
     } else {
       throw error;
     }
-  });
+  }};
 
-  console.log('User2: ',{ user });
+  // console.log('User2: ',{ user });
   const returnObj = {
     "client": client,
     "account": account ,
     "databases": new Databases(client),
     "users": new Users(client)
     }
-    // console.log({returnObj})
+    // // console.log({returnObj})
     return returnObj;
   };
     
@@ -76,22 +84,22 @@ export async function getLoggedInUser() {
 
     // const account = new Account(client);
 
-    console.log({ account, client });   
-    const test = await account.get();
-    console.log({test})
+    // console.log({ account, client });   
+    // const test = await account.get();
+    // console.log({test})
     const { $id, email, name, prefs, status, labels, ...rest } = await account.get().catch((error) => {
       if(error.code === 401 && error.type === 'user_jwt_invalid') {async () => {
         await fetch(`http://localhost:3000/api/jwt/delete`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' }
             })}
-            throw new Error("Invalid JWT")
+            // throw new Error("Invalid JWT")
       } else {
         throw error;
       }
     }); 
 
-    console.log({ $id, email, name, prefs, status, labels, rest })
+    // console.log({ $id, email, name, prefs, status, labels, rest })
 
     // const client = new Client()
     //     .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT_URL)

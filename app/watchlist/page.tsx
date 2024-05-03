@@ -4,10 +4,34 @@ import WatchlistGrid from "@/components/buttons/WatchlistGrid";
 import { createSessionClient, getLoggedInUser } from "@/lib/server/appwriteServer";
 import { WatchlistDocument } from "@/types/appwrite";
 import { Models, Query } from "appwrite";
+import { redirect } from "next/navigation";
+import { toast } from "sonner";
 
 export default async function WatchlistPage() {
-    const {account, databases} = await createSessionClient()   
-    const user = await account.get()
+    const {account, databases} = await createSessionClient()  
+    if(!account || !databases) {
+        redirect('/')
+        // return <div className="text-3xl font-bold m-auto w-full text-center">please sign in </div>
+    }
+    let user
+    try{
+         user = await account.get()
+
+    } catch(error) {
+        const jwt = await account.createJWT();
+
+            fetch(`http://localhost:3000/api/jwt/set`, {
+                method: 'POST',
+                body: JSON.stringify(jwt),
+                headers: { 'Content-Type': 'application/json' }
+            })
+        
+            redirect('/watchlist')
+            
+        
+    }
+
+   
     const watchlist: Models.DocumentList<WatchlistDocument> = await databases.listDocuments('watchlist', process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID)
   
     if (!user) {
