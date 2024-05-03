@@ -72,7 +72,7 @@ const NewSearchCard = ({
     }
     
     const MediaImage = ({ data }: { data: CardData }) => {
-        const imageUrl = data.poster_path ? `https://image.tmdb.org/t/p/w500/${data.poster_path}` : null
+        const imageUrl =  `https://image.tmdb.org/t/p/w500/${data.poster_path}`
         return (
             <Image
                 src={imageUrl}
@@ -93,7 +93,7 @@ const NewSearchCard = ({
                 <Dialog>
                     <DialogTrigger>
                         <Image
-                            src={ data.poster_path ? `https://image.tmdb.org/t/p/w500/${data.poster_path}`: null}
+                            src={ `https://image.tmdb.org/t/p/w500/${data.poster_path}`}
                             alt={data.title}
                             className="rounded-lg contain group-hover:border-2 group-hover:border-primary group-hover:scale-105 group-hover:ease-in-out group-hover:duration-300 w-full h-full"
                             width={50}
