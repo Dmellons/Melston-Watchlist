@@ -15,7 +15,11 @@ const WatchlistGrid = ({
         <div className="flex flex-col w-full gap-4 p-10  sm:p-18  ">
             <Accordion type="single" className="w-full" collapsible defaultValue="item-1">
                 <AccordionItem value="item-1">
-                    <AccordionTrigger className="w-full">Watchlist</AccordionTrigger>
+                    <AccordionTrigger className="w-full">
+                        <span className="text-2xl text-center w-full">
+                        Your Watchlist
+                        </span>
+                        </AccordionTrigger>
                     <AccordionContent className="mt-4">
                         <div className=" items-center flex flex-col justify-center gap-4 flex-wrap sm:flex-row ">
                             {
