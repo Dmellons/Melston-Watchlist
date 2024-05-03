@@ -27,7 +27,23 @@ const NewSearchCard = ({
     media: TMDBMultiSearchResult
     userProviders?: number[]
 }) => {
+    
+    if (media.media_type === 'person') {
+        data = {
+            title: media.name,
+            content_type: media.media_type,
+            tmdb_id: media.id,
+            tmdb_type: media.media_type,
+            year: media.release_date,
+            poster_path: media.poster_path,
+            backdrop_path: media.backdrop_path,
+            description: media.overview ? media.overview : "No description available"
+        }
+        return null
+    }
 
+    console.log({media})
+    console.log({data})
     if (media.media_type === 'tv') {
         data = {
             title: media.name,
@@ -54,11 +70,13 @@ const NewSearchCard = ({
             description: media.overview ? media.overview : "No description available"
         }
     }
+    
     const MediaImage = ({ data }: { data: CardData }) => {
-        const imageUrl = `https://image.tmdb.org/t/p/w500/${data.poster_path}`
+        const imageUrl = data.poster_path ? `https://image.tmdb.org/t/p/w500/${data.poster_path}` : null
         return (
             <Image
                 src={imageUrl}
+                onError={()=>{}}
                 alt={data.title}
                 className="rounded-lg contain group-hover:border-2 group-hover:border-primary group-hover:scale-105 group-hover:ease-in-out group-hover:duration-300 w-full h-full"
                 width={50}
@@ -66,6 +84,8 @@ const NewSearchCard = ({
             />
         )
     }
+
+    console.log({ data })
     return (
         <Card className="min-h-80 w-80  rounded m-2 border-none group hover:border hover:border-primary hover:ease-in-out hover:duration-300">
             <CardHeader className="h-48 w-36 m-auto">
@@ -73,7 +93,7 @@ const NewSearchCard = ({
                 <Dialog>
                     <DialogTrigger>
                         <Image
-                            src={`https://image.tmdb.org/t/p/w500/${data.poster_path}`}
+                            src={ data.poster_path ? `https://image.tmdb.org/t/p/w500/${data.poster_path}`: null}
                             alt={data.title}
                             className="rounded-lg contain group-hover:border-2 group-hover:border-primary group-hover:scale-105 group-hover:ease-in-out group-hover:duration-300 w-full h-full"
                             width={50}
@@ -113,7 +133,7 @@ const NewSearchCard = ({
                                 </Link>
                             </Button>
                         
-                        <AddWatchlistButton media={media}  />
+                        <AddWatchlistButton media={media} query={true} />
                         {/* {data.tmdb_type === 'tv' &&
                             <Button asChild variant={"ghost"} >
                                 <Link href={`/${data.tmdb_type}/${data.tmdb_id}`} >
