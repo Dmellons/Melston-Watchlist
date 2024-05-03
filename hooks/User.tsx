@@ -58,7 +58,7 @@ export const UserProvider = ({ children, serverUser }: { children: React.ReactNo
 
     useEffect((serverUser) => {
         const checkUser = async (serverUser) => {
-            console.log({serverUser})
+            // console.log({serverUser})
             if (serverUser) {
                 console.log({ serverUser })
 
@@ -72,7 +72,7 @@ export const UserProvider = ({ children, serverUser }: { children: React.ReactNo
                 } finally {
                     setLoading(false)
                 }
-            } else {
+        } else {
 
                 try {
                     const { $id, email, name, prefs, status, labels, ...rest } = await account.get()

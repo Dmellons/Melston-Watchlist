@@ -43,7 +43,7 @@ const NewWatchlistCard = ({
 
 
         if (media.content_type === 'tv') {
-            console.log({ media })
+            // console.log({ media })
             setData({
 
                 title: media.title,
@@ -62,7 +62,7 @@ const NewWatchlistCard = ({
         }
 
         if (media.content_type === 'movie') {
-            console.log({ media })
+            // console.log({ media })
 
             setData({
                 title: media.title,
