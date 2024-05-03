@@ -8,6 +8,7 @@ import ProvidersBlock from '@/components/ProvidersBlock';
 import AddWatchlistButton from '@/components/buttons/AddWatchlistButton';
 import BackButton from '@/components/buttons/BackButton';
 import { TMDBApiMovieDetail, tmdbFetchOptions } from "@/lib/tmdb";
+import { WatchlistDocumentCreate } from "@/types/appwrite";
 
 interface DetailPageProps {
   params: {
@@ -23,10 +24,18 @@ const DetailPage = async ({ params }: DetailPageProps) => {
   const response = await fetch(url, tmdbFetchOptions);
   const data: TMDBApiMovieDetail = await response.json();
 
-  const addButtonData = {
-    id: data.id,
+  const addButtonData:WatchlistDocumentCreate = {
+    tmdb_id: data.id,
+    tmdb_type: 'movie',
     title: data.title,
-    poster_path: data.poster_path,
+    poster_url: `https://image.tmdb.org/t/p/w500${data.poster_path}`,
+    backdrop_url: `https://image.tmdb.org/t/p/w500${data.backdrop_path}`,
+    content_type: 'movie',
+    plex_request: false,
+    description: data.overview ? data.overview : 'No description available',
+    genre_ids: data.genres.map((genre) => genre.id),
+
+    release_date: data.release_date,
   };
 
   return (
@@ -53,6 +62,7 @@ const DetailPage = async ({ params }: DetailPageProps) => {
         <div className="space-y-6">
           <h1 className="text-3xl font-bold">{data.title}</h1>
           <p className="text-gray-600">{data.tagline}</p>
+          <AddWatchlistButton media={addButtonData} width="w-1/3" />
           <p className="text-gray-700">{data.overview}</p>
 
           <div className="flex items-center gap-2">
@@ -143,8 +153,8 @@ const DetailPage = async ({ params }: DetailPageProps) => {
       </div>
 
       {/* Hidden Button */}
-      <div className="hidden">
-        <AddWatchlistButton media={addButtonData} tmdbId={tmdbId} />
+      <div className="">
+        <AddWatchlistButton media={addButtonData} />
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 
 import AdminGatekeeper from "@/components/GateKeeper";
-import { adminClient, adminServerAccount, adminServerDatabases, adminServerUsers } from "@/lib/appwriteServer"
+import { createAdminClient } from "@/lib/server/appwriteServer"
 import { WatchlistDocument } from "@/types/appwrite";
 import { TMDBMultiSearchResult } from "@/types/tmdbApi"
 import { Models } from "appwrite";
@@ -11,15 +11,14 @@ import Link from "next/link";
 
 
 async function AdminPage() {
-    const data: Models.DocumentList<WatchlistDocument> = await adminServerDatabases.listDocuments('watchlist', process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID);
-    const users = await adminServerUsers.list()
-    console.log(data);
-
-
+    const {databases, users } = await createAdminClient()
+    const data: Models.DocumentList<WatchlistDocument> = await databases.listDocuments('watchlist', process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID);
+    const appUsers = await users.list()
+    
     return (
         <AdminGatekeeper>
             <main className="flex min-h-screen flex-col m-auto sm:p-18">
-                {users.users
+                {appUsers.users
                     .map((user) => (
                         <div
                             key={user.$id}

@@ -6,6 +6,7 @@ import MainHeader from "@/components/layout/MainHeader";
 import { ThemeProvider } from "@/components/Contexts/ThemeProvider";
 import { UserProvider } from "@/hooks/User";
 import { Toaster } from "@/components/ui/sonner";
+import { getLoggedInUser } from "@/lib/server/appwriteServer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -14,18 +15,21 @@ export const metadata: Metadata = {
   description: "Watchlist",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+  const user = await getLoggedInUser();
+  // console.log({ user })
   return (
     <html lang="en">
       <head >
         <link rel="icon" href="/logo.svg" sizes="any" />
       </head>
       <body className={`${inter.className} bg-foreground/10`}>
-        <UserProvider>
+        <UserProvider serverUser={user}>
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
@@ -34,7 +38,7 @@ export default function RootLayout({
           >
            
            
-              <main className="relative z-0 w-full bg-background max-w-7xl mx-auto min-h-screen bg-bacground border-x-2 border-x-primary/10 m-auto ">
+              <main className="relative z-0 w-full bg-background max-w-7xl mx-auto min-h-screen border-x-2 border-x-primary/10 m-auto ">
                 <header className="sticky top-0 z-20 bg-background border-b-2 border-primary/40 mb-4">
 
                 <MainHeader />

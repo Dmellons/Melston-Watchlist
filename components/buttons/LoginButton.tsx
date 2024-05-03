@@ -5,6 +5,7 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import Link from "next/link";
 import { ModeToggle } from "./ModeToggle";
 import { useUser } from "@/hooks/User";
+import { useRouter } from "next/navigation";
 
 export default function LoginButton() {
     const { user, logout, loginWithGoogle } = useUser()
@@ -18,9 +19,10 @@ export default function LoginButton() {
 
         const userInitials = user ? user?.name.split(" ").map((initial) => initial[0]).join('') : "NA"
 
-        const handleLogout = async () => {
+        const handleLogout =  async () => {
             try {
                 await logout()
+                
             } catch (e) {
                 console.error(e)
             }
