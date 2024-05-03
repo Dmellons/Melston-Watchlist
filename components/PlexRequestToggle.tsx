@@ -18,9 +18,6 @@ const PlexRequestToggle = ({
 
     const [requestState, setRequestState] = useState(requested)
 
-    console.log({ requestState })
-    console.log({ documentId })
-
     return (
         <div className="gap-2 flex align-middle ">
             <div >
