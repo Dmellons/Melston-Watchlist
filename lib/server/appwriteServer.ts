@@ -34,7 +34,7 @@ export async function createSessionClient() {
 }catch (error){(error) => {
     if (error.code === 401 && error.type === "user_jwt_invalid") {
       async () => {
-        await fetch(`http://localhost:3000/api/jwt/delete`, {
+        await fetch(`${process.env.next_public_url_base}/api/jwt/delete`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
         });
@@ -89,7 +89,7 @@ export async function getLoggedInUser() {
     // console.log({test})
     const { $id, email, name, prefs, status, labels, ...rest } = await account.get().catch((error) => {
       if(error.code === 401 && error.type === 'user_jwt_invalid') {async () => {
-        await fetch(`http://localhost:3000/api/jwt/delete`, {
+        await fetch(`${process.env.next_public_url_base}/api/jwt/delete`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' }
             })}

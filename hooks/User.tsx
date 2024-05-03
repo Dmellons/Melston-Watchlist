@@ -78,7 +78,7 @@ export const UserProvider = ({ children, serverUser }: { children: React.ReactNo
                     const { $id, email, name, prefs, status, labels, ...rest } = await account.get()
                     
                     const jwt = await account.createJWT();
-                    fetch(`http://localhost:3000/api/jwt/set`, {
+                    fetch(`${process.env.NEXT_PUBLIC_URL_BASE}/api/jwt/set`, {
                         method: 'POST',
                         body: JSON.stringify(jwt),
                         headers: { 'Content-Type': 'application/json' }
@@ -162,7 +162,7 @@ export const UserProvider = ({ children, serverUser }: { children: React.ReactNo
 
             const jwt = await account.createJWT();
 
-            fetch(`http://localhost:3000/api/jwt/set`, {
+            fetch(`${process.env.next_public_url_base}/api/jwt/set`, {
                 method: 'POST',
                 body: JSON.stringify(jwt),
                 headers: { 'Content-Type': 'application/json' }
@@ -196,7 +196,7 @@ export const UserProvider = ({ children, serverUser }: { children: React.ReactNo
         try {
             await account.deleteSession('current');
             setUserState(null)
-            await fetch(`http://localhost:3000/api/jwt/delete`, {
+            await fetch(`${process.env.next_public_url_base}/api/jwt/delete`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' }
             })
