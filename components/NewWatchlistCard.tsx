@@ -55,7 +55,7 @@ const NewWatchlistCard = ({
                 description: media.overview ? media.overview : "No description available",
                 credits: media.credits ? media.credits : null
             })
-            console.log({ data })
+            // console.log({ data })
 
             setIsLoading(false)
 
