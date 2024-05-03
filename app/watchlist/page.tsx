@@ -20,7 +20,7 @@ export default async function WatchlistPage() {
     } catch(error) {
         const jwt = await account.createJWT();
 
-            fetch(`http://localhost:3000/api/jwt/set`, {
+            fetch(`http://${process.env.NEXT_PUBLIC_URL_BASE}/api/jwt/set`, {
                 method: 'POST',
                 body: JSON.stringify(jwt),
                 headers: { 'Content-Type': 'application/json' }
