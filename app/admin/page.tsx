@@ -1,19 +1,45 @@
 
 import AdminGatekeeper from "@/components/GateKeeper";
-import { createAdminClient } from "@/lib/server/appwriteServer"
+import { createAdminClient, createSessionClient, getLoggedInUser } from "@/lib/server/appwriteServer"
 import { WatchlistDocument } from "@/types/appwrite";
 import { TMDBMultiSearchResult } from "@/types/tmdbApi"
 import { Models } from "appwrite";
 import { Star } from "lucide-react";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 
 
 
-async function AdminPage() {
+export default async function AdminPage() {
+    const {account} = await createSessionClient()
+    console.log({account})
+    
+    if(!account 
+        // || !databases
+    ) {
+        redirect('/')
+        // return <div className="text-3xl font-bold m-auto w-full text-center">please sign in </div>
+    }
+    let user
+    try{
+         user = await account.get()
+
+    } catch(error) {
+       console.log(error)
+       if (error.code === 401 && error.type === 'general_unauthorized_scope') {
+           redirect('/')
+       }     
+        
+    }
+
+
     const {databases, users } = await createAdminClient()
     const data: Models.DocumentList<WatchlistDocument> = await databases.listDocuments('watchlist', process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID);
     const appUsers = await users.list()
+
+    console.log({ data })
+
     
     return (
         <AdminGatekeeper>
@@ -50,5 +76,3 @@ async function AdminPage() {
         </AdminGatekeeper>
     )
 }
-
-export default AdminPage
