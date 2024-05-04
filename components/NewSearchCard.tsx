@@ -42,8 +42,7 @@ const NewSearchCard = ({
         return null
     }
 
-    console.log({media})
-    console.log({data})
+  
     if (media.media_type === 'tv') {
         data = {
             title: media.name,
@@ -85,7 +84,7 @@ const NewSearchCard = ({
         )
     }
 
-    console.log({ data })
+    
     return (
         <Card className="min-h-80 w-80  rounded m-2 border-none group hover:border hover:border-primary hover:ease-in-out hover:duration-300">
             <CardHeader className="h-48 w-36 m-auto">
