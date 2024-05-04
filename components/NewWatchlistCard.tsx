@@ -167,12 +167,7 @@ const NewWatchlistCard = ({
                 />
             </Card>
             <div className="h-10 p-1"><>
-                {console.log({
-                    "tmdb_id": data.tmdb_id,
-                    "tmdb_type": data.tmdb_type,
-                    "userProviders": user?.providers
-                })}
-
+               
                 <ProvidersBlock
                     tmdbId={data.tmdb_id}
                     tmdbType={data.tmdb_type}
