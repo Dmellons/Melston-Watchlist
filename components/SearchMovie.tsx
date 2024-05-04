@@ -52,8 +52,7 @@ const SearchMovie = ({
             .then(data => setResults(data.results))
             .catch(error => console.log(error))
         setLoading(false)
-        console.log({ loading })
-        console.log({ query })
+       
     }
 
 

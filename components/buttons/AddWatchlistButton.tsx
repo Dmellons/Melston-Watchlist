@@ -21,37 +21,33 @@ const AddWatchlistButton = ({
 
     if (!user) return null
 
-  
-    console.log(media)
-        console.log('query',query)
     let data: WatchlistDocumentCreate
     async function handleAddWatchlist() {
         if (query) {
-            console.log({media})
+            // console.log({media})
             const fetchData = async () => {
                 try {
                     if(media.media_type === 'movie') {
-                    console.log(`https://api.themoviedb.org/3/movie/${media.id}`)
                     const response = await fetch(`https://api.themoviedb.org/3/movie/${media.id}`, tmdbFetchOptions);
                     const data = await response.json();
                     data.media_type = 'movie';
-                    console.log({ res: data });
+                    // console.log({ res: data });
                     return data
                 }
                 if (media.media_type === 'tv') {
                     const response = await fetch(`https://api.themoviedb.org/3/tv/${media.id}`, tmdbFetchOptions);
                     const data = await response.json();
-                    console.log({ res: data });
+                    // console.log({ res: data });
                     data.media_type = 'tv';
                     return data;
                 }
                 } catch (error) {
-                    console.log(error);
+                    console.error(error);
                 }
             }
 
             const newMedia:TMDBMultiSearchResult = await fetchData()
-            console.log(newMedia)
+            // console.log(newMedia)
 
             if (newMedia.media_type === 'tv') {
                 data = {
@@ -81,8 +77,7 @@ const AddWatchlistButton = ({
                 }
             }
 
-            console.log({data})
-
+           
             
         } else {
   
@@ -91,13 +86,22 @@ const AddWatchlistButton = ({
                 console.log({media})
 
                 if (media.media_type === 'tv' || media.tmdb_type === 'tv') {
+              
+
+                if (media.media_type === 'tv' || media.tmdb_type === 'tv') {
 
                     data = {
                         title: media.name ? media.name : media.title,
                         content_type: 'tv',
                         tmdb_id: media.id ? media.id : media.tmdb_id,
                         tmdb_type: 'tv',
+                        title: media.name ? media.name : media.title,
+                        content_type: 'tv',
+                        tmdb_id: media.id ? media.id : media.tmdb_id,
+                        tmdb_type: 'tv',
                         release_date: media.first_air_date,
+                        poster_url: media.poster_path ?  `https://image.tmdb.org/t/p/w500${media.poster_path}`: media.poster_url,
+                        backdrop_url: media.backdrop_path ? `https://image.tmdb.org/t/p/w500${media.backdrop_path}` : media.poster_url,
                         poster_url: media.poster_path ?  `https://image.tmdb.org/t/p/w500${media.poster_path}`: media.poster_url,
                         backdrop_url: media.backdrop_path ? `https://image.tmdb.org/t/p/w500${media.backdrop_path}` : media.poster_url,
                         description: media.description ? media.description : "No description available",
@@ -109,7 +113,7 @@ const AddWatchlistButton = ({
 
                 if (media.media_type === 'movie' || media.tmdb_type === 'movie') {
 
-                    console.log({media})
+                
 
                     data = {
                         title: media.title,
@@ -126,8 +130,6 @@ const AddWatchlistButton = ({
                 // }
             }
         }
-
-        console.log('Before post',{data})
 
         toast.promise(database.createDocument('watchlist', process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID, ID.unique(), data), {
 
