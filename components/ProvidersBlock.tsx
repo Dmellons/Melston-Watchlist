@@ -85,14 +85,14 @@ const ProvidersBlock = (
     fetchData();
   }, [tmdbId, tmdbType]);
 
-  if (!data) {
+  if (!data && !inPlex) {
     return null;
   }
-  else if (data?.results[country] === undefined) {
+  else if (data?.results[country] === undefined && !inPlex) {
     return null;
   }
   // @ts-ignore
-  else if (!data.results[country]?.flatrate) {
+  else if (!data.results[country]?.flatrate && !inPlex) {
     return null;
   }
 
@@ -103,13 +103,19 @@ const ProvidersBlock = (
       userProviders?.includes(provider.provider_id)
     )
 
+    if(!canStream) {
+      canStream = []
+    }
+
+    
 
 
     // if (user?.labels?.includes('plex') && inPlex) {
     if (inPlex) {
-      if (canStream.length === 0) {
-        console.log({ tmdbType }, { tmdbId })
-      }
+      
+      // if (canStream && canStream.length === 0) {
+        
+      // }
 
       canStream = [{
         logo_path: '/logos/plex-logo.svg',
@@ -212,6 +218,9 @@ const ProvidersBlock = (
   }
 
   let canStream: StreamingInfo[] = data?.results[country]?.flatrate
+  if(!canStream) {
+    canStream = []
+  }
   if (inPlex) {
     if (canStream.length === 0) {
       canStream = []
