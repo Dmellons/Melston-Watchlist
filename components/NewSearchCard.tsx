@@ -1,3 +1,4 @@
+'use client'
 import { TMDBMultiSearchResult } from "@/types/tmdbApi"
 import Image from "next/image"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
@@ -6,6 +7,8 @@ import AddWatchlistButton from "./buttons/AddWatchlistButton"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Button } from "./ui/button"
 import Link from "next/link"
+import { useUser } from "@/hooks/User"
+
 
 type CardData = {
     title: string,
@@ -20,6 +23,8 @@ type CardData = {
 }
 let data: CardData
 
+
+
 const NewSearchCard = ({
     media,
     userProviders
@@ -28,6 +33,8 @@ const NewSearchCard = ({
     userProviders?: number[]
 }) => {
     
+    const { user } = useUser()
+
     if (media.media_type === 'person') {
         data = {
             title: media.name,
@@ -142,6 +149,7 @@ const NewSearchCard = ({
                             </Button>
                         } */}
                         <ProvidersBlock tmdbId={data.tmdb_id} tmdbType={data.tmdb_type} userProviders={userProviders} />
+                        
                     </DialogContent>
                 </Dialog>
 
@@ -156,7 +164,13 @@ const NewSearchCard = ({
 
             </CardContent>
             <CardFooter className="flex justify-between align-middle w-full max-h-24 overflow-hidden ">
-
+            <>
+            {console.log({
+                "tmdb_id": data.tmdb_id,
+                "tmdb_type": data.tmdb_type,
+                "userProviders": user?.providers
+            })}
+            </>
 
                 <ProvidersBlock 
                     tmdbId={data.tmdb_id} 
