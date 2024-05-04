@@ -104,8 +104,14 @@ const ProvidersBlock = (
       userProviders?.includes(provider.provider_id)
     )
 
+
+
     // if (user?.labels?.includes('plex') && inPlex) {
     if (inPlex) {
+      if (canStream.length === 0) {
+        console.log({ tmdbType }, { tmdbId })
+      }
+
       canStream = [{
         logo_path: '/logos/plex-logo.svg',
         provider_id: 999,
@@ -209,6 +215,9 @@ const ProvidersBlock = (
 
   let canStream: StreamingInfo[] = data?.results[country]?.flatrate
   if (inPlex) {
+    if (canStream.length === 0) {
+      canStream = []
+    }
     canStream = [{
       logo_path: '/logos/plex-logo.svg',
       provider_id: 999,
@@ -236,17 +245,17 @@ const ProvidersBlock = (
                   {/* @ts-ignore */}
                   {canStream.slice(0, 5).map((provider: StreamingInfo, key: number) => (
                     <>
-                    {console.log(provider)}
+                      {console.log(provider)}
 
-                    <Image
-                      key={key}
-                      src={provider.provider_name === 'Plex' ? provider.logo_path : `https://image.tmdb.org/t/p/w500${provider.logo_path}`}
-                      alt={provider.provider_name}
-                      width={iconSize}
-                      height={iconSize}
-                      className='rounded '
+                      <Image
+                        key={key}
+                        src={provider.provider_name === 'Plex' ? provider.logo_path : `https://image.tmdb.org/t/p/w500${provider.logo_path}`}
+                        alt={provider.provider_name}
+                        width={iconSize}
+                        height={iconSize}
+                        className='rounded '
                       />
-                      </>
+                    </>
                   ))}
 
                   {canStream.length > 5 ? (
