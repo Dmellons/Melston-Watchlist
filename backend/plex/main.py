@@ -95,17 +95,17 @@ def update_plex_library_tv(plex_library_tmdb_ids: List[str], section:str = 'TV S
                 
                 
             
-                result = databases.create_document(
-                    'watchlist', 
-                    APPWRITE_PLEX_COLLECTION_ID, 
-                    ID.unique(), 
-                    add_obj,
-                    ['read("any")']
-                    )
+                # result = databases.create_document(
+                #     'watchlist', 
+                #     APPWRITE_PLEX_COLLECTION_ID, 
+                #     ID.unique(), 
+                #     add_obj,
+                #     ['read("any")']
+                #     )
                 
                 continue
             
-def update_plex_library(plex_library_tmdb_ids: List[str], section:str = 'Movies') -> None:
+def update_plex_library(plex_library: List[str], section:str = 'Movies') -> None:
     
     
 
@@ -116,8 +116,14 @@ def update_plex_library(plex_library_tmdb_ids: List[str], section:str = 'Movies'
             if 'tmdb' in str(guid):
                 tmdb_id = str(guid).split('://')[1][:-1]
                 
-                if tmdb_id in plex_library_tmdb_ids: continue
 
+                if tmdb_id is None or any(
+                item for item in plex_library
+                if item['content_type'] == content_section_translation[section]
+                and item['tmdb_id'] == tmdb_id
+                ):
+                    ic(tmdb_id)
+                    continue
                 
                 add_obj = {
                     'title': movie.title,
@@ -129,20 +135,22 @@ def update_plex_library(plex_library_tmdb_ids: List[str], section:str = 'Movies'
                 
                 
             
-                result = databases.create_document(
-                    'watchlist', 
-                    APPWRITE_PLEX_COLLECTION_ID, 
-                    ID.unique(), 
-                    add_obj,
-                    ['read("any")']
-                    )
+                # databases.create_document(
+                #     'watchlist', 
+                #     APPWRITE_PLEX_COLLECTION_ID, 
+                #     ID.unique(), 
+                #     add_obj,
+                #     ['read("any")']
+                #     )
                 
                 continue
 
 
 if __name__ == '__main__':
-    plex_library = databases.list_documents('watchlist', APPWRITE_PLEX_COLLECTION_ID)
-    plex_library_tmdb_ids = [document['tmdb_id'] for document in plex_library['documents']]
+    plex_library = databases.list_documents('watchlist', APPWRITE_PLEX_COLLECTION_ID, [Query.limit(600)])
     
-    # update_plex_library(plex_library_tmdb_ids, 'Movies')
-    update_plex_library(plex_library_tmdb_ids, 'TV Shows')
+    plex_library_tmdb_ids = [{'tmdb_id': document['tmdb_id'],'content_type': document['content_type']} for document in plex_library['documents']]
+    ic(plex_library_tmdb_ids)
+    # update_plex_library(plex_library, 'Movies')
+    # update_plex_library(plex_library_tmdb_ids, 'TV Shows')
+    # update_plex_library(plex_library, 'TV Shows')
