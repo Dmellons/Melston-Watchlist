@@ -132,7 +132,7 @@ const NewWatchlistCard = ({
                 </CardHeader>
                 <CardContent className=" opacity-0 group-hover:opacity-100  transition-all duration-600 ease-in-out  flex flex-col items-center w-full h-full gap-4 ">
 
-
+                    
                     <PlexRequestToggle 
                         documentId={media.$id} 
                         requested={media.plex_request} 
@@ -166,13 +166,19 @@ const NewWatchlistCard = ({
                     className="w-full h-auto absolute top-0 left-0 opacity-100  group-hover:scale-110 transition-all duration-500 ease-in-out"
                 />
             </Card>
-            <div className="h-10 p-1">
+            <div className="h-10 p-1"><>
+                {console.log({
+                    "tmdb_id": data.tmdb_id,
+                    "tmdb_type": data.tmdb_type,
+                    "userProviders": user?.providers
+                })}
 
                 <ProvidersBlock
                     tmdbId={data.tmdb_id}
                     tmdbType={data.tmdb_type}
                     userProviders={user?.providers}
-                />
+                    />
+                    </>
             </div>
         </div>
 
