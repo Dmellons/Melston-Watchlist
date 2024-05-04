@@ -10,6 +10,7 @@ import { Skeleton } from "./ui/skeleton"
 import SkeletonMediaSearchCard from "./skeletons/SkeletonMediaSearchCard"
 import NewSearchCard from "@/components/NewSearchCard"
 import { useUser } from "@/hooks/User"
+import { tmdbFetchOptions } from "@/lib/tmdb"
 
 
 const SearchMovie = ({
@@ -46,7 +47,7 @@ const SearchMovie = ({
             }
         };
 
-        const res = await fetch(`https://api.themoviedb.org/3/search/multi?query=${query}`, options)
+        const res = await fetch(`https://api.themoviedb.org/3/search/multi?query=${query}`, tmdbFetchOptions)
             .then(res => res.json())
             .then(data => setResults(data.results))
             .catch(error => console.log(error))
