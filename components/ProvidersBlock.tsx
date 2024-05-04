@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/tooltip"
 import { useUser } from '@/hooks/User';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
+import { database } from '@/lib/appwrite';
 
 
 const ProvidersBlock = (
@@ -34,6 +35,7 @@ const ProvidersBlock = (
 ) => {
   const [data, setData] = useState<ProvidersApiCall | undefined>(undefined);
   const [loading, setLoading] = useState(true);
+  const [inPlex, setInPlex] = useState(false)
   
   const { user } = useUser()
   
@@ -54,6 +56,17 @@ const ProvidersBlock = (
         const response = await fetch(url, tmdbFetchOptions);
         const result = await response.json();
         setData(result);
+        const plex_collection_id = process.env.NEXT_PUBLIC_APPWRITE_PLEX_COLLECTION_ID
+        console.log({result})
+        console.log({plex_collection_id})
+        const plex_db = await database.listDocuments('watchlist', plex_collection_id)
+        console.log(plex_db)
+        const plex_ids = plex_db.documents.map(doc => doc.tmdb_id)
+        if (tmdbId in plex_ids) {
+          setInPlex(true)
+        }
+
+
         // if(setHasProviders){}
         // setHasProviders(true); 
         setLoading(false);
@@ -76,10 +89,18 @@ const ProvidersBlock = (
   }
 
   if (userProviders && userProviders.length > 0) {
+    let canStream: StreamingInfo[] = []
+    if (inPlex) {
+      canStream = [{
+        logo_path: '/public/plex.png', 
+        provider_id: 999, 
+        provider_name: 'Plex', 
+        display_priority: 1}]
+    }
 
-    const canStream = data?.results[country]?.flatrate?.filter((provider: StreamingInfo) =>
+    canStream = [...canStream, data?.results[country]?.flatrate?.filter((provider: StreamingInfo) =>
       userProviders?.includes(provider.provider_id)
-    )
+    )]
 
     
     return (
@@ -106,7 +127,7 @@ const ProvidersBlock = (
                       
                       <Image
                         key={key}
-                        src={`https://image.tmdb.org/t/p/w500${provider.logo_path}`}
+                        src={provider.provider_name === 'Plex' ? provider.logo_path : `https://image.tmdb.org/t/p/w500${provider.logo_path}`}
                         alt={provider.provider_name}
                         width={iconSize}
                         height={iconSize}
