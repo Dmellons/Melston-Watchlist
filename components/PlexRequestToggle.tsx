@@ -5,6 +5,7 @@ import { Switch } from "./ui/switch"
 import { database } from "@/lib/appwrite"
 import { toast } from "sonner"
 import { Label } from "./ui/label"
+import { useUser } from "@/hooks/User"
 
 const PlexRequestToggle = ({
     documentId,
@@ -17,7 +18,10 @@ const PlexRequestToggle = ({
 }) => {
 
     const [requestState, setRequestState] = useState(requested)
-
+    const { user } = useUser()
+    if(!user?.labels?.includes('plex')){
+        return null
+    }
     return (
         <div className="gap-2 flex align-middle ">
             <div >
