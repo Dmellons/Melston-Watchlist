@@ -196,7 +196,7 @@ export const UserProvider = ({ children, serverUser }: { children: React.ReactNo
         try {
             await account.deleteSession('current');
             setUserState(null)
-            await fetch(`${process.env.next_public_url_base}/api/jwt/delete`, {
+            await fetch(`/api/jwt/delete`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' }
             })
