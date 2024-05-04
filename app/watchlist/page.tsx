@@ -9,7 +9,9 @@ import { toast } from "sonner";
 
 export default async function WatchlistPage() {
     const {account, databases} = await createSessionClient()  
-    if(!account || !databases) {
+    if(!account 
+        || !databases
+    ) {
         redirect('/')
         // return <div className="text-3xl font-bold m-auto w-full text-center">please sign in </div>
     }
@@ -18,16 +20,10 @@ export default async function WatchlistPage() {
          user = await account.get()
 
     } catch(error) {
-        const jwt = await account.createJWT();
-
-            fetch(`http://${process.env.NEXT_PUBLIC_URL_BASE}/api/jwt/set`, {
-                method: 'POST',
-                body: JSON.stringify(jwt),
-                headers: { 'Content-Type': 'application/json' }
-            })
-        
-            redirect('/watchlist')
-            
+       console.log(error)
+       if (error.code === 401 && error.type === 'general_unauthorized_scope') {
+           redirect('/')
+       }     
         
     }
 
