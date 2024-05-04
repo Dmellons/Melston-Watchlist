@@ -59,8 +59,7 @@ const ProvidersBlock = (
         const result = await response.json();
         setData(result);
         const plex_collection_id = process.env.NEXT_PUBLIC_APPWRITE_PLEX_COLLECTION_ID
-        console.log({ user })
-        console.log(user?.labels?.includes('plex'))
+
         if (user?.labels?.includes('plex')) {
 
           const plex_db = await database.listDocuments('watchlist', plex_collection_id, [
@@ -145,18 +144,17 @@ const ProvidersBlock = (
                     .slice(0, 5)
                     .map((provider: StreamingInfo, key: number) => {
                       const providerImgSrc = provider.provider_name === 'Plex' ? provider.logo_path : `https://image.tmdb.org/t/p/w500${provider.logo_path}`
-                      { console.log(providerImgSrc) }
+
+                      const plexProviderClass = provider.provider_name === 'Plex' ? 'border border-yellow-400/30' : ''
+
                       return (
-
-
-
                         <Image
                           key={key}
                           src={providerImgSrc}
                           alt={provider.provider_name}
                           width={iconSize}
                           height={iconSize}
-                          className='rounded '
+                          className={`${plexProviderClass} rounded `}
                         />
 
                       )
@@ -243,20 +241,22 @@ const ProvidersBlock = (
                 // @ts-ignore
                 <div className='flex flex-wrap gap-2 min-w-48 w-4/5 items-center justify-center z-10 bg-card/50 p-2 rounded-lg border border-primary'>
                   {/* @ts-ignore */}
-                  {canStream.slice(0, 5).map((provider: StreamingInfo, key: number) => (
-                    <>
-                      {console.log(provider)}
+                  {canStream.slice(0, 5).map((provider: StreamingInfo, key: number) => {
+                    const plexProviderClass = provider.provider_name === 'Plex' ? 'border border-yellow-400/30' : ''
+                    return (
+                      <>
+                        <Image
+                          key={key}
+                          src={provider.provider_name === 'Plex' ? provider.logo_path : `https://image.tmdb.org/t/p/w500${provider.logo_path}`}
+                          alt={provider.provider_name}
+                          width={iconSize}
+                          height={iconSize}
+                          className={`${plexProviderClass} rounded`}
+                        />
+                      </>
+                    )
 
-                      <Image
-                        key={key}
-                        src={provider.provider_name === 'Plex' ? provider.logo_path : `https://image.tmdb.org/t/p/w500${provider.logo_path}`}
-                        alt={provider.provider_name}
-                        width={iconSize}
-                        height={iconSize}
-                        className='rounded '
-                      />
-                    </>
-                  ))}
+                  })}
 
                   {canStream.length > 5 ? (
                     <div className='text-center'>+{data?.results[country]?.flatrate?.length - 5}</div>

@@ -48,9 +48,9 @@ export default function LoginButton() {
                             <Link href="/profile" className="text-popover-foreground">User Profile</Link>
                         </Button>
 
-                        <Button asChild variant="link" >
+                        {/* <Button asChild variant="link" >
                             <Link href="/watchlist" className="text-popover-foreground">Watchlist</Link>
-                        </Button>
+                        </Button> */}
 
                         { user.admin &&
                             <Button asChild variant="link" >
@@ -61,11 +61,11 @@ export default function LoginButton() {
                     </div>
                         </div>
                     <div className="flex w-full justify-between ">
-
                         <ModeToggle />
+
                     <Button
                         onClick={handleLogout}
-                        className="m-auto bg-destructive text-destructive-foreground hover:bg-muted hover:text-muted-foreground "
+                        className=" w-24 mr-24 bg-destructive text-destructive-foreground hover:bg-muted hover:text-muted-foreground "
                         >
                         Sign out
                     </Button>
