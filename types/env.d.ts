@@ -16,5 +16,8 @@ namespace NodeJS {
         NEXT_PUBLIC_PLEX_TOKEN: string;
 
         COOKIE_NAME: string;
+
+        PLEX_TOKEN: string;
+        PLEX_SERVER_BASE_URL: string;
     }
 }
