@@ -38,13 +38,13 @@ const CastAndCrew = ({
 
 
                     {cast?.map(member => (
-                        <CarouselItem key={member.id} className="basis-1/6 pl-4">
+                        <CarouselItem key={member.id} className="basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/5 pl-4">
                             <Link
                                 href={`https://www.google.com/search?q=${member.name}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                             >
-                                <Card key={member.id} className="group w-full flex flex-col items-center max-h-72 group-hover:border group-hover:border-primary  group-hover:ease-in-out group-hover:duration-300">
+                                <Card key={member.id} className="group w-full flex flex-col items-center h-80 group-hover:border group-hover:border-primary  group-hover:ease-in-out group-hover:duration-300">
                                     <CardHeader>
 
                                         <Image
@@ -55,7 +55,7 @@ const CastAndCrew = ({
                                             height={250}
                                         />
                                     </CardHeader>
-                                    <CardContent>
+                                    <CardContent className="min-h-96">
                                         <div className='font-bold text-center'>{member.name}</div>
                                         <CardDescription className='text-sm text-muted-foreground/80 text-center'>{member.character}</CardDescription>
 
