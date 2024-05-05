@@ -10,6 +10,14 @@ const nextConfig = {
                 protocol: "https",
                 hostname: "cdn.watchmode.com", // for watchmode movie posters
             },
+            {
+                protocol: "https",
+                hostname: "via.placeholder.com", // for placeholder images
+            },
+            {
+                protocol: "https",
+                hostname: "picsum.photos", // for placeholder images
+            },
         ],
     },
 };

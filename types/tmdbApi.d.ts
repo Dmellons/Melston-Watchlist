@@ -1,6 +1,7 @@
 export type TMDBMultiSearchResult = TMDBMovieSearchResult | TMDBTelevisionSearchResult | TMDBPersonSearchResult;
 
 type TMDBPersonSearchResult = {
+    release_date: string;
     backdrop_path: null | string;
     id: number;
     original_name: string;
