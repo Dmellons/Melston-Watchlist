@@ -144,7 +144,7 @@ const ProvidersBlock = (
               ) : (
 
                 // @ts-ignore
-                <div className='flex flex-wrap gap-2 min-w-48 w-4/5 items-center justify-center z-10 bg-card/50 p-2 rounded-lg border border-primary'>
+                <div className='flex flex-wrap gap-2 min-w-48 w-4/5 items-center justify-center z-10 bg-card/75 p-2 rounded-lg border border-primary'>
                   {/* @ts-ignore */}
                   {canStream
                     .slice(0, 5)
@@ -209,8 +209,8 @@ const ProvidersBlock = (
                 key={key}
                 src={`https://image.tmdb.org/t/p/w500${provider.logo_path}`}
                 alt={provider.provider_name}
-                width={30}
-                height={30}
+                width={60}
+                height={90}
                 className='rounded '
               />
             ))}
