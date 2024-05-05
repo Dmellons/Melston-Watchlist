@@ -32,7 +32,7 @@ const NewSearchCard = ({
     media: TMDBMultiSearchResult
     userProviders?: number[]
 }) => {
-    
+
     const { user } = useUser()
 
     if (media.media_type === 'person') {
@@ -49,7 +49,7 @@ const NewSearchCard = ({
         return null
     }
 
-  
+
     if (media.media_type === 'tv') {
         data = {
             title: media.name,
@@ -76,101 +76,73 @@ const NewSearchCard = ({
             description: media.overview ? media.overview : "No description available"
         }
     }
-    
-    const MediaImage = ({ data }: { data: CardData }) => {
-        const imageUrl =  `https://image.tmdb.org/t/p/w500/${data.poster_path}`
-        return (
-            <Image
-                src={imageUrl}
-                onError={()=>{}}
-                alt={data.title}
-                className="rounded-lg contain group-hover:border-2 group-hover:border-primary group-hover:scale-105 group-hover:ease-in-out group-hover:duration-300 w-full h-full"
-                width={50}
-                height={50}
-            />
-        )
-    }
 
-    
+   
+
+
     return (
-        <Card className="min-h-80 w-80  rounded m-2 border-none group hover:border hover:border-primary hover:ease-in-out hover:duration-300">
-            <CardHeader className="h-48 w-36 m-auto">
+        <Dialog>
+            <DialogTrigger>
+                <Image
+                    src={`https://image.tmdb.org/t/p/w500/${data.poster_path}`}
+                    alt={data.title}
+                    className="rounded-lg contain group-hover:border-2 group-hover:border-primary group-hover:scale-105 group-hover:ease-in-out group-hover:duration-300 w-full h-full"
+                    width={200}
+                    height={200}
+                />
+                <div className="mt-2">
+                    <ProvidersBlock tmdbId={data.tmdb_id} tmdbType={data.tmdb_type} userProviders={userProviders}
+                    // maxWidth="w-48"
+                    />
 
-                <Dialog>
-                    <DialogTrigger>
-                        <Image
-                            src={ `https://image.tmdb.org/t/p/w500/${data.poster_path}`}
-                            alt={data.title}
-                            className="rounded-lg contain group-hover:border-2 group-hover:border-primary group-hover:scale-105 group-hover:ease-in-out group-hover:duration-300 w-full h-full"
-                            width={50}
-                            height={50}
-                        />
+                </div>
 
-                    </DialogTrigger>
-                    <DialogContent className="w-4/5">
-                        <DialogHeader>
-                            <Image
-                                src={`https://image.tmdb.org/t/p/w500/${data.backdrop_path}`}
-                                alt={data.title}
-                                className="rounded-lg w-full my-4"
-                                width={200}
-                                height={50} />
-                            <DialogTitle className="flex justify-between ">
+            </DialogTrigger>
+            <DialogContent className="w-4/5">
+                <DialogHeader>
+                    <Image
+                        src={`https://image.tmdb.org/t/p/w500/${data.backdrop_path}`}
+                        alt={data.title}
+                        className="rounded-lg w-full my-4"
+                        width={200}
+                        height={50} />
+                    <DialogTitle className="flex justify-between ">
 
-                                {data.title}
+                        {data.title}
 
-                                <div className="text-card-foreground text-sm pl-2">
-                                    {data.year.split('-')[0]}
-                                </div>
-
-
-                            </DialogTitle>
-                        </DialogHeader>
-                        <DialogDescription>
-                            <h3 className="underline">Description:</h3>
-                            <p>{data.description}</p>
+                        <div className="text-card-foreground text-sm pl-2">
+                            {data.year.split('-')[0]}
+                        </div>
 
 
-                        </DialogDescription>
-                        
-                            <Button asChild >
-                                <Link href={`/${data.tmdb_type}/${data.tmdb_id}`} >
-                                    More Info
-                                </Link>
-                            </Button>
-                        
-                        <AddWatchlistButton media={media} query={true} />
-                        {/* {data.tmdb_type === 'tv' &&
+                    </DialogTitle>
+                </DialogHeader>
+                <DialogDescription>
+                    <h3 className="underline">Description:</h3>
+                    <p>{data.description}</p>
+
+
+                </DialogDescription>
+
+                <Button asChild >
+                    <Link href={`/${data.tmdb_type}/${data.tmdb_id}`} >
+                        More Info
+                    </Link>
+                </Button>
+
+                <AddWatchlistButton media={media} query={true} />
+                {/* {data.tmdb_type === 'tv' &&
                             <Button asChild variant={"ghost"} >
                                 <Link href={`/${data.tmdb_type}/${data.tmdb_id}`} >
                                     More Info
                                 </Link>
                             </Button>
                         } */}
-                        <ProvidersBlock tmdbId={data.tmdb_id} tmdbType={data.tmdb_type} userProviders={userProviders} />
-                        
-                    </DialogContent>
-                </Dialog>
 
-            </CardHeader>
-            <CardContent className="flex align-middle -mt-4 justify-between">
-                <div className="flex flex-col top-0 h-8 justify-between mr-2 ">
+                <ProvidersBlock tmdbId={data.tmdb_id} tmdbType={data.tmdb_type} userProviders={userProviders} />
 
-                    <h2 className="font-bold text-md ">{data.title}</h2>
-                    <p className="text-xs font-light text-foreground/60">{data.year.split('-')[0]}</p>
-                </div>
-                <AddWatchlistButton media={media} width="w-1/6" />
-
-            </CardContent>
-            <CardFooter className="flex justify-between align-middle w-full max-h-24 overflow-hidden ">
-                            <ProvidersBlock 
-                    tmdbId={data.tmdb_id} 
-                    tmdbType={data.tmdb_type} 
-                    userProviders={userProviders} 
-                    />
-
-            </CardFooter>
-        </Card>
+            </DialogContent>
+        </Dialog>
     )
 }
 
