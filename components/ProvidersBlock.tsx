@@ -12,6 +12,7 @@ import { useUser } from '@/hooks/User';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 import { database } from '@/lib/appwrite';
 import { Query } from 'appwrite';
+import { Asterisk, OctagonX } from 'lucide-react';
 
 
 const ProvidersBlock = (
@@ -21,7 +22,7 @@ const ProvidersBlock = (
 
     country = 'US',
     userProviders,
-    maxWidth = 'max-w-36',
+    maxWidth = 'w-full max-w-36',
     iconSize = 22
     // setHasProviders
   }: {
@@ -85,15 +86,26 @@ const ProvidersBlock = (
     fetchData();
   }, [tmdbId, tmdbType]);
 
+  const notStreaming = () => {
+    return (
+      <div className="grid items-center h-10 w-full text-foreground/50 ml-2">
+        
+        
+          Not Streaming
+        
+      </div>
+    );
+  };
+
   if (!data && !inPlex) {
-    return null;
+    return notStreaming()
   }
   else if (data?.results[country] === undefined && !inPlex) {
-    return null;
+    return notStreaming()
   }
   // @ts-ignore
   else if (!data.results[country]?.flatrate && !inPlex) {
-    return null;
+    return notStreaming()
   }
 
   if (userProviders && userProviders.length > 0) {
@@ -103,18 +115,18 @@ const ProvidersBlock = (
       userProviders?.includes(provider.provider_id)
     )
 
-    if(!canStream) {
+    if (!canStream) {
       canStream = []
     }
 
-    
+
 
 
     // if (user?.labels?.includes('plex') && inPlex) {
     if (inPlex) {
-      
+
       // if (canStream && canStream.length === 0) {
-        
+
       // }
 
       canStream = [{
@@ -137,7 +149,7 @@ const ProvidersBlock = (
         >
 
 
-          <div className={`w-full m-auto flex-col flex justify-center items-center z-10 ${maxWidth}`}>
+          <div className={` m-auto flex-col flex justify-center items-center z-10 ${maxWidth}`}>
             <div className='flex hover:cursor-pointer gap-4 justify-center flex-wrap  '>
               {loading ? (
                 <div className='text-center'>Loading...</div>
@@ -228,7 +240,7 @@ const ProvidersBlock = (
   }
 
   let canStream: StreamingInfo[] = data?.results[country]?.flatrate
-  if(!canStream) {
+  if (!canStream) {
     canStream = []
   }
   if (inPlex) {
@@ -299,7 +311,7 @@ const ProvidersBlock = (
           </h4>
           <div className="div flex flex-wrap gap-2 justify-center my-2">
 
-          {inPlex && (
+            {inPlex && (
               <Image
                 src="/logos/plex-logo.svg"
                 alt="Plex"
