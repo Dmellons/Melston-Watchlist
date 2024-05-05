@@ -163,15 +163,7 @@ const NewSearchCard = ({
 
             </CardContent>
             <CardFooter className="flex justify-between align-middle w-full max-h-24 overflow-hidden ">
-            <>
-            {console.log({
-                "tmdb_id": data.tmdb_id,
-                "tmdb_type": data.tmdb_type,
-                "userProviders": user?.providers
-            })}
-            </>
-
-                <ProvidersBlock 
+                            <ProvidersBlock 
                     tmdbId={data.tmdb_id} 
                     tmdbType={data.tmdb_type} 
                     userProviders={userProviders} 

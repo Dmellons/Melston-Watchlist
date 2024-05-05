@@ -152,13 +152,14 @@ const NewWatchlistCard = ({
                 <Image
                     src={imageUrl}
                     alt={data.title}
-                    width={200}
-                    height={300}
+                    fill={true}
+                    // width={200}
+                    // height={300}
                     // sizes="100vw"
                     style={{
-                        width: '100%',
-                        height: 'auto',
-                        objectFit: 'contain',
+                        // width: '100%',
+                        // height: 'auto',
+                        // objectFit: 'contain',
                         zIndex: -1
 
                     }}
@@ -166,7 +167,7 @@ const NewWatchlistCard = ({
                     className="w-full h-auto absolute top-0 left-0 opacity-100  group-hover:scale-110 transition-all duration-500 ease-in-out"
                 />
             </Card>
-            <div className="h-10 p-1"><>
+            <div className="h-10 p-1 -mt-12"><>
                
                 <ProvidersBlock
                     tmdbId={data.tmdb_id}
