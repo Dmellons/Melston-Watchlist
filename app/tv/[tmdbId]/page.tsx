@@ -9,6 +9,7 @@ import AddWatchlistButton from '@/components/buttons/AddWatchlistButton';
 import BackButton from '@/components/buttons/BackButton';
 import { TMDBApiMovieDetail, TMDBApiTvDetail, tmdbFetchOptions } from "@/lib/tmdb";
 import { WatchlistDocumentCreate } from "@/types/appwrite";
+import { Globe } from "lucide-react";
 
 interface DetailPageProps {
   params: {
@@ -24,9 +25,9 @@ const DetailPage = async ({ params }: DetailPageProps) => {
   const response = await fetch(url, tmdbFetchOptions);
   const data: TMDBApiTvDetail = await response.json();
 
-  console.log({data})
+  console.log({ data })
 
-  const addButtonData =  {
+  const addButtonData = {
     tmdb_id: data.id,
     tmdb_type: 'tv',
     title: data.name,
@@ -93,7 +94,7 @@ const DetailPage = async ({ params }: DetailPageProps) => {
           <p>Episodes: {data.number_of_episodes}</p>
           {data.next_episode_to_air && <p>Next Air Date: {data.next_episode_to_air?.air_date}</p>}
 
-          
+
         </div>
       </div>
 
@@ -134,32 +135,36 @@ const DetailPage = async ({ params }: DetailPageProps) => {
       <CastAndCrew cast={data.credits.cast} type="cast" />
 
       {/* External Links */}
-      <div className="pt-6">
-        <h3 className="text-lg font-bold">External Links</h3>
-        <div className="flex divide-x divide-gray-400">
-          <Button variant="link" asChild>
-            <Link
-              href={`https://www.imdb.com/title/${data.id}`}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              IMDB
-            </Link>
-          </Button>
-          <Button variant="link" asChild>
-            <Link
-              href={data.homepage}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Homepage
-            </Link>
-          </Button>
+      <div className="flex justify-center w-full">
+
+        <div className="pt-6">
+          <h3 className="text-lg font-bold text-center">External Links</h3>
+          <div className="flex divide-x divide-gray-400 justify-center">
+            <Button variant="link" asChild>
+              <Link
+                href={`https://www.imdb.com/title/${data.id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                IMDB
+              </Link>
+            </Button>
+            <Button variant="link" asChild>
+              <Link
+                href={data.homepage}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Globe className="w-4 h-4 mr-1" />
+                Website
+              </Link>
+            </Button>
+          </div>
         </div>
       </div>
-      
-        
-      
+
+
+
 
     </div>
   );
