@@ -8,6 +8,8 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Button } from "./ui/button"
 import Link from "next/link"
 import { useUser } from "@/hooks/User"
+import { useEffect, useState } from "react"
+import ImageWithFallback from "@/components/ImageWithFallback"
 
 
 type CardData = {
@@ -77,18 +79,23 @@ const NewSearchCard = ({
         }
     }
 
+
+
+
+
    
 
 
     return (
         <Dialog>
             <DialogTrigger>
-                <Image
+                {/* <Image */}
+                <ImageWithFallback
                     src={`https://image.tmdb.org/t/p/w500/${data.poster_path}`}
                     alt={data.title}
                     className="rounded-lg contain group-hover:border-2 group-hover:border-primary group-hover:scale-105 group-hover:ease-in-out group-hover:duration-300 w-full h-full"
-                    width={200}
-                    height={200}
+                    width={500}
+                    height={750}
                 />
                 <div className="mt-2">
                     <ProvidersBlock tmdbId={data.tmdb_id} tmdbType={data.tmdb_type} userProviders={userProviders}
@@ -100,12 +107,12 @@ const NewSearchCard = ({
             </DialogTrigger>
             <DialogContent className="w-4/5">
                 <DialogHeader>
-                    <Image
+                    <ImageWithFallback
                         src={`https://image.tmdb.org/t/p/w500/${data.backdrop_path}`}
                         alt={data.title}
                         className="rounded-lg w-full my-4"
                         width={200}
-                        height={50} />
+                        height={100} />
                     <DialogTitle className="flex justify-between ">
 
                         {data.title}
@@ -147,3 +154,5 @@ const NewSearchCard = ({
 }
 
 export default NewSearchCard
+
+
