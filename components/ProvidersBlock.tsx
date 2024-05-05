@@ -151,7 +151,7 @@ const ProvidersBlock = (
                     .map((provider: StreamingInfo, key: number) => {
                       const providerImgSrc = provider.provider_name === 'Plex' ? provider.logo_path : `https://image.tmdb.org/t/p/w500${provider.logo_path}`
 
-                      const plexProviderClass = provider.provider_name === 'Plex' ? 'border border-yellow-400/30' : ''
+                      const plexProviderClass = provider.provider_name === 'Plex' ? 'ring-1 ring-primary/30' : ''
 
                       return (
                         <Image
@@ -193,6 +193,16 @@ const ProvidersBlock = (
             Available to stream on these platforms
           </h4>
           <div className="div flex flex-wrap gap-2 justify-center my-2">
+
+            {inPlex && (
+              <Image
+                src="/logos/plex-logo.svg"
+                alt="Plex"
+                width={30}
+                height={30}
+                className='rounded ring-1 ring-primary/30'
+              />
+            )}
 
             {data?.results[country]?.flatrate?.map((provider: StreamingInfo, key: number) => (
               <Image
@@ -251,7 +261,7 @@ const ProvidersBlock = (
                 <div className='flex flex-wrap gap-2 min-w-48 w-4/5 items-center justify-center z-10 bg-card/50 p-2 rounded-lg border border-primary'>
                   {/* @ts-ignore */}
                   {canStream.slice(0, 5).map((provider: StreamingInfo, key: number) => {
-                    const plexProviderClass = provider.provider_name === 'Plex' ? 'border border-yellow-400/30' : ''
+                    const plexProviderClass = provider.provider_name === 'Plex' ? 'ring-1 ring-primary/30' : ''
                     return (
                       <>
                         <Image
@@ -288,6 +298,16 @@ const ProvidersBlock = (
             Available to stream on these platforms
           </h4>
           <div className="div flex flex-wrap gap-2 justify-center my-2">
+
+          {inPlex && (
+              <Image
+                src="/logos/plex-logo.svg"
+                alt="Plex"
+                width={30}
+                height={30}
+                className='rounded ring-1 ring-primary/30'
+              />
+            )}
 
             {data?.results[country]?.flatrate?.map((provider: StreamingInfo, key: number) => (
               <Image

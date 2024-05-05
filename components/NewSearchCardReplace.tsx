@@ -93,18 +93,21 @@ const NewSearchCard = ({
 
     
     return (
-        <Card className="min-h-80 w-80  rounded m-2 border-none group hover:border hover:border-primary hover:ease-in-out hover:duration-300">
-            <CardHeader className="h-48 w-36 m-auto">
+        <Card 
+        className="group w-32 bg-transparent hover:bg-card/70 rounded-xl  min-h-[200px] hover:transition-all h-48 hover:ease-in-out  hover:duration-500 overflow-hidden border border-primary relative"
+        >
+
+            <CardHeader className="h-36 w-24 m-auto">
 
                 <Dialog>
                     <DialogTrigger>
-                        <Image
-                            src={ `https://image.tmdb.org/t/p/w500/${data.poster_path}`}
-                            alt={data.title}
-                            className="rounded-lg contain group-hover:border-2 group-hover:border-primary group-hover:scale-105 group-hover:ease-in-out group-hover:duration-300 w-full h-full"
-                            width={50}
-                            height={50}
-                        />
+                            <Image
+                                src={ `https://image.tmdb.org/t/p/w500/${data.poster_path}`}
+                                alt={data.title}
+                                className="w-full h-auto absolute top-0 left-0 opacity-100  group-hover:scale-110 transition-all duration-500 ease-in-out -z-1"
+                                width={50}
+                                height={50}
+                            />
 
                     </DialogTrigger>
                     <DialogContent className="w-4/5">
@@ -142,9 +145,9 @@ const NewSearchCard = ({
                         <AddWatchlistButton media={media} query={true} />
                         {/* {data.tmdb_type === 'tv' &&
                             <Button asChild variant={"ghost"} >
-                                <Link href={`/${data.tmdb_type}/${data.tmdb_id}`} >
-                                    More Info
-                                </Link>
+                            <Link href={`/${data.tmdb_type}/${data.tmdb_id}`} >
+                            More Info
+                            </Link>
                             </Button>
                         } */}
                         <ProvidersBlock tmdbId={data.tmdb_id} tmdbType={data.tmdb_type} userProviders={userProviders} />
@@ -170,12 +173,13 @@ const NewSearchCard = ({
                 "userProviders": user?.providers
             })}
             </>
-
+                <div className="z-10 flex flex-col top-0 h-8 justify-between">
                 <ProvidersBlock 
                     tmdbId={data.tmdb_id} 
                     tmdbType={data.tmdb_type} 
                     userProviders={userProviders} 
                     />
+                </div>
 
             </CardFooter>
         </Card>
