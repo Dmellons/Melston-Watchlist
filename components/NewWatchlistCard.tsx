@@ -14,6 +14,7 @@ import { useEffect, useState } from "react";
 import { Skeleton } from "./ui/skeleton";
 import { useUser } from "@/hooks/User";
 import PlexRequestToggle from "./PlexRequestToggle";
+import { Star } from "lucide-react";
 
 type CardData = {
     title: string,
@@ -24,6 +25,7 @@ type CardData = {
     image_url: string,
     description: string,
     credits: Credits
+    plexRequest?: boolean
 
 }
 let data: CardData
@@ -53,7 +55,8 @@ const NewWatchlistCard = ({
                 year: media.release_date,
                 image_url: media.poster_url,
                 description: media.overview ? media.overview : "No description available",
-                credits: media.credits ? media.credits : null
+                credits: media.credits ? media.credits : null,
+                plexRequest: media.plex_request,
             })
             // console.log({ data })
 
@@ -72,13 +75,14 @@ const NewWatchlistCard = ({
                 year: media.release_date,
                 image_url: media.poster_path,
                 description: media.overview ? media.overview : "No description available",
-                credits: media.credits
+                credits: media.credits,
+                plexRequest: media.plex_request,
             })
 
 
             setIsLoading(false)
         }
-    },[])
+    }, [])
 
     if (
         // isLoading ||
@@ -106,6 +110,17 @@ const NewWatchlistCard = ({
                 className="group w-64 bg-transparent hover:bg-card/70 rounded-xl  min-h-[200px] hover:transition-all h-96 hover:ease-in-out  hover:duration-500 overflow-hidden border border-primary relative"
 
             >
+                {data.plexRequest &&
+                    <div className="bg-gradient-to-br from-amber-600/40 from-20% via-30% via-amber-600/20 to-transparent to-50%  h-16 w-16" >
+
+                        <Star
+                            size={32}
+                            strokeWidth={0}
+                            fill="#F59E0B"
+
+                            className="absolute top-2 left-2"
+                        />
+                    </div>}
 
                 <CardHeader
                     className="opacity-0 group-hover:opacity-100 transition-all duration-500 ease-in-out text-center"
@@ -122,9 +137,9 @@ const NewWatchlistCard = ({
                             Type: {data.content_type}
                         </p>
                         <p>
-                            
 
-                        Year: {new Date(data.year).getFullYear()}
+
+                            Year: {new Date(data.year).getFullYear()}
                         </p>
 
                     </CardDescription>
@@ -132,12 +147,12 @@ const NewWatchlistCard = ({
                 </CardHeader>
                 <CardContent className=" opacity-0 group-hover:opacity-100  transition-all duration-600 ease-in-out  flex flex-col items-center w-full h-full gap-4 ">
 
-                    
-                    <PlexRequestToggle 
-                        documentId={media.$id} 
-                        requested={media.plex_request} 
-                        mediaTitle={data.title} 
-                        />
+
+                    <PlexRequestToggle
+                        documentId={media.$id}
+                        requested={media.plex_request}
+                        mediaTitle={data.title}
+                    />
                     <Button
                         className="hover:shadow-2xl">
                         <Link href={`/${data.tmdb_type}/${data.tmdb_id}`} >
@@ -168,13 +183,13 @@ const NewWatchlistCard = ({
                 />
             </Card>
             <div className="h-10 p-1 -mt-12"><>
-               
+
                 <ProvidersBlock
                     tmdbId={data.tmdb_id}
                     tmdbType={data.tmdb_type}
                     userProviders={user?.providers}
-                    />
-                    </>
+                />
+            </>
             </div>
         </div>
 
