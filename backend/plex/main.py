@@ -1,9 +1,11 @@
 from typing import List
 from decouple import Config, RepositoryEnv
 from icecream import ic
+from datetime import datetime
 
 from appwrite.client import Client
 from appwrite.services.databases import Databases
+from appwrite.query import Query
 from appwrite.id import ID
 
 from plexapi.server import PlexServer
@@ -30,60 +32,100 @@ appwrite_client.set_key(APPWRITE_API_KEY)
 
 databases = Databases(appwrite_client)
 
-sections = ['Movies', 'TV Shows', 'Music Videos']
 
 content_section_translation = {
         'Movies': 'movie',
         'TV Shows': 'tv',
-        'Music Videos': 'music',
     }
+sections = [key for key in content_section_translation.keys()]
 
-def update_plex_library(plex_library: List[str], section:str = 'Movies') -> None:
-    
-    
+class Media:
+    def __init__(self, tmdb_id: int, content_type: str, date_added: datetime, title: str) -> None:
+        self.title = title
+        self.tmdb_id = tmdb_id
+        self.content_type = content_type
+        self.date_added = date_added.strftime("%Y-%m-%d") if type(date_added) == datetime else date_added
 
-    for movie in plex.library.section(section).all():
+def get_new_to_plex_library(sections: List[str] = ['Movies', 'TV Shows']) -> List[Media] | None:
 
-        for guid in movie.guids:
+    list_return_data = []
+    for section in sections:
+        existing_plex =  databases.list_documents(
+            'watchlist',
+            APPWRITE_PLEX_COLLECTION_ID, [
+                Query.equal('content_type', content_section_translation[section]),
+                Query.limit(600)
                 
-            if 'tmdb' in str(guid):
-                tmdb_id = str(guid).split('://')[1][:-1]
                 
+                ]
+            )
+        existing_section_data = [{'content_type': item['content_type'], 'tmdb_id': item['tmdb_id']} for item in existing_plex['documents'] if item['content_type'] == content_section_translation[section]]
+        
+        for media in plex.library.section(section).all():
 
-                if tmdb_id is None or any(
-                item for item in plex_library
-                if item['content_type'] == content_section_translation[section]
-                and item['tmdb_id'] == tmdb_id
-                ):
-                    ic(tmdb_id)
-                    continue
-                
-                add_obj = {
-                    'title': movie.title,
-                    'tmdb_id': tmdb_id,
-                    'content_type': content_section_translation[section],
-                    'date_added': movie.addedAt.strftime("%Y-%m-%d")
-                }
-                
-                
-                
+            tmdb_id = [str(guid).split('tmdb://')[1][:-1] for guid in media.guids if 'tmdb' in str(guid)] if media.guids else None
             
-                databases.create_document(
-                    'watchlist', 
-                    APPWRITE_PLEX_COLLECTION_ID, 
-                    ID.unique(), 
-                    add_obj,
-                    ['read("any")']
-                    )
-                
+            if tmdb_id is None or len(tmdb_id) == 0: continue
+
+            tmdb_id = tmdb_id[0]
+
+            content_type = content_section_translation[section]
+            
+            if any(item for item in existing_section_data if ( item['tmdb_id'] == tmdb_id)):
                 continue
+            else:
+
+                return_data = {
+                        'title': media.title,
+                        'tmdb_id': tmdb_id,
+                        'content_type': content_type,
+                        'date_added': media.addedAt.strftime("%Y-%m-%d")
+                    }
+
+                list_return_data.append(Media(**return_data))
+
+    if len(list_return_data) > 0:
+        ic(len(list_return_data))
+        return list_return_data
+               
+    return None                
+
+
+def update_plex_library( section:str = 'Movies') -> None:
+    
+    new_media = get_new_to_plex_library()
+   
+    if new_media is None: return
+    for media in new_media:
+
+        if type(media) != Media or media.tmdb_id is None : continue          
+             
+        tmdb_id = media.tmdb_id
+ 
+
+        add_obj = {
+            'title': media.title,
+            'tmdb_id': tmdb_id,
+            'content_type': media.content_type,
+
+            'date_added': media.date_added
+        }
+  
+        ic(add_obj)
+        
+        databases.create_document(
+            'watchlist', 
+            APPWRITE_PLEX_COLLECTION_ID, 
+            ID.unique(), 
+            add_obj,
+            ['read("any")']
+            )
+        
+        continue
 
 
 if __name__ == '__main__':
-    plex_library = databases.list_documents('watchlist', APPWRITE_PLEX_COLLECTION_ID, [Query.limit(600)])
-    
-    plex_library_tmdb_ids = [{'tmdb_id': document['tmdb_id'],'content_type': document['content_type']} for document in plex_library['documents']]
-    ic(plex_library_tmdb_ids)
-    # update_plex_library(plex_library, 'Movies')
-    # update_plex_library(plex_library_tmdb_ids, 'TV Shows')
-    # update_plex_library(plex_library, 'TV Shows')
+
+    update_plex_library()
+
+ 
