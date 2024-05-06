@@ -117,7 +117,6 @@ const NewWatchlistCard = ({
                             size={32}
                             strokeWidth={0}
                             fill="#F59E0B"
-
                             className="absolute top-2 left-2"
                         />
                     </div>}
