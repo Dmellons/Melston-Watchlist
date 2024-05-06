@@ -6,7 +6,7 @@
 ## TODO
 
 - [ ] Add multiple watchlists per user
-
+- [ ] Add New to streaming block between search and watchlist / Move search to header or modal
 
 ### Watchlist
 

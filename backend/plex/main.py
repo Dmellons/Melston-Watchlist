@@ -1,12 +1,13 @@
 from typing import List
+from decouple import Config, RepositoryEnv
+from icecream import ic
+
 from appwrite.client import Client
 from appwrite.services.databases import Databases
 from appwrite.id import ID
+
 from plexapi.server import PlexServer
 
-from datetime import datetime
-from decouple import Config, RepositoryEnv
-from icecream import ic
 
 config = Config(RepositoryEnv('../../.env'))
 
@@ -37,74 +38,6 @@ content_section_translation = {
         'Music Videos': 'music',
     }
 
-def update_plex_library_movie(plex_library_tmdb_ids: List[str], section:str = 'Movies') -> None:
-    
-    
-
-    for movie in plex.library.section(section).all():
-
-        for guid in movie.guids:
-                
-            if 'tmdb' in str(guid):
-                tmdb_id = str(guid).split('://')[1][:-1]
-                
-                if tmdb_id in plex_library_tmdb_ids: continue
-
-                
-                add_obj = {
-                    'title': movie.title,
-                    'tmdb_id': tmdb_id,
-                    'content_type': content_section_translation[section],
-                    'date_added': movie.addedAt.strftime("%Y-%m-%d")
-                }
-                
-                
-                
-            
-                result = databases.create_document(
-                    'watchlist', 
-                    APPWRITE_PLEX_COLLECTION_ID, 
-                    ID.unique(), 
-                    add_obj,
-                    ['read("any")']
-                    )
-                
-                continue
-            
-def update_plex_library_tv(plex_library_tmdb_ids: List[str], section:str = 'TV Shows') -> None:
-    
-
-
-    for movie in plex.library.section(section).all():
-
-        for guid in movie.guids:
-                
-            if 'tmdb' in str(guid):
-                tmdb_id = str(guid).split('://')[1][:-1]
-                
-                if tmdb_id in plex_library_tmdb_ids: continue
-
-                
-                add_obj = {
-                    'title': movie.title,
-                    'tmdb_id': tmdb_id,
-                    'content_type': content_section_translation[section],
-                    'date_added': movie.addedAt.strftime("%Y-%m-%d")
-                }
-                
-                
-                
-            
-                # result = databases.create_document(
-                #     'watchlist', 
-                #     APPWRITE_PLEX_COLLECTION_ID, 
-                #     ID.unique(), 
-                #     add_obj,
-                #     ['read("any")']
-                #     )
-                
-                continue
-            
 def update_plex_library(plex_library: List[str], section:str = 'Movies') -> None:
     
     
@@ -135,13 +68,13 @@ def update_plex_library(plex_library: List[str], section:str = 'Movies') -> None
                 
                 
             
-                # databases.create_document(
-                #     'watchlist', 
-                #     APPWRITE_PLEX_COLLECTION_ID, 
-                #     ID.unique(), 
-                #     add_obj,
-                #     ['read("any")']
-                #     )
+                databases.create_document(
+                    'watchlist', 
+                    APPWRITE_PLEX_COLLECTION_ID, 
+                    ID.unique(), 
+                    add_obj,
+                    ['read("any")']
+                    )
                 
                 continue
 
