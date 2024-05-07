@@ -131,7 +131,7 @@ const NewSearchCard = ({
                 </DialogHeader>
                 <DialogDescription>
                     <h3 className="underline">Description:</h3>
-                    <p>{data.description}</p>
+                    <p className="line-clamp-4">{data.description}</p>
 
 
                 </DialogDescription>
