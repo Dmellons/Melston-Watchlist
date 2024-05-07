@@ -99,8 +99,8 @@ const NewSearchCard = ({
                     src={`https://image.tmdb.org/t/p/w500/${data.poster_path}`}
                     alt={data.title}
                     className="rounded-lg contain group-hover:border-2 group-hover:border-primary group-hover:scale-105 group-hover:ease-in-out group-hover:duration-300 w-full h-full"
-                    width={500}
-                    height={750}
+                    width={200}
+                    height={300}
                 />
                 <div className="mt-2">
                     <ProvidersBlock tmdbId={data.tmdb_id} tmdbType={data.tmdb_type} userProviders={userProviders}
