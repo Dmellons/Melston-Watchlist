@@ -9,12 +9,14 @@ import { useUser } from "@/hooks/User"
 
 const PlexRequestToggle = ({
     documentId,
+    setPlexRequest,
     mediaTitle = 'media',
-    requested
+    requested,
 }: {
     documentId: string,
+    setPlexRequest: (value: boolean) => void
     mediaTitle?: string,
-    requested?: boolean
+    requested?: boolean,
 }) => {
 
     const [requestState, setRequestState] = useState(requested)
@@ -44,8 +46,11 @@ const PlexRequestToggle = ({
                                 console.log({ res })
                                 if (requestState) {
                                     
+                                    setPlexRequest(false)
+                                    
                                     return `Removed Plex Request from ${mediaTitle} `
                                 } else {
+                                    setPlexRequest(true)
                                     return `Requested ${mediaTitle} from Plex`
                                 }
                             },

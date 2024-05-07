@@ -34,20 +34,16 @@ const NewWatchlistCard = ({
 }: {
     media: WatchlistDocument
 }) => {
-
     const { user } = useUser()
 
-
     const [data, setData] = useState<CardData | null>(null)
-    const [isLoading, setIsLoading] = useState(true)
-    const [hasProviders, setHasProviders] = useState(false)
+    const [isLoading, setIsLoading] = useState<boolean>(true)
+    const [hasProviders, setHasProviders] = useState<boolean>(false)
+    const [plexRequest, setPlexRequest] = useState<boolean>(media.plex_request)
+
     useEffect(() => {
-
-
         if (media.content_type === 'tv') {
-            // console.log({ media })
             setData({
-
                 title: media.title,
                 content_type: media.content_type,
                 tmdb_id: media.tmdb_id,
@@ -56,17 +52,12 @@ const NewWatchlistCard = ({
                 image_url: media.poster_url,
                 description: media.overview ? media.overview : "No description available",
                 credits: media.credits ? media.credits : null,
-                plexRequest: media.plex_request,
+                plexRequest: plexRequest,
             })
-            // console.log({ data })
-
             setIsLoading(false)
-
         }
 
         if (media.content_type === 'movie') {
-            // console.log({ media })
-
             setData({
                 title: media.title,
                 content_type: media.content_type,
@@ -76,14 +67,12 @@ const NewWatchlistCard = ({
                 image_url: media.poster_path,
                 description: media.overview ? media.overview : "No description available",
                 credits: media.credits,
-                plexRequest: media.plex_request,
+                plexRequest: plexRequest,
             })
-
-
             setIsLoading(false)
         }
-    }, [])
-
+        
+    }, [media, plexRequest])
     if (
         // isLoading ||
         !data
@@ -95,62 +84,50 @@ const NewWatchlistCard = ({
         )
     }
 
-    // console.log({ data?.cast })
-    // const imageUrl = 'https://image.tmdb.org/t/p/w500/' + data.image_url
-
     const imageUrl = media.poster_url
-
-
     return (
-
-
         <div className="flex flex-col">
             <Card
                 key={data.title}
                 className="group w-64 bg-transparent hover:bg-card/70 rounded-xl  min-h-[200px] hover:transition-all h-96 hover:ease-in-out  hover:duration-500 overflow-hidden border border-primary relative"
-
             >
-                {data.plexRequest &&
-                    <div className="bg-gradient-to-br from-amber-600/40 from-20% via-30% via-amber-600/20 to-transparent to-50%  h-16 w-16" >
-
+                {data.plexRequest ? 
+                    // <div className="bg-gradient-to-br from-amber-600/40 from-30% via-40% via-amber-600/20 to-transparent to-50%  h-12 w-12" >
                         <Star
                             size={32}
-                            strokeWidth={0}
+                            strokeWidth={1}
+                            color="#222222"
                             fill="#F59E0B"
-                            className="absolute top-2 left-2"
+                            className="top-0 left-0 absolute m-1"
                         />
-                    </div>}
-
+                    // </div>
+                    : 
+                    null
+                    // <div className="h-12 w-12"></div>
+                    }
                 <CardHeader
-                    className="opacity-0 group-hover:opacity-100 transition-all duration-500 ease-in-out text-center"
+                    className="opacity-0 group-hover:opacity-100 transition-all duration-500 ease-in-out text-center mt-2"
                 >
-
                     <CardTitle
                         className="text-card-foreground text-center"
                     >
                         {data.title}
                     </CardTitle>
                     <CardDescription className=" flex justify-between text-center text-sm font-light text-card-foreground" >
-
                         <p className="capitalize">
                             Type: {data.content_type}
                         </p>
                         <p>
-
-
-                            Year: {new Date(data.year).getFullYear()}
+                            Year: {data.year ? new Date(data.year).getFullYear() : 'N/A'}
                         </p>
-
                     </CardDescription>
-
                 </CardHeader>
                 <CardContent className=" opacity-0 group-hover:opacity-100  transition-all duration-600 ease-in-out  flex flex-col items-center w-full h-full gap-4 ">
-
-
                     <PlexRequestToggle
                         documentId={media.$id}
                         requested={media.plex_request}
                         mediaTitle={data.title}
+                        setPlexRequest={setPlexRequest}
                     />
                     <Button
                         className="hover:shadow-2xl">
@@ -158,24 +135,18 @@ const NewWatchlistCard = ({
                             More Info
                         </Link>
                     </Button>
-
                     <DeleteButton title={data.title} document_id={media.$id} />
-
                 </CardContent>
-
                 <Image
                     src={imageUrl}
                     alt={data.title}
                     fill={true}
-                    // width={200}
-                    // height={300}
-                    // sizes="100vw"
+                    sizes="(max-width: 768px) 100vw,
+                        (max-width: 1200px) 50vw,
+                        33vw"
+                    priority={true}
                     style={{
-                        // width: '100%',
-                        // height: 'auto',
-                        // objectFit: 'contain',
                         zIndex: -1
-
                     }}
 
                     className="w-full h-auto absolute top-0 left-0 opacity-100  group-hover:scale-110 transition-all duration-500 ease-in-out"
