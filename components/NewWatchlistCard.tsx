@@ -125,7 +125,7 @@ const NewWatchlistCard = ({
                 <CardContent className=" opacity-0 group-hover:opacity-100  transition-all duration-600 ease-in-out  flex flex-col items-center w-full h-full gap-4 ">
                     <PlexRequestToggle
                         documentId={media.$id}
-                        requested={media.plex_request}
+                        requested={plexRequest}
                         mediaTitle={data.title}
                         setPlexRequest={setPlexRequest}
                     />
