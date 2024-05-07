@@ -129,6 +129,8 @@ const NewWatchlistCard = ({
                         mediaTitle={data.title}
                         setPlexRequest={setPlexRequest}
                     />
+                    <div className="flex gap-2 h-1/2 align-middle">
+
                     <Button
                         className="hover:shadow-2xl">
                         <Link href={`/${data.tmdb_type}/${data.tmdb_id}`} >
@@ -136,7 +138,9 @@ const NewWatchlistCard = ({
                         </Link>
                     </Button>
                     <DeleteButton title={data.title} document_id={media.$id} />
+                            </div>
                 </CardContent>
+                
                 <Image
                     src={imageUrl}
                     alt={data.title}

@@ -210,9 +210,9 @@ const ProvidersBlock = (
               <Image
                 src="/logos/plex-logo.svg"
                 alt="Plex"
-                width={30}
-                height={30}
-                className='rounded ring-1 ring-primary/30'
+                width={60}
+                height={60}
+                className='rounded '
               />
             )}
 
@@ -222,7 +222,7 @@ const ProvidersBlock = (
                 src={`https://image.tmdb.org/t/p/w500${provider.logo_path}`}
                 alt={provider.provider_name}
                 width={60}
-                height={90}
+                height={60}
                 className='rounded '
               />
             ))}

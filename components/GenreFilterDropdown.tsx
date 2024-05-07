@@ -22,16 +22,7 @@ const GenreFilterDropdown = ({
     }, [setFilter])
         console.log(movieGenres)
 
-    // useEffect(() => {
-    //     async function fetchMovieGenres(){
-    //         const movieGenres =(await fetch('https://api.themoviedb.org/3/genre/movie/list?language=en', tmdbFetchOptions)).json()
-    //         console.log({movieGenres})
-    //         return movieGenres
-    //     } 
-    //         // .then(res => res.json())
-    //     fetchMovieGenres()
-
-    // }, [setFilter])
+  
     return (
         <div className="dropdown dropdown-end">
             <label
