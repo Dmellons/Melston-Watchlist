@@ -15,7 +15,7 @@ import { Query } from "node-appwrite";
 
 export default async function AdminPage() {
     const {account} = await createSessionClient()
-    console.log({account})
+    
     
     if(!account 
         // || !databases
@@ -23,11 +23,11 @@ export default async function AdminPage() {
         redirect('/')
         // return <div className="text-3xl font-bold m-auto w-full text-center">please sign in </div>
     }
-    let user
+    let user: Models.User<Models.Preferences>
     try{
          user = await account.get()
 
-    } catch(error) {
+    } catch(error:any) {
        console.log(error)
        if (error.code === 401 && error.type === 'general_unauthorized_scope') {
            redirect('/')
@@ -38,9 +38,8 @@ export default async function AdminPage() {
 
     const {databases, users } = await createAdminClient()
     const data: Models.DocumentList<WatchlistDocument> = await databases.listDocuments('watchlist', process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID);
-    const plexRequests: Models.DocumentList<WatchlistDocument> = await databases.listDocuments('watchlist', process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID,[
-        Query.equal('plex_request', true)
-    ]);
+    const plexRequests: WatchlistDocument[] =  data.documents.filter((item) => item.plex_request === true)
+    console.log(plexRequests)
     const appUsers = await users.list()
     let requester
    
@@ -48,10 +47,7 @@ export default async function AdminPage() {
         <AdminGatekeeper>
             <main className="flex min-h-screen flex-col m-auto sm:p-18 px-2">
                 <h1 className="text-2xl font-bold ml-2 underline mb-2">New Requests</h1>
-                            {plexRequests.documents
-                                .filter(doc => (doc.$permissions.includes(`update("user:${user.$id}")`))
-                                
-                            )
+                            {plexRequests
                                 .map((document) => (
                                     <div key={document.$id} className="flex gap-2">
                                         {
@@ -61,7 +57,7 @@ export default async function AdminPage() {
                                         <Link href={`/${document.tmdb_type}/${document.tmdb_id}`}
                                             className="hover:underline flex">
                                             {document.title}
-                                            {console.log(document)}
+                                            
                                             {requester = appUsers.users.map(u => {
                                                 console.log({u})
                                                 if(document.$permissions.includes(`update("user:${u.$id}")`)){
@@ -87,12 +83,7 @@ export default async function AdminPage() {
                             <h2 className="text-2xl justify-start text-left border-b-2 border-primary">{user.email}</h2>
                             <p className="text-sm text-foreground/50 align-baseline">{user.name}</p>
                             {data.documents
-                                .filter(doc => (doc.$permissions.includes(`update("user:${user.$id}")`))
-                                //  && (
-                                //     doc.plex_request
-                                //     || user.email === 'mickeymam.57@gmail.com'
-                                // )
-                            )
+                                .filter(doc => (doc.$permissions.includes(`update("user:${user.$id}")`)))
                                 .map((document) => (
                                     <div key={document.$id} className="flex gap-2">
                                         {

@@ -15,8 +15,8 @@ const PlexRequestToggle = ({
 }: {
     documentId: string,
     setPlexRequest: (value: boolean) => void
+    requested: boolean,
     mediaTitle?: string,
-    requested?: boolean,
 }) => {
 
     const [requestState, setRequestState] = useState(requested)
