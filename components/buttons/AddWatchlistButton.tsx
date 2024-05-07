@@ -47,7 +47,7 @@ const AddWatchlistButton = ({
             }
 
             const newMedia:TMDBMultiSearchResult = await fetchData()
-            // console.log(newMedia)
+            console.log({newMedia})
 
             if (newMedia.media_type === 'tv') {
                 data = {
@@ -59,7 +59,7 @@ const AddWatchlistButton = ({
                     poster_url:  `https://image.tmdb.org/t/p/w500${newMedia.poster_path}`,
                     backdrop_url: newMedia.poster_path ? `https://image.tmdb.org/t/p/w500${newMedia.backdrop_path}` : null,
                     description: newMedia.overview ? newMedia.overview : "No description available",
-                    genre_ids: newMedia.genre_ids ? newMedia.genre_ids : [],
+                    genre_ids: newMedia.genres.length >  0 ? newMedia.genres.map((g) => g.id) : [],
                     plex_request: false
                 }
             } else if (newMedia.media_type === 'movie') {
@@ -72,10 +72,12 @@ const AddWatchlistButton = ({
                     poster_url:  `https://image.tmdb.org/t/p/w500${newMedia.poster_path}`,
                     backdrop_url: newMedia.poster_path ? `https://image.tmdb.org/t/p/w500${newMedia.backdrop_path}` : null,
                     description: newMedia.overview ? newMedia.overview : "No description available",
-                    genre_ids: newMedia.genre_ids ? newMedia.genre_ids : [],
+                    genre_ids: newMedia.genres?.length >  0 ? newMedia.genres.map((g) => g.id) : [],
                     plex_request: false
                 }
             }
+
+            console.log({data})
 
            
             

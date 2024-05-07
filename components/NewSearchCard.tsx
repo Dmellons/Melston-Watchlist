@@ -36,7 +36,7 @@ const NewSearchCard = ({
 }) => {
 
     const { user } = useUser()
-
+    console.log({media})
     if (media.media_type === 'person') {
         data = {
             title: media.name,
@@ -46,6 +46,7 @@ const NewSearchCard = ({
             year: media.release_date,
             poster_path: media.poster_path,
             backdrop_path: media.backdrop_path,
+            genre_ids: media.genre_ids,
             description: media.overview ? media.overview : "No description available"
         }
         return null
@@ -61,6 +62,7 @@ const NewSearchCard = ({
             year: media.first_air_date,
             poster_path: media.poster_path,
             backdrop_path: media.backdrop_path,
+            genre_ids: media.genre_ids,
             description: media.overview ? media.overview : "No description available"
         }
 
@@ -75,10 +77,13 @@ const NewSearchCard = ({
             year: media.release_date,
             poster_path: media.poster_path,
             backdrop_path: media.backdrop_path,
+            genre_ids: media.genre_ids,
             description: media.overview ? media.overview : "No description available"
         }
     }
 
+
+    console.log({data})
 
 
 

@@ -67,7 +67,7 @@ def get_new_to_plex_library(sections: List[str] = ['Movies', 'TV Shows']) -> Lis
             
             if tmdb_id is None or len(tmdb_id) == 0: continue
 
-            tmdb_id = tmdb_id[0]
+            tmdb_id = tmdb_id[0] if type(tmdb_id) == list else tmdb_id
 
             content_type = content_section_translation[section]
             
