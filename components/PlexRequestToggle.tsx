@@ -32,7 +32,7 @@ const PlexRequestToggle = ({
             <Switch
                 id="plex-request-toggle"
                 checked={requestState}
-                
+                className="ring-2"
                 onCheckedChange={() => {
                     // const promise = database.updateDocument('watchlist', process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID, documentId, {
                         //     plex_request: !requestState
