@@ -11,6 +11,7 @@ import SkeletonMediaSearchCard from "./skeletons/SkeletonMediaSearchCard"
 import NewSearchCard from "@/components/NewSearchCard"
 import { useUser } from "@/hooks/User"
 import { tmdbFetchOptions } from "@/lib/tmdb"
+import GenreFilterDropdown from "./GenreFilterDropdown"
 
 
 const SearchMovie = ({
@@ -24,6 +25,7 @@ const SearchMovie = ({
     const [loading, setLoading] = useState(true)
     const [query, setQuery] = useState<string>("")
     const [results, setResults] = useState<TMDBMultiSearchResult[]>([])
+    const [genreFilter, setGenreFilter] = useState<number[]>([])
 
     const { user } = useUser()
 
@@ -95,7 +97,7 @@ const SearchMovie = ({
                         Clear
                     </Button>
                 </div>
-
+                    {/* <GenreFilterDropdown setFilter={setGenreFilter} /> */}
 
 
                 {

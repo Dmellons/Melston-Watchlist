@@ -39,7 +39,7 @@ export default async function AdminPage() {
     const {databases, users } = await createAdminClient()
     const data: Models.DocumentList<WatchlistDocument> = await databases.listDocuments('watchlist', process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID);
     const plexRequests: WatchlistDocument[] =  data.documents.filter((item) => item.plex_request === true)
-    console.log(plexRequests)
+
     const appUsers = await users.list()
     let requester
    
@@ -59,7 +59,7 @@ export default async function AdminPage() {
                                             {document.title}
                                             
                                             {requester = appUsers.users.map(u => {
-                                                console.log({u})
+
                                                 if(document.$permissions.includes(`update("user:${u.$id}")`)){
                                                     return <div key={u.$id} className="text-foreground/50 pl-2"> - {u.email}</div>
                                                 } else {
