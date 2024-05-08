@@ -40,6 +40,7 @@ export type PlexRequest = {
 }
 
 export const columns: ColumnDef<PlexRequest, unknown>[] = [
+
     {
         id: "select",
         header: ({ table }) => (
@@ -59,6 +60,8 @@ export const columns: ColumnDef<PlexRequest, unknown>[] = [
                 aria-label="Select row"
             />
         ),
+        enableSorting: false,
+        enableHiding: false,
     },
     {
         accessorKey: 'title',

@@ -11,6 +11,7 @@ import {
   getFilteredRowModel,
   getSortedRowModel,
   useReactTable,
+  RowSelectionState,
 } from "@tanstack/react-table"
 
 import {
@@ -33,6 +34,7 @@ import { DataTablePagination } from "@/components/DataTablePagination"
 import { useEffect, useState } from "react"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
+import { downloadToExcel } from "@/lib/xlxs"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -48,7 +50,7 @@ export function DataTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   // const [plexRequests, setPlexRequests] = useState<ColumnFiltersState>([])
-
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
   useEffect(() => {
     setColumnVisibility({ requested: true })
     setColumnFilters([{ id: "requested", value: true }])
@@ -65,12 +67,16 @@ export function DataTable<TData, TValue>({
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
+    onRowSelectionChange: setRowSelection,
     state: {
       sorting,
       columnFilters,
-      columnVisibility
+      columnVisibility,
+      rowSelection,
     }
   })
+  console.log({ rowSelection })
+  console.log({table})
 
 
   return (
@@ -106,39 +112,47 @@ export function DataTable<TData, TValue>({
                 className="ml-2 rounded-full ring-2 ring-primary"
               />
             </div>
+            <Button
+              // variant="primary"
+              className="mt-4 bg-green-500 hover:bg-green-600 text-gray-900
+               font-bold"
+            onClick={() => downloadToExcel(table, rowSelection, columnFilters, columnVisibility)}
+            >
+              Export to Excel
+            </Button>
           </div>
         </div>
         <div className="h-100%">
 
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Columns
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter(
-                (column) => column.getCanHide()
-              )
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                  key={column.id}
-                  className="capitalize"
-                  checked={column.getIsVisible()}
-                  onCheckedChange={(value) =>
-                    column.toggleVisibility(!!value)
-                  }
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="ml-auto">
+                Columns
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {table
+                .getAllColumns()
+                .filter(
+                  (column) => column.getCanHide()
                 )
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
-              </div>
+                .map((column) => {
+                  return (
+                    <DropdownMenuCheckboxItem
+                      key={column.id}
+                      className="capitalize"
+                      checked={column.getIsVisible()}
+                      onCheckedChange={(value) =>
+                        column.toggleVisibility(!!value)
+                      }
+                    >
+                      {column.id}
+                    </DropdownMenuCheckboxItem>
+                  )
+                })}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
 
       </div>
       <div className="rounded-md border">
