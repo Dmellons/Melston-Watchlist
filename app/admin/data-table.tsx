@@ -76,29 +76,40 @@ export function DataTable<TData, TValue>({
   return (
     <div>
 
-      <div className="flex items-center py-4">
-        <Input
-          placeholder="Filter by email..."
-          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
-          onChange={(e) =>
-            table.getColumn("email")?.setFilterValue(e.target.value)
-          }
-          className="max-w-sm"
-        />
-        <Label className="ml-4" htmlFor="request-filter">Plex Requests Only</Label>
-        <Switch
-          id="request-filter"
-          checked={(table.getColumn("requested")?.getFilterValue() as boolean) ?? false}
-          onCheckedChange={(e) => {
-            if(table.getColumn("requested")?.getFilterValue() as boolean) {
-              table.getColumn('requested')?.setFilterValue(undefined)
-              return
-            }
-            table.getColumn('requested')?.setFilterValue(true)
-          }}
+      <div className="flex py-4 justify-between ">
+        {/* Filters */}
+        <div className="bg-card mt-4 rounded-lg">
+          <div className="p-4">
+            <h2 className="text-lg font-bold">Filters</h2>
+          </div>
+          <div className="px-4 py-2">
+            <Input
+              placeholder="Filter by email..."
+              value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
+              onChange={(e) =>
+                table.getColumn("email")?.setFilterValue(e.target.value)
+              }
+              className="max-w-sm shadow-sm rounded-md border-gray-300 px-3 py-2"
+            />
+            <div className="flex items-center mt-4">
+              <Label className="ml-2" htmlFor="request-filter">Plex Requests Only</Label>
+              <Switch
+                id="request-filter"
+                checked={(table.getColumn("requested")?.getFilterValue() as boolean) ?? false}
+                onCheckedChange={(e) => {
+                  if (table.getColumn("requested")?.getFilterValue() as boolean) {
+                    table.getColumn('requested')?.setFilterValue(undefined)
+                    return
+                  }
+                  table.getColumn('requested')?.setFilterValue(true)
+                }}
+                className="ml-2 rounded-full ring-2 ring-primary"
+              />
+            </div>
+          </div>
+        </div>
+        <div className="h-100%">
 
-          className="ml-4"
-        />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
@@ -114,12 +125,12 @@ export function DataTable<TData, TValue>({
               .map((column) => {
                 return (
                   <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
+                  key={column.id}
+                  className="capitalize"
+                  checked={column.getIsVisible()}
+                  onCheckedChange={(value) =>
+                    column.toggleVisibility(!!value)
+                  }
                   >
                     {column.id}
                   </DropdownMenuCheckboxItem>
@@ -127,6 +138,7 @@ export function DataTable<TData, TValue>({
               })}
           </DropdownMenuContent>
         </DropdownMenu>
+              </div>
 
       </div>
       <div className="rounded-md border">
