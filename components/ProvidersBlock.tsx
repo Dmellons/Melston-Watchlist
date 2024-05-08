@@ -88,10 +88,10 @@ const ProvidersBlock = (
 
   const notStreaming = () => {
     return (
-      <div className="grid items-center h-10 w-full text-foreground/50 ml-2">
+      <div className="grid items-center h-10 w-full text-foreground/60 ml-2">
         
         
-          Not Streaming
+          N / A
         
       </div>
     );

@@ -1,5 +1,5 @@
-import { DataTable } from "@/components/data-table";
-import { columns, type PlexRequest } from '@/components/tables/adminTableColumns';
+import { DataTable } from "@/app/admin/data-table";
+import { columns, type PlexRequest } from './adminTableColumns';
 import { createAdminClient,  getLoggedInUser } from "@/lib/server/appwriteServer";
 import { WatchlistDocument } from "@/types/appwrite";
 import { Models } from "appwrite";
@@ -8,20 +8,18 @@ import { redirect } from "next/navigation";
 
 
 export function requestingUser(appUsers: ServerModels.UserList<Models.Preferences>, document: WatchlistDocument): string {
-    let requester = null
+    let requester:string = 'unknown'
     appUsers.users.forEach(u => {
 
         if (document.$permissions.includes(`update("user:${u.$id}")`)) {
-
             requester = u.email
-
-        } else {
-
-        }
+            return
+        } 
     })
 
-    return requester || 'unknown'
+    return requester 
 }
+
 export default async function AdminWatchlistTable() {
     const { databases, users } = await createAdminClient()
     const appUsers = await users.list()

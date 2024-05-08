@@ -29,10 +29,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
-import { DataTablePagination } from "./DataTablePagination"
-import { useState } from "react"
-import { Switch } from "./ui/switch"
-import { Label } from "./ui/label"
+import { DataTablePagination } from "@/components/DataTablePagination"
+import { useEffect, useState } from "react"
+import { Switch } from "@/components/ui/switch"
+import { Label } from "@/components/ui/label"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -48,6 +48,12 @@ export function DataTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({})
   // const [plexRequests, setPlexRequests] = useState<ColumnFiltersState>([])
+
+  useEffect(() => {
+    setColumnVisibility({ requested: true })
+    setColumnFilters([{ id: "requested", value: true }])
+  }, [])
+
 
   const table = useReactTable({
     data,
@@ -84,7 +90,11 @@ export function DataTable<TData, TValue>({
           id="request-filter"
           checked={(table.getColumn("requested")?.getFilterValue() as boolean) ?? false}
           onCheckedChange={(e) => {
-            table.getColumn('requested')?.setFilterValue(!table.getColumn("requested")?.getFilterValue() as boolean)
+            if(table.getColumn("requested")?.getFilterValue() as boolean) {
+              table.getColumn('requested')?.setFilterValue(undefined)
+              return
+            }
+            table.getColumn('requested')?.setFilterValue(true)
           }}
 
           className="ml-4"
