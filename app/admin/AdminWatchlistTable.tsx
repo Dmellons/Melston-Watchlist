@@ -1,5 +1,5 @@
 import { DataTable } from "@/app/admin/data-table";
-import { columns, type PlexRequest } from './adminTableColumns';
+import { columns, type PlexRequest } from './columns';
 import { createAdminClient,  getLoggedInUser } from "@/lib/server/appwriteServer";
 import { WatchlistDocument } from "@/types/appwrite";
 import { Models } from "appwrite";
