@@ -36,40 +36,40 @@ export type PlexRequest = {
     requested: boolean
     date: string
     id: string
-    
+
 }
 
 export const columns: ColumnDef<PlexRequest, unknown>[] = [
     {
         id: "select",
         header: ({ table }) => (
-          <Checkbox
-            checked={
-              table.getIsAllPageRowsSelected() ||
-              (table.getIsSomePageRowsSelected() && "indeterminate")
-            }
-            onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-            aria-label="Select all"
-          />
+            <Checkbox
+                checked={
+                    table.getIsAllPageRowsSelected() ||
+                    (table.getIsSomePageRowsSelected() && "indeterminate")
+                }
+                onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+                aria-label="Select all"
+            />
         ),
         cell: ({ row }) => (
-          <Checkbox
-            checked={row.getIsSelected()}
-            onCheckedChange={(value) => row.toggleSelected(!!value)}
-            aria-label="Select row"
-          />
+            <Checkbox
+                checked={row.getIsSelected()}
+                onCheckedChange={(value) => row.toggleSelected(!!value)}
+                aria-label="Select row"
+            />
         ),
     },
     {
         accessorKey: 'title',
         header: ({ column }) => {
             return (
-                <Button 
-                variant="ghost"
-                onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                 >
                     Title
-                    <ArrowUpDown className="ml-2 h-4 w-4"/>
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
             )
         }
@@ -78,12 +78,12 @@ export const columns: ColumnDef<PlexRequest, unknown>[] = [
         accessorKey: 'email',
         header: ({ column }) => {
             return (
-                <Button 
-                variant="ghost"
-                onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                 >
                     Email
-                    <ArrowUpDown className="ml-2 h-4 w-4"/>
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
             )
         }
@@ -93,34 +93,34 @@ export const columns: ColumnDef<PlexRequest, unknown>[] = [
         header: 'Media Type'
     },
     // {
-        //     accessorKey: 'status',
-        //     header: 'Status'
-        // }, 
-        {
-            accessorKey: 'tmdb_id',
-            header: 'TMDB ID'
-        },
-        {
-            accessorKey: 'requested',
-            header: 'Requested',
-            cell: ({ row }) => {
-                if (row.getValue('requested') === true) {
-                    return <Check className="h-4 w-4 text-emerald-500" />
-                } else {
-                    return null
-                }
+    //     accessorKey: 'status',
+    //     header: 'Status'
+    // }, 
+    {
+        accessorKey: 'tmdb_id',
+        header: 'TMDB ID'
+    },
+    {
+        accessorKey: 'requested',
+        header: 'Requested',
+        cell: ({ row }) => {
+            if (row.getValue('requested') === true) {
+                return <Check className="h-4 w-4 text-emerald-500" />
+            } else {
+                return null
+            }
         }
     },
     {
         accessorKey: 'date',
         header: ({ column }) => {
             return (
-                <Button 
-                variant="ghost"
-                onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                <Button
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
                 >
                     Date
-                    <ArrowUpDown className="ml-2 h-4 w-4"/>
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
             )
         },
@@ -132,7 +132,7 @@ export const columns: ColumnDef<PlexRequest, unknown>[] = [
         id: "actions",
         cell: ({ row }) => {
             const media = row.original
-            
+
             return (
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -152,14 +152,40 @@ export const columns: ColumnDef<PlexRequest, unknown>[] = [
                         <Link href={`/${media.tmdb_type}/${media.tmdb_id}`}>
                             <DropdownMenuItem
                                 onClick={() => redirect(`/${media.tmdb_type}/${media.tmdb_id}`)}
-                            >View detail page</DropdownMenuItem>
+                            >
+                                View detail page
+                            </DropdownMenuItem>
                         </Link>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                            onClick={() => {
+                                const id = media.id
+                                toast.promise(
+                                    database.updateDocument('watchlist', process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID, id, {
+                                        plex_request: !media.requested
+                                    })
+                                    ,
+                                    {
+                                        loading: 'Deleting...',
+                                        success: () => {
+                                            return 'Request toggled'
+                                        },
+                                        error: (error) => {
+                                            console.error({ error })
+                                            return 'Oops! There was an error deleting the request. Error: ' + error
+                                        }
+                                    }
+                                )
+                            }}
+                        >
+                            Toggle Request
+                        </DropdownMenuItem>
                         <DropdownMenuItem
                             className='bg-destructive text-destructive-foreground'
                             onClick={() => {
                                 const id = media.id
                                 toast.promise(
-                                    
+
                                     database.deleteDocument('watchlist', process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID, id)
                                     ,
                                     {

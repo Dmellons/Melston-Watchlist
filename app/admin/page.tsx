@@ -1,17 +1,14 @@
 
-import DataTableDemo from "@/components/AdminDatatable";
 import AdminGatekeeper from "@/components/GateKeeper";
 import { Separator } from "@/components/ui/separator";
 import { createAdminClient, createSessionClient, getLoggedInUser } from "@/lib/server/appwriteServer"
 import { WatchlistDocument } from "@/types/appwrite";
-import { TMDBMultiSearchResult } from "@/types/tmdbApi"
 import { Models } from "appwrite";
 import { Models as ServerModels } from "node-appwrite";
 import { Star } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Query } from "node-appwrite";
-import AdminWatchlistTable from "@/components/AdminWatchlistTable";
+import AdminWatchlistTable from "./AdminWatchlistTable";
 
 
 function requestingUsers(appUsers: ServerModels.UserList<Models.Preferences>, document: WatchlistDocument) {
