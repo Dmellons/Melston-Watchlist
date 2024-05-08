@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { WatchlistDocument } from "@/types/appwrite";
 import { type UserType } from "@/hooks/User";
 
+
 export async function createSessionClient() {
   const jwt = cookies().get(process.env.COOKIE_NAME)?.value;
   // // console.log({ jwt });

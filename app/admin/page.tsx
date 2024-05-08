@@ -1,16 +1,28 @@
 
+import DataTableDemo from "@/components/AdminDatatable";
 import AdminGatekeeper from "@/components/GateKeeper";
 import { Separator } from "@/components/ui/separator";
 import { createAdminClient, createSessionClient, getLoggedInUser } from "@/lib/server/appwriteServer"
 import { WatchlistDocument } from "@/types/appwrite";
 import { TMDBMultiSearchResult } from "@/types/tmdbApi"
 import { Models } from "appwrite";
+import { Models as ServerModels } from "node-appwrite";
 import { Star } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Query } from "node-appwrite";
+import AdminWatchlistTable from "@/components/AdminWatchlistTable";
 
 
+function requestingUsers(appUsers: ServerModels.UserList<Models.Preferences>, document: WatchlistDocument) {
+   const requester = appUsers.users.map(u => {
+
+        if(document.$permissions.includes(`update("user:${u.$id}")`)){
+            return <div key={u.$id} className="text-foreground/50 pl-2"> - {u.email}</div>
+        } else {
+            return null
+        }
+    })}
 
 
 export default async function AdminPage() {
@@ -46,6 +58,8 @@ export default async function AdminPage() {
     return (
         <AdminGatekeeper>
             <main className="flex min-h-screen flex-col m-auto sm:p-18 px-2">
+                <AdminWatchlistTable />
+                <Separator className="w-full bg-foreground my-10" />
                 <h1 className="text-2xl font-bold ml-2 underline mb-2">New Requests</h1>
                             {plexRequests
                                 .map((document) => (
@@ -70,7 +84,7 @@ export default async function AdminPage() {
                                         </Link>
                                     </div>
                                 ))}
-                    <Separator className="w-full bg-foreground my-10" />
+                    {/* <Separator className="w-full bg-foreground my-10" />
                     <h1 className="text-2xl font-bold ml-2 underline mb-2">All Watchlists</h1>
                 {appUsers.users
                     .map((user) => (
@@ -98,7 +112,7 @@ export default async function AdminPage() {
                                 ))}
 
                         </div>
-                    ))}
+                    ))} */}
 
             </main >
         </AdminGatekeeper>

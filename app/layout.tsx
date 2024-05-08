@@ -38,7 +38,7 @@ export default async function RootLayout({
           >
            
            
-              <main className="relative z-0 w-full bg-background max-w-7xl mx-auto min-h-screen border-x-2 border-x-primary/10 m-auto ">
+              <main className="relative sm:container z-0 w-full bg-background max-w-7xl mx-auto min-h-screen border-x-2 border-x-primary/10 m-auto ">
                 <header className="sticky top-0 z-20 bg-background border-b-2 border-primary/40 mb-4">
 
                 <MainHeader />
