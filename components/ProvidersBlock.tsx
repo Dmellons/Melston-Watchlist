@@ -23,7 +23,8 @@ const ProvidersBlock = (
     country = 'US',
     userProviders,
     maxWidth = 'w-full max-w-36',
-    iconSize = 22
+    iconSize = 22, 
+    notStreamingValue = 'N / A'
     // setHasProviders
   }: {
     tmdbId: number
@@ -32,6 +33,7 @@ const ProvidersBlock = (
     userProviders?: number[] | boolean,
     maxWidth?: string
     iconSize?: number
+    notStreamingValue?: string
     // setHasProviders?: (hasProviders: boolean) => void
   }
 ) => {
@@ -89,10 +91,7 @@ const ProvidersBlock = (
   const notStreaming = () => {
     return (
       <div className="grid items-center h-10 w-full text-foreground/60 ml-2">
-        
-        
-          N / A
-        
+          {notStreamingValue}  
       </div>
     );
   };

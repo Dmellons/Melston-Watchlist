@@ -35,6 +35,9 @@ import { useEffect, useState } from "react"
 import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { downloadToExcel } from "@/lib/xlxs"
+import { PlexRequest } from "./columns"
+import { SelectTrigger } from "@radix-ui/react-select"
+import { Select, SelectContent, SelectItem, SelectValue } from "@/components/ui/select"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -56,10 +59,9 @@ export function DataTable<TData, TValue>({
     setColumnFilters([{ id: "requested", value: true }])
   }, [])
 
-
-  const table = useReactTable({
-    data,
-    columns,
+  const table = useReactTable<PlexRequest>({
+    // @ts-ignore
+    data, columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
@@ -76,8 +78,23 @@ export function DataTable<TData, TValue>({
     }
   })
   console.log({ rowSelection })
-  console.log({table})
+  console.log({ table })
 
+  function handleEmailFilterChange(e) {
+    return table.getColumn("email")?.setFilterValue(e.target.value)
+  }
+
+  function getUniqueValues(data:PlexRequest[], key:string) {
+    const uniqueValues = new Set()
+    data.forEach((row) => {
+      if (key in row) {
+        uniqueValues.add(row[key]); 
+      }
+    });
+  
+    return Array.from(uniqueValues);
+  }
+  
 
   return (
     <div>
@@ -92,11 +109,29 @@ export function DataTable<TData, TValue>({
             <Input
               placeholder="Filter by email..."
               value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
-              onChange={(e) =>
-                table.getColumn("email")?.setFilterValue(e.target.value)
-              }
+              onChange={e => handleEmailFilterChange(e)}
               className="max-w-sm shadow-sm rounded-md border-gray-300 px-3 py-2"
             />
+            <Select>
+              <SelectTrigger
+                className="h-8 w-[70px] bg-slate-400"
+              >
+                <SelectValue placeholder="Media Type" />
+              </SelectTrigger>
+              <SelectContent>
+                {/* { 
+
+                  console.log(table.getColumn("email")?.getFilterValue() as string)
+                  // .map((value) => (
+                  //   <SelectItem key={value} value={value}>
+                  //     {value}
+                  //   </SelectItem>
+                  // ))
+                } */}
+              </SelectContent>
+            </Select>
+
+            {/* <DataTableEmailFilter /> */}
             <div className="flex items-center mt-4">
               <Label className="ml-2" htmlFor="request-filter">Plex Requests Only</Label>
               <Switch
@@ -116,7 +151,7 @@ export function DataTable<TData, TValue>({
               // variant="primary"
               className="mt-4 bg-green-500 hover:bg-green-600 text-gray-900
                font-bold"
-            onClick={() => downloadToExcel(table, rowSelection, columnFilters, columnVisibility)}
+              onClick={() => downloadToExcel(table)}
             >
               Export to Excel
             </Button>

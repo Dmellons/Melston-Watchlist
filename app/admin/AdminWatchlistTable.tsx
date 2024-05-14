@@ -3,7 +3,7 @@ import { columns, type PlexRequest } from './columns';
 import { createAdminClient,  getLoggedInUser } from "@/lib/server/appwriteServer";
 import { WatchlistDocument } from "@/types/appwrite";
 import { Models } from "appwrite";
-import { Models as ServerModels } from "node-appwrite";
+import { Query, Models as ServerModels } from "node-appwrite";
 import { redirect } from "next/navigation";
 
 
@@ -29,7 +29,13 @@ export default async function AdminWatchlistTable() {
     }
 
 
-    const watchlist: Models.DocumentList<WatchlistDocument> = await databases?.listDocuments('watchlist', process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID)
+    // const watchlist: Models.DocumentList<WatchlistDocument> = await databases?.listDocuments('watchlist', process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID)
+    const watchlist: Models.DocumentList<WatchlistDocument> = await databases.listDocuments(
+        'watchlist',
+         process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID,
+        [
+            Query.limit(1000)
+        ]);
     const data: PlexRequest[] = watchlist.documents.map((item) => {
         const requester = requestingUser(appUsers, item)
 

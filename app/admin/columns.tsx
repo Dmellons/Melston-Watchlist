@@ -176,7 +176,7 @@ export const columns: ColumnDef<PlexRequest, unknown>[] = [
                                         },
                                         error: (error) => {
                                             console.error({ error })
-                                            return 'Oops! There was an error deleting the request. Error: ' + error
+                                            return 'Oops! There was an error updating the document. Error: ' + error
                                         }
                                     }
                                 )
