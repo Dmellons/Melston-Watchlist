@@ -84,17 +84,17 @@ export function DataTable<TData, TValue>({
     return table.getColumn("email")?.setFilterValue(e.target.value)
   }
 
-  function getUniqueValues(data:PlexRequest[], key:string) {
+  function getUniqueValues(data: PlexRequest[], key: string) {
     const uniqueValues = new Set()
     data.forEach((row) => {
       if (key in row) {
-        uniqueValues.add(row[key]); 
+        uniqueValues.add(row[key]);
       }
     });
-  
+
     return Array.from(uniqueValues);
   }
-  
+
 
   return (
     <div>
@@ -112,24 +112,24 @@ export function DataTable<TData, TValue>({
               onChange={e => handleEmailFilterChange(e)}
               className="max-w-sm shadow-sm rounded-md border-gray-300 px-3 py-2"
             />
-            <Select>
+            {/* <Select>
               <SelectTrigger
                 className="h-8 w-[70px] bg-slate-400"
               >
                 <SelectValue placeholder="Media Type" />
               </SelectTrigger>
               <SelectContent>
-                {/* { 
+                {
 
                   console.log(table.getColumn("email")?.getFilterValue() as string)
-                  // .map((value) => (
-                  //   <SelectItem key={value} value={value}>
-                  //     {value}
-                  //   </SelectItem>
-                  // ))
-                } */}
+                    .map((value) => (
+                      <SelectItem key={value} value={value}>
+                        {value}
+                      </SelectItem>
+                    ))
+                }
               </SelectContent>
-            </Select>
+            </Select> */}
 
             {/* <DataTableEmailFilter /> */}
             <div className="flex items-center mt-4">

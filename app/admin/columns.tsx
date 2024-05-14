@@ -108,7 +108,11 @@ export const columns: ColumnDef<PlexRequest, unknown>[] = [
         header: 'Requested',
         cell: ({ row }) => {
             if (row.getValue('requested') === true) {
-                return <Check className="h-4 w-4 text-emerald-500" />
+                return (
+                    <div className="flex justify-center">
+                        <Check className="h-4 w-4 text-emerald-500" />
+                    </div>
+                )
             } else {
                 return null
             }
