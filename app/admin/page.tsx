@@ -52,15 +52,16 @@ export default async function AdminPage() {
         [
             Query.limit(1000)
         ]);
-    console.log({data})
+
     const plexRequests: WatchlistDocument[] =  data.documents.filter((item) => item.plex_request === true)
-    console.log({plexRequests})
+
     const appUsers = await users.list()
     let requester
    
     return (
         <AdminGatekeeper>
             <main className="flex min-h-screen flex-col m-auto sm:p-18 px-2">
+
                 <AdminWatchlistTable />
                 <Separator className="w-full bg-foreground my-10" />
                 <h1 className="text-2xl font-bold ml-2 underline mb-2">New Requests</h1>

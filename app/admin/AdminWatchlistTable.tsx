@@ -52,10 +52,12 @@ export default async function AdminWatchlistTable() {
         }
     })
 
+    const requests: PlexRequest[] = data.filter((item) => item.requested === true)
+
     return (
         <section className='pt-6'>
             <div className="container">
-                <h1 className="text-3xl font-bold mb-2">Plex Requests</h1>
+                <h1 className="text-3xl font-bold mb-2">Plex Requests ({requests.length})</h1>
                 <DataTable columns={columns} data={data} suppressHydrationWarning  />
             </div>
         </section>
