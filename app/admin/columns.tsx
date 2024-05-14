@@ -75,12 +75,25 @@ export const columns: ColumnDef<PlexRequest, unknown>[] = [
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
             )
+        },
+        cell: ({ row }) => {
+            return (
+                <Link
+                    href={`/${row.getValue("tmdb_type")}/${row.getValue("tmdb_id")}`}
+                    className="hover:underline"
+                >
+
+                    {row.getValue('title')}
+
+                </Link>
+            )
         }
     },
     {
         accessorKey: 'email',
         header: ({ column }) => {
             return (
+
                 <Button
                     variant="ghost"
                     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
@@ -88,6 +101,7 @@ export const columns: ColumnDef<PlexRequest, unknown>[] = [
                     Email
                     <ArrowUpDown className="ml-2 h-4 w-4" />
                 </Button>
+
             )
         }
     },
@@ -101,7 +115,17 @@ export const columns: ColumnDef<PlexRequest, unknown>[] = [
     // }, 
     {
         accessorKey: 'tmdb_id',
-        header: 'TMDB ID'
+        header: 'TMDB ID',
+        cell: ({ row }) => {
+            return (
+                <Link
+                    href={`/${row.getValue("tmdb_type")}/${row.getValue("tmdb_id")}`}
+                    className="hover:underline"
+                >
+                    {row.getValue('tmdb_id')}
+                </Link>
+            )
+        }
     },
     {
         accessorKey: 'requested',
