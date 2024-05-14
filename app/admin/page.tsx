@@ -4,7 +4,7 @@ import { Separator } from "@/components/ui/separator";
 import { createAdminClient, createSessionClient, getLoggedInUser } from "@/lib/server/appwriteServer"
 import { WatchlistDocument } from "@/types/appwrite";
 import { Models } from "appwrite";
-import { Models as ServerModels } from "node-appwrite";
+import { Query, Models as ServerModels } from "node-appwrite";
 import { Star } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -37,7 +37,7 @@ export default async function AdminPage() {
          user = await account.get()
 
     } catch(error:any) {
-       console.log(error)
+       
        if (error.code === 401 && error.type === 'general_unauthorized_scope') {
            redirect('/')
        }     
@@ -46,9 +46,15 @@ export default async function AdminPage() {
 
 
     const {databases, users } = await createAdminClient()
-    const data: Models.DocumentList<WatchlistDocument> = await databases.listDocuments('watchlist', process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID);
+    const data: Models.DocumentList<WatchlistDocument> = await databases.listDocuments(
+        'watchlist',
+         process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID,
+        [
+            Query.limit(1000)
+        ]);
+    console.log({data})
     const plexRequests: WatchlistDocument[] =  data.documents.filter((item) => item.plex_request === true)
-
+    console.log({plexRequests})
     const appUsers = await users.list()
     let requester
    

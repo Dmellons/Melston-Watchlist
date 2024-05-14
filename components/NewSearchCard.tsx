@@ -151,7 +151,7 @@ const NewSearchCard = ({
                             </Button>
                         } */}
 
-                <ProvidersBlock tmdbId={data.tmdb_id} tmdbType={data.tmdb_type} userProviders={userProviders} />
+                <ProvidersBlock tmdbId={data.tmdb_id} tmdbType={data.tmdb_type} userProviders={userProviders} notStreamingValue=" "/>
 
             </DialogContent>
         </Dialog>
