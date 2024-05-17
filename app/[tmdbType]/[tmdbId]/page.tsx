@@ -66,7 +66,7 @@ const DetailPage = async ({ params }: DetailPageProps) => {
 
             <div className="flex w-full gap-6 md:grid-cols-2">
                 {/* Hero box */}
-                <div className="flex flex-col sm:flex-row w-full">
+                <div className="flex flex-col md:flex-row w-full">
 
                     {/* Poster Image */}
                     <h1 className="text-3xl sm:hidden mb-4 sm:text-left text-center font-bold">{isMovieDetail(data) ? data.title : data.name}</h1>
@@ -75,8 +75,8 @@ const DetailPage = async ({ params }: DetailPageProps) => {
                             src={`https://image.tmdb.org/t/p/w600_and_h900_bestv2${data.poster_path}`}
                             alt={isMovieDetail(data) ? data.title : data.name}
                             className="w-full h-auto"
-                            width={600}
-                            height={900}
+                            width={300}
+                            height={450}
                             priority
                         />
                         {isMovieDetail(data) && data.release_date && (
@@ -115,7 +115,7 @@ const DetailPage = async ({ params }: DetailPageProps) => {
                         ) : (
                             <p>No genres available</p>
                         )}
-                        <p className="text-gray-700 w-full sm:w-96">{data.overview}</p>
+                        <p className="text-gray-700 ">{data.overview}</p>
                     </div>
                 </div>
             </div>
