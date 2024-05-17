@@ -1,6 +1,7 @@
 import Link from "next/link";
 import LoginButton from "../buttons/LoginButton";
 import { Button } from "@/components/ui/button";
+import NewSearchBar from "../newSearchBar";
 
 export default function MainHeader() {
 
@@ -29,7 +30,7 @@ export default function MainHeader() {
                     </Link>
                 </Button>
             </div>
-
+            
             {/* Hamburger menu */}
             <div className=" py-3 hidden md:hidden">
                 <button
