@@ -66,67 +66,98 @@ const DetailPage = async ({ params }: DetailPageProps) => {
 
             <div className="flex w-full gap-6 md:grid-cols-2">
                 {/* Hero box */}
-                <div className="w-full flex-col sm:flex-row">
+                <div className="flex flex-col sm:flex-row w-full">
 
-                {/* Poster Image */}
-                <div className="relative rounded-lg overflow-hidden w-full sm:w-1/3 shadow-lg border border-primary">
-                    <Image
-                        src={`https://image.tmdb.org/t/p/w600_and_h900_bestv2${data.poster_path}`}
-                        alt={isMovieDetail(data) ? data.title : data.name}
-                        className="w-full h-auto"
-                        width={600}
-                        height={900}
-                        priority
-                    />
-                    {isMovieDetail(data) && data.release_date && (
-                        <div className="absolute bottom-0 left-0 bg-black bg-opacity-70 text-white text-sm p-2">
-                            Release Date: {data.release_date}
-                        </div>
-                    )}
-                    {isTvDetail(data) && data.last_air_date && (
-                        <div className="absolute bottom-0 left-0 bg-black bg-opacity-70 text-white text-sm p-2">
-                            Last Air Date: {data.last_air_date}
-                        </div>
-                    )}
-                </div>
-
-                {/* Movie Details */}
-                <div className="space-y-6">
-                    <h1 className="text-3xl font-bold">{isMovieDetail(data) ? data.title : data.name}</h1>
-                    <p className="text-gray-600">{data.tagline}</p>
-                    <AddWatchlistButton media={addButtonData} width="w-1/3" />
-                    <p className="text-gray-700 w-96">{data.overview}</p>
-
-                    <div className="flex max-w-md items-center gap-2">
-                        <Label htmlFor="streaming">Streaming on</Label>
-                        <ProvidersBlock tmdbId={data.id} tmdbType={tmdbType} iconSize={48}  />
+                    {/* Poster Image */}
+                    <h1 className="text-3xl sm:hidden mb-4 sm:text-left text-center font-bold">{isMovieDetail(data) ? data.title : data.name}</h1>
+                    <div className="relative rounded-lg overflow-hidden w-full sm:w-1/3 shadow-lg border border-primary">
+                        <Image
+                            src={`https://image.tmdb.org/t/p/w600_and_h900_bestv2${data.poster_path}`}
+                            alt={isMovieDetail(data) ? data.title : data.name}
+                            className="w-full h-auto"
+                            width={600}
+                            height={900}
+                            priority
+                        />
+                        {isMovieDetail(data) && data.release_date && (
+                            <div className="absolute bottom-0 left-0 bg-black bg-opacity-70 text-white text-sm p-2">
+                                Release Date: {data.release_date}
+                            </div>
+                        )}
+                        {isTvDetail(data) && data.last_air_date && (
+                            <div className="absolute bottom-0 left-0 bg-black bg-opacity-70 text-white text-sm p-2">
+                                Last Air Date: {data.last_air_date}
+                            </div>
+                        )}
                     </div>
 
-                    {data.vote_average > 0 && (
-                        <p>
-                            Score: {data.vote_average.toFixed(1)}/10{" "}
-                            <span className="text-foreground/50 text-sm">({data.vote_count} votes)</span>
-                        </p>
-                    )}
+                    {/* Movie Details */}
+                    <div className="flex flex-col space-y-6 sm:text-left sm:px-6 sm:py-0 py-4 ">
+                        <h1 className="text-3xl hidden sm:block sm:text-left text-center font-bold">{isMovieDetail(data) ? data.title : data.name}</h1>
+                        <p className="text-gray-600 text-center sm:text-left">{data.tagline}</p>
 
-                    {data.genres?.length > 0 ? (
-                        <p>Genres: {data.genres.map((genre) => genre.name).join(", ")}</p>
-                    ) : (
-                        <p>No genres available</p>
-                    )}
-                </div>
+                        <div className="flex flex-col-reverse sm:flex-row my-8 max-w-md items-center gap-2 sm:gap-8">
+                            <AddWatchlistButton media={addButtonData} width="w-1/3 sm:w-1/4" />
+                            <div className="flex flex-col max-w-md items-center gap-2">
+                                <Label htmlFor="streaming">Streaming on</Label>
+                                <ProvidersBlock tmdbId={data.id} tmdbType={tmdbType} iconSize={48} />
+                            </div>
+                        </div>
+                        {data.vote_average > 0 && (
+                            <p>
+                                Score: {data.vote_average.toFixed(1)}/10{" "}
+                                <span className="text-foreground/50 text-sm">({data.vote_count} votes)</span>
+                            </p>
+                        )}
+
+                        {data.genres?.length > 0 ? (
+                            <p>Genres: {data.genres.map((genre) => genre.name).join(", ")}</p>
+                        ) : (
+                            <p>No genres available</p>
+                        )}
+                        <p className="text-gray-700 w-96">{data.overview}</p>
                     </div>
                 </div>
-                <div>
+            </div>
+            <div>
                 <div>
 
+                    <CastAndCrew cast={data.credits.cast} type="cast" />
+
+                    {/* External Links */}
+                    <div className="flex justify-center w-full">
+                        <div className="pt-6">
+                            <h3 className="text-lg font-bold text-center">External Links</h3>
+                            <div className="flex divide-x divide-gray-400 justify-center">
+                                <Button variant="link" asChild>
+                                    <Link
+                                        href={`https://www.imdb.com/title/${data.id}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        IMDB
+                                    </Link>
+                                </Button>
+                                <Button variant="link" asChild>
+                                    <Link
+                                        href={data.homepage}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        <Globe className="w-4 h-4 mr-1" />
+                                        Website
+                                    </Link>
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
                     <p>Language: {data.original_language}</p>
                     {isMovieDetail(data) && (
-                        <>
+                        <p>
                             <p>Release Date: {data.release_date}</p>
                             <p>Revenue: ${data.revenue.toLocaleString()}</p>
                             <p>Budget: ${data.budget.toLocaleString()}</p>
-                        </>
+                        </p>
                     )}
                     {isTvDetail(data) && (
                         <>
@@ -138,7 +169,7 @@ const DetailPage = async ({ params }: DetailPageProps) => {
                         </>
                     )}
                     <p>Status: {data.status}</p>
-                    
+
                     <p>Runtime: {isMovieDetail(data) ? data.runtime : data.episode_run_time[0]} minutes</p>
                 </div>
             </div>
@@ -177,35 +208,6 @@ const DetailPage = async ({ params }: DetailPageProps) => {
             </Accordion>
 
             {/* Cast and Crew Section */}
-            <CastAndCrew cast={data.credits.cast} type="cast" />
-
-            {/* External Links */}
-            <div className="flex justify-center w-full">
-                <div className="pt-6">
-                    <h3 className="text-lg font-bold text-center">External Links</h3>
-                    <div className="flex divide-x divide-gray-400 justify-center">
-                        <Button variant="link" asChild>
-                            <Link
-                                href={`https://www.imdb.com/title/${data.id}`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
-                                IMDB
-                            </Link>
-                        </Button>
-                        <Button variant="link" asChild>
-                            <Link
-                                href={data.homepage}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
-                                <Globe className="w-4 h-4 mr-1" />
-                                Website
-                            </Link>
-                        </Button>
-                    </div>
-                </div>
-            </div>
         </div>
     );
 };
