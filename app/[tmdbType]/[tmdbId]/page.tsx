@@ -70,7 +70,7 @@ const DetailPage = async ({ params }: DetailPageProps) => {
 
                     {/* Poster Image */}
                     <h1 className="text-3xl sm:hidden mb-4 sm:text-left text-center font-bold">{isMovieDetail(data) ? data.title : data.name}</h1>
-                    <div className="relative rounded-lg overflow-hidden w-full sm:w-1/3 shadow-lg border border-primary">
+                    <div className="relative rounded-lg overflow-hidden w-full sm:w-1/3 h-fit shadow-lg border border-primary">
                         <Image
                             src={`https://image.tmdb.org/t/p/w600_and_h900_bestv2${data.poster_path}`}
                             alt={isMovieDetail(data) ? data.title : data.name}
