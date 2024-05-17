@@ -61,7 +61,7 @@ const DetailPage = async ({ params }: DetailPageProps) => {
     };
 
     return (
-        <div className="container mx-auto p-6 md:p-8 lg:p-12">
+        <div className="container mx-auto sm:p-6 md:p-8 lg:p-12">
             <BackButton className="mb-4" />
 
             <div className="flex w-full gap-6 md:grid-cols-2">
@@ -96,7 +96,7 @@ const DetailPage = async ({ params }: DetailPageProps) => {
                         <h1 className="text-3xl hidden sm:block sm:text-left text-center font-bold">{isMovieDetail(data) ? data.title : data.name}</h1>
                         <p className="text-gray-600 text-center sm:text-left">{data.tagline}</p>
 
-                        <div className="flex flex-col-reverse sm:flex-row my-8 max-w-md items-center gap-2 sm:gap-8">
+                        <div className="flex flex-col sm:flex-row my-8 max-w-md items-center gap-2 sm:gap-8">
                             <AddWatchlistButton media={addButtonData} width="w-1/3 sm:w-1/4" />
                             <div className="flex flex-col max-w-md items-center gap-2">
                                 <Label htmlFor="streaming">Streaming on</Label>
@@ -115,7 +115,7 @@ const DetailPage = async ({ params }: DetailPageProps) => {
                         ) : (
                             <p>No genres available</p>
                         )}
-                        <p className="text-gray-700 w-96">{data.overview}</p>
+                        <p className="text-gray-700 w-full sm:w-96">{data.overview}</p>
                     </div>
                 </div>
             </div>
