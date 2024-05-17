@@ -115,7 +115,7 @@ const DetailPage = async ({ params }: DetailPageProps) => {
                         ) : (
                             <p>No genres available</p>
                         )}
-                        <p className="text-gray-700 ">{data.overview}</p>
+                        <p className="text-gray-700 max-w-lg">{data.overview}</p>
                     </div>
                 </div>
             </div>
