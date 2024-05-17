@@ -11,10 +11,9 @@ export default function Home() {
   const { user, loginWithGoogle } = useUser()
 
   const watchlist:Models.DocumentList<WatchlistDocument> = user?.watchlist 
-
-
+  
   return (
-    <main className="flex min-h-screen flex-col items-center  p-2 sm:p-18">
+    <div className="flex  flex-col items-center  p-2 sm:p-18">
       <SearchMovie resultsLength={100} />
 
       
@@ -24,6 +23,6 @@ export default function Home() {
       {watchlist &&       
         <WatchlistGrid watchlist={watchlist} />
       }
-    </main>
+    </div>
   )
 }

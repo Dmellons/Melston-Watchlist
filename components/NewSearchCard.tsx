@@ -98,7 +98,7 @@ const NewSearchCard = ({
                 <ImageWithFallback
                     src={`https://image.tmdb.org/t/p/w500/${data.poster_path}`}
                     alt={data.title}
-                    className="rounded-lg contain group-hover:border-2 group-hover:border-primary group-hover:scale-105 group-hover:ease-in-out group-hover:duration-300 w-full h-full"
+                    className="rounded-lg contain group-hover:border-2 group-hover:border-primary group-hover:scale-105 group-hover:ease-in-out group-hover:duration-300 w-auto h-72"
                     width={200}
                     height={300}
                 />

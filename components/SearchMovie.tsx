@@ -54,7 +54,7 @@ const SearchMovie = ({
             .then(data => setResults(data.results))
             .catch(error => console.log(error))
         setLoading(false)
-       
+
     }
 
 
@@ -97,7 +97,7 @@ const SearchMovie = ({
                         Clear
                     </Button>
                 </div>
-                    {/* <GenreFilterDropdown setFilter={setGenreFilter} /> */}
+                {/* <GenreFilterDropdown setFilter={setGenreFilter} /> */}
 
 
                 {
@@ -121,23 +121,6 @@ const SearchMovie = ({
                                 )}
 
                             </div>
-
-
-
-
-                        {/* <div className="w-full">
-                            <Carousel className="w-4/5">
-                                <CarouselContent>
-                                    {results.slice(0, resultsLength).map((result) => (
-                                        <CarouselItem key={result.id} className="basis-1/2">
-                                            <NewSearchCard key={result.id} media={result} userProviders={user?.providers} />
-                                        </CarouselItem>
-                                    ))}
-                                </CarouselContent>
-                                <CarouselNext />
-                                <CarouselPrevious />
-                            </Carousel>
-                        </div> */}
                         </div>
 
                     </>

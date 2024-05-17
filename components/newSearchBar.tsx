@@ -13,6 +13,8 @@ import { useUser } from "@/hooks/User"
 import { tmdbFetchOptions } from "@/lib/tmdb"
 import GenreFilterDropdown from "./GenreFilterDropdown"
 import { Popover } from "./ui/popover"
+import { ScrollArea } from "./ui/scroll-area"
+import { Dialog } from "./ui/dialog"
 
 
 const NewSearchBar = ({
@@ -62,90 +64,82 @@ const NewSearchBar = ({
 
 
     return (
-        <>
 
-            <div className="p-3 flex flex-col gap-2 items-center">
+        <div className="fixed left-0 top-0 z-50 w-full font-normal">
 
-                <div className="flex my-auto">
+            <div className="flex flex-col gap-2 items-center">
 
-                <Input
-                    placeholder="Movie, TV Show, Person..."
-                    value={query}
-                    className="bg-muted/90  text-muted-foreground w-80 h-8 rounded-md p-2"
-                    onChange={(e) => {
-                        
-                        setQuery(e.target.value)
-                        
-                    }}
-                    onKeyUp={(e) => {
-                        if (e.key === "Enter") {
-                            movieList()
-                        }
-                    }}
+
+                <div className="flex items-center">
+
+                    <Input
+                        placeholder="Movie, TV Show, Person..."
+                        value={query}
+                        className="bg-muted/90  text-muted-foreground w-80 h-8 rounded-md p-2"
+                        onChange={(e) => {
+
+                            setQuery(e.target.value)
+
+                        }}
+                        onKeyUp={(e) => {
+                            if (e.key === "Enter") {
+                                movieList()
+                            }
+                        }}
                     />
 
 
-                <Button
-                    className="w-18 align-middle  h-6"
-                    onClick={() => movieList()}
-                >
-                    Search
-                </Button>
-                    </div>
+                    <Button
+                        className="w-18 align-middle h-8 ml-2"
+                        onClick={() => movieList()}
+                    >
+                        Search
+                    </Button>
+                    <Button
+                        variant="secondary"
+                        className="my-5 w-24 align-middle"
+                        onClick={() => setResults([])}
+                    >
+                        Clear
+                    </Button>
+                </div>
 
                 {/* <GenreFilterDropdown setFilter={setGenreFilter} /> */}
+                    <div className=" z-50 max-w-5xl bg-card/80 rounded-lg m-auto">
 
-                <div className="">
-
-                {
-                    results.length > 0 &&
-                    <Popover>
-
-
-                        <div className="p-3 my-4 w-full">
-
-                            <div className="flex flex-col lg:flex-row lg:flex-wrap justify-center gap-4 items-center place-items-center lg:w-full m-auto">
-                                {loading ? (
-                                    
-                                    <SkeletonMediaSearchCard />
-                                    
-                                ) : (
+                        {
+                            results.length > 0 &&
+                            <div>
 
 
-                                    results.slice(0, resultsLength).map((result) => (
-                                        <NewSearchCard key={result.id} media={result} userProviders={user?.providers} />
-                                    ))
-                                )}
+                                <div className="p-3 my-4 w-full">
 
+                                    <div className="flex flex-col lg:flex-row lg:flex-wrap justify-center gap-4 items-center place-items-center lg:w-full m-auto">
+                                        {loading ? (
+                                            
+                                            <SkeletonMediaSearchCard />
+                                            
+                                        ) : (
+                                            
+
+                                            results.slice(0, resultsLength).map((result) => (
+                                                <NewSearchCard key={result.id} media={result} userProviders={user?.providers} />
+                                            ))
+                                        )}
+
+                                    </div>
+                                </div>
                             </div>
-
-
-
-
-                            {/* <div className="w-full">
-                            <Carousel className="w-4/5">
-                            <CarouselContent>
-                            {results.slice(0, resultsLength).map((result) => (
-                                        <CarouselItem key={result.id} className="basis-1/2">
-                                        <NewSearchCard key={result.id} media={result} userProviders={user?.providers} />
-                                        </CarouselItem>
-                                    ))}
-                                    </CarouselContent>
-                                    <CarouselNext />
-                                    <CarouselPrevious />
-                                    </Carousel>
-                                </div> */}
-                        </div>
-
-                    </Popover>
-                }
-                </div>
+                        }
+                    </div>
+                  
+                
 
 
 
 
             </div>
-        </>
+        </div >
     )
 }
 

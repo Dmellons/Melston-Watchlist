@@ -30,7 +30,9 @@ export default function MainHeader() {
                     </Link>
                 </Button>
             </div>
-            
+            {/* <div className="hidden sm:block">
+                <NewSearchBar />
+            </div> */}
             {/* Hamburger menu */}
             <div className=" py-3 hidden md:hidden">
                 <button
