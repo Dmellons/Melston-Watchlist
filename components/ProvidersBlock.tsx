@@ -262,14 +262,14 @@ const ProvidersBlock = (
         <TooltipTrigger asChild>
 
 
-          <div className={`w-full m-auto flex-col flex justify-center items-center z-10 ${maxWidth}`}>
+          <div className={` m-auto flex-col flex justify-center items-center z-10 ${maxWidth}`}>
             <div className='flex gap-4 justify-center flex-wrap  '>
               {loading ? (
                 <div className='text-center'>Loading...</div>
               ) : (
 
                 // @ts-ignore
-                <div className='flex flex-wrap gap-2 min-w-48 w-4/5 items-center justify-center z-10 bg-card/50 p-2 rounded-lg border border-primary'>
+                <div className='flex flex-wrap gap-2  items-center justify-center z-10 bg-card/50 p-2 rounded-lg border border-primary'>
                   {/* @ts-ignore */}
                   {canStream.slice(0, 5).map((provider: StreamingInfo, key: number) => {
                     const plexProviderClass = provider.provider_name === 'Plex' ? 'ring-1 ring-primary/30' : ''

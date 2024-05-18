@@ -14,7 +14,7 @@ export default function Home() {
   
   return (
     <div className="flex  flex-col items-center  p-2 sm:p-18">
-      <SearchMovie resultsLength={10} />
+      {/* <SearchMovie resultsLength={10} /> */}
 
       
       {!user &&

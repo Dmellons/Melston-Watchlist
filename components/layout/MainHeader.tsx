@@ -1,7 +1,7 @@
 import Link from "next/link";
 import LoginButton from "../buttons/LoginButton";
 import { Button } from "@/components/ui/button";
-import NewSearchBar from "../newSearchBar";
+import NewSearchBar from "../NewSearchBar";
 
 export default function MainHeader() {
 
@@ -23,7 +23,6 @@ export default function MainHeader() {
           lg:flex-nowrap
           "
         >
-            <NewSearchBar />
             <div className="flex justify-center lg:order-none lg:self-center">
                 <Button asChild variant="link" className="text-xl text-title-foreground font-bold hover">
 
@@ -51,9 +50,9 @@ export default function MainHeader() {
                 aria-hidden="true"
                 >
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-                    </svg>
-                    </button>
-                </div> */}
+                </svg>
+                </button>
+            </div> */}
 
             {/* Normal Menu */}
             {/* <div className="hidden flex-1 items-center  justify-around lg:flex order-first lg:order-none"
@@ -67,9 +66,10 @@ export default function MainHeader() {
                 </ul>
             </div> */}
 
-            <div className="my-3 z-20">
+            <div className="my-3 z-20 mx-2">
                 <LoginButton />
             </div>
+            <NewSearchBar />
         </nav>
     )
 }
