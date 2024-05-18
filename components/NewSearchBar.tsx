@@ -33,13 +33,13 @@ const NewSearchBar = ({
     const { user } = useUser()
 
 
-    // useEffect(() => {
-    //     setLoading(true)
+    useEffect(() => {
+        setLoading(true)
 
-    //     movieList()
+        movieList()
 
 
-    // }, [query])
+    }, [query])
     const movieList = async () => {
         setLoading(false)
         setResults([])
@@ -64,9 +64,9 @@ const NewSearchBar = ({
 
 
     return (
-        
 
-        <div className="w-full hidden sm:absolute sm:flex top-0 z-50 font-normal">
+
+        <div className="w-full  absolute sm:flex top-0 z-10 font-normal">
 
             <div className="flex flex-col gap-2 items-center w-full">
 
@@ -76,7 +76,7 @@ const NewSearchBar = ({
                     <Input
                         placeholder="Movie, TV Show, Person..."
                         value={query}
-                        className="bg-muted/90  text-muted-foreground w-80 h-8 rounded-md p-2"
+                        className="bg-muted/90  text-muted-foreground w-/4 sm:w-72 h-8 rounded-md p-2"
                         onChange={(e) => {
 
                             setQuery(e.target.value)
@@ -90,15 +90,15 @@ const NewSearchBar = ({
                     />
 
 
-                    <Button
+                    {/* <Button
                         className="w-18 align-middle h-8 ml-2"
                         onClick={() => movieList()}
                     >
                         Search
-                    </Button>
+                    </Button> */}
                     <Button
                         variant="secondary"
-                        className="my-5 w-24 align-middle"
+                        className="my-5 w-24 align-middle ml-4 h-8 bg-destructive/50 hover:bg-destructive/80 text-danger-foreground"
                         onClick={() => setResults([])}
                     >
                         Clear
@@ -106,35 +106,31 @@ const NewSearchBar = ({
                 </div>
 
                 {/* <GenreFilterDropdown setFilter={setGenreFilter} /> */}
-                    <div className=" z-50 max-w-5xl bg-card/80 rounded-lg py-4 px-2 m-auto shadow-xl shadow-black">
 
-                        {
-                            results.length > 0 && !loading &&
-                            // <div>
+                {
+                    results.length > 0 && !loading &&
+                    <ScrollArea className=" z-40 w-5/8 max-h-[600px] sm:max-w-5xl bg-card/80 rounded-lg py-4 px-2 mx-2 sm:m-auto shadow-xl shadow-black">
 
 
-                                // <div className="p-3 my-4 w-full">
+                        <div className="grid grid-cols-2 sm:flex  lg:flex-row lg:flex-wrap justify-center gap-4 items-center place-items-center lg:w-full m-auto">
+                            {loading ? (
 
-                                    <div className="flex flex-col lg:flex-row lg:flex-wrap justify-center gap-4 items-center place-items-center lg:w-full m-auto">
-                                        {loading ? (
-                                            
-                                            <SkeletonMediaSearchCard />
-                                            
-                                        ) : (
-                                            
+                                <SkeletonMediaSearchCard />
 
-                                            results.slice(0, resultsLength).map((result) => (
-                                                <NewSearchCard key={result.id} media={result} userProviders={user?.providers} />
-                                            ))
-                                        )}
+                            ) : (
 
-                                    </div>
-                                // </div>
-                            // </div>
-                        }
-                    </div>
-                  
-                
+
+                                results.slice(0, resultsLength).map((result) => (
+                                    <NewSearchCard key={result.id} media={result} userProviders={user?.providers} />
+                                ))
+                            )}
+
+                        </div>
+
+                    </ScrollArea>
+                }
+
+
 
 
 
