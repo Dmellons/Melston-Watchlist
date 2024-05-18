@@ -41,7 +41,7 @@ const NewSearchBar = ({
 
     // }, [query])
     const movieList = async () => {
-        setLoading(true)
+        setLoading(false)
         setResults([])
 
         const options = {
@@ -55,6 +55,7 @@ const NewSearchBar = ({
         const res = await fetch(`https://api.themoviedb.org/3/search/multi?query=${query}`, tmdbFetchOptions)
             .then(res => res.json())
             .then(data => setResults(data.results))
+            // .then(() => setLoading(false))
             .catch(error => console.log(error))
         setLoading(false)
 
@@ -62,15 +63,15 @@ const NewSearchBar = ({
 
 
 
-
     return (
+        
 
-        <div className="fixed left-0 top-0 z-50 w-full font-normal">
+        <div className="w-full hidden sm:absolute sm:flex top-0 z-50 font-normal">
 
-            <div className="flex flex-col gap-2 items-center">
+            <div className="flex flex-col gap-2 items-center w-full">
 
 
-                <div className="flex items-center">
+                <div className="flex items-center w-fit">
 
                     <Input
                         placeholder="Movie, TV Show, Person..."
@@ -105,14 +106,14 @@ const NewSearchBar = ({
                 </div>
 
                 {/* <GenreFilterDropdown setFilter={setGenreFilter} /> */}
-                    <div className=" z-50 max-w-5xl bg-card/80 rounded-lg m-auto">
+                    <div className=" z-50 max-w-5xl bg-card/80 rounded-lg py-4 px-2 m-auto shadow-xl shadow-black">
 
                         {
-                            results.length > 0 &&
-                            <div>
+                            results.length > 0 && !loading &&
+                            // <div>
 
 
-                                <div className="p-3 my-4 w-full">
+                                // <div className="p-3 my-4 w-full">
 
                                     <div className="flex flex-col lg:flex-row lg:flex-wrap justify-center gap-4 items-center place-items-center lg:w-full m-auto">
                                         {loading ? (
@@ -128,8 +129,8 @@ const NewSearchBar = ({
                                         )}
 
                                     </div>
-                                </div>
-                            </div>
+                                // </div>
+                            // </div>
                         }
                     </div>
                   
