@@ -18,6 +18,10 @@ const nextConfig = {
                 protocol: "https",
                 hostname: "picsum.photos", // for placeholder images
             },
+            {
+                protocol: "https",
+                hostname: "lh3.googleusercontent.com", // for google profile images
+            },
         ],
     },
 };
