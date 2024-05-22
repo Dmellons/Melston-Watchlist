@@ -1,5 +1,6 @@
 'use client'
 import { account, database } from "@/lib/appwrite";
+import { getProviderImage } from "@/lib/getProviderImage";
 import { WatchlistDocument } from "@/types/appwrite";
 import { Models, OAuthProvider } from "appwrite";
 import { redirect, useRouter } from "next/navigation";
@@ -145,7 +146,7 @@ export const UserProvider = ({ children, serverUser }: { children: React.ReactNo
     const loginWithGoogle = async () => {
 
         try {
-            const session = await account.createOAuth2Session(
+            await account.createOAuth2Session(
                 OAuthProvider.Google,
                 // `${process.env.NEXT_PUBLIC_URL_BASE}/watchlist`,
                 `${process.env.NEXT_PUBLIC_URL_BASE}/`,
@@ -156,7 +157,13 @@ export const UserProvider = ({ children, serverUser }: { children: React.ReactNo
                 ]
             );
 
-            console.log(`Login With Google session: ${session}`)
+
+            const imageUrl = await getProviderImage()            
+            const test = await account.updatePrefs({ imageUrl })
+
+            console.log(test)
+
+            
 
             const { $id, name, email, prefs, status, ...debug } = await account.get()
 
@@ -170,6 +177,9 @@ export const UserProvider = ({ children, serverUser }: { children: React.ReactNo
 
             console.log(`Login With Google debug: ${debug}`)
 
+
+            console.log(`Login With Google image: ${imageUrl}`)
+
             setUserState({
                 id: $id,
                 email,
@@ -178,6 +188,7 @@ export const UserProvider = ({ children, serverUser }: { children: React.ReactNo
                 status,
                 debug
             });
+            console.log({ userState })
             
         } catch (error) {
             console.error(`Login With Google Error: ${error}`)
