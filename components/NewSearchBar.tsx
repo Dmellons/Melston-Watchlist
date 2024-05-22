@@ -12,10 +12,27 @@ import NewSearchCard from "@/components/NewSearchCard"
 import { useUser } from "@/hooks/User"
 import { tmdbFetchOptions } from "@/lib/tmdb"
 import GenreFilterDropdown from "./GenreFilterDropdown"
-import { Popover } from "./ui/popover"
-import { ScrollArea } from "./ui/scroll-area"
-import { Dialog } from "./ui/dialog"
 
+import { ScrollArea } from "./ui/scroll-area"
+import { Dialog, DialogTrigger, DialogContent } from "./ui/dialog";
+import { IconButton } from "./ui/button";
+
+import { Check, ChevronsUpDown } from "lucide-react"
+ 
+import { cn } from "@/lib/utils"
+
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "@/components/ui/command"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 
 const NewSearchBar = ({
     resultsLength = 10
@@ -66,7 +83,7 @@ const NewSearchBar = ({
     return (
 
 
-        <div className="w-full  absolute sm:flex top-0 z-10 font-normal">
+        // <div className="w-full  absolute sm:flex top-0 z-10 font-normal">
 
             <div className="flex flex-col gap-2 items-center w-full">
 
@@ -109,17 +126,19 @@ const NewSearchBar = ({
 
                 {
                     results.length > 0 && !loading &&
+                    <div id="search-popover" popover="auto" popovertargetaction="show" >
+
                     <ScrollArea className=" z-40 w-5/8 max-h-[600px] sm:max-w-5xl bg-card/80 rounded-lg py-4 px-2 mx-2 sm:m-auto shadow-xl shadow-black">
 
-
+                    
                         <div className="grid grid-cols-2 sm:flex  lg:flex-row lg:flex-wrap justify-center gap-4 items-center place-items-center lg:w-full m-auto">
                             {loading ? (
 
                                 <SkeletonMediaSearchCard />
-
+                                
                             ) : (
 
-
+                                
                                 results.slice(0, resultsLength).map((result) => (
                                     <NewSearchCard key={result.id} media={result} userProviders={user?.providers} />
                                 ))
@@ -128,6 +147,7 @@ const NewSearchBar = ({
                         </div>
 
                     </ScrollArea>
+                            </div>
                 }
 
 
@@ -136,7 +156,7 @@ const NewSearchBar = ({
 
 
             </div>
-        </div >
+        // </div >
     )
 }
 

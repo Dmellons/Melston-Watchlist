@@ -69,7 +69,9 @@ export default function MainHeader() {
             <div className="my-3 z-20 mx-2">
                 <LoginButton />
             </div>
-            <NewSearchBar />
+            <div className="w-full absolute sm:flex top-0 z-10 font-normal">
+                <NewSearchBar />
+            </div>
         </nav>
     )
 }
