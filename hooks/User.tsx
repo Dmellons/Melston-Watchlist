@@ -32,7 +32,7 @@ export type UserType = {
 
 export type UserPrefs = {
     providers?: number[];
-    image?: string;
+    profileImage?: string;
 }
 
 const defaultState: UserState = {
@@ -55,7 +55,7 @@ export const UserProvider = ({ children, serverUser }: { children: React.ReactNo
     const [userState, setUserState] = useState<null | UserType>(null);
     const [loading, setLoading] = useState(true)
 
-    
+
 
     useEffect((serverUser) => {
         const checkUser = async (serverUser) => {
@@ -73,11 +73,11 @@ export const UserProvider = ({ children, serverUser }: { children: React.ReactNo
                 } finally {
                     setLoading(false)
                 }
-        } else {
+            } else {
 
                 try {
                     const { $id, email, name, prefs, status, labels, ...rest } = await account.get()
-                    
+
                     const jwt = await account.createJWT();
                     fetch(`${process.env.NEXT_PUBLIC_URL_BASE}/api/jwt/set`, {
                         method: 'POST',
@@ -96,7 +96,7 @@ export const UserProvider = ({ children, serverUser }: { children: React.ReactNo
                         name,
                         status,
                         labels,
-                        image: prefs.image ? prefs.image : null,
+                        image: prefs.profileImage ? prefs.profileImage : null,
                         providers: prefs.providers ? prefs.providers : [],
                         watchlist: watchlist,
                         debug: rest
@@ -109,12 +109,12 @@ export const UserProvider = ({ children, serverUser }: { children: React.ReactNo
                         name,
                         status,
                         labels,
-                        image: prefs.image ? prefs.image : null,
+                        image: prefs.profileImage ? prefs.profileImage : null,
                         providers: prefs.providers ? prefs.providers : [],
                         watchlist: watchlist,
                         debug: rest
                     });
-                    
+
                 } catch (error) {
                     console.error(`Check User Error: ${error}`)
                     setUserState(null)
@@ -158,15 +158,17 @@ export const UserProvider = ({ children, serverUser }: { children: React.ReactNo
             );
 
 
-            const imageUrl = await getProviderImage()            
-            const test = await account.updatePrefs({ imageUrl })
+            const imageUrl = await getProviderImage()
+
+            const newPrefs = { ...prefs, profileImage: imageData.picture };
+            const test = await account.updatePrefs({ ...newPrefs });
 
             console.log(test)
 
-            
+
 
             const { $id, name, email, prefs, status, ...debug } = await account.get()
-
+            console.log({ prefs })
             const jwt = await account.createJWT();
 
             fetch(`${process.env.next_public_url_base}/api/jwt/set`, {
@@ -185,11 +187,12 @@ export const UserProvider = ({ children, serverUser }: { children: React.ReactNo
                 email,
                 name,
                 admin: prefs.admin ? true : false,
+                image: prefs.profileImage ? prefs.profileImage : null,
                 status,
                 debug
             });
             console.log({ userState })
-            
+
         } catch (error) {
             console.error(`Login With Google Error: ${error}`)
         }

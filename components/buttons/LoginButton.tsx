@@ -14,6 +14,8 @@ export default function LoginButton() {
     // console.log({ user })
     if (user) {
 
+        console.log({ user })
+
         // const imgUrl = session?.user?.image ? session.user.image : undefined  
         const imgUrl = user?.image ? user.image : undefined
 

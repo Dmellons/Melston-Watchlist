@@ -1,5 +1,4 @@
 'use client'
-import { useUser } from '@/hooks/User';
 import { account } from '@/lib/appwrite';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
@@ -43,6 +42,10 @@ const ImageGetter = ({
                     const imageData = await response.json();
                     console.log(imageData)
                     setImageUrl(imageData.picture);
+                    const prefs = await account.getPrefs();
+                    const newPrefs = { ...prefs,
+                        profileImage: imageData.picture };
+                    account.updatePrefs({ ...newPrefs });
                 } catch (error) {
                     console.error('Error fetching image data:', error);
                 }
