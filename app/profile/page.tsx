@@ -1,4 +1,5 @@
 'use client'
+import ImageGetter from "@/components/ImageGetter";
 import PlexRequestsBlock from "@/components/PlexRequestsBlock";
 import ProvidersBlock from "@/components/ProvidersBlock";
 import ProvidersSelect from "@/components/ProvidersSelect";
@@ -34,6 +35,7 @@ const ProfilePage = () => {
   return (
     <div className="flex flex-col items-center justify-center">
       <h1 className="text-2xl font-bold mb-4">Profile Page</h1>
+      <ImageGetter />
       {user && (
         <div>
           <p>Name: {user.name}</p>
@@ -51,11 +53,11 @@ const ProfilePage = () => {
               <Badge key={label}>{label}</Badge>
             ))}
           </div>
-          {
+          {/* {
             user.image && (
               <Image className="rounded-full" src={user.image} alt={user.name} width="100" height="100" />
             )
-          }
+          } */}
         </div>
       )} {!user && <p>No user found</p>}
 

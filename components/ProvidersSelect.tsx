@@ -31,7 +31,18 @@ export default function ProvidersSelect() {
     const [search, setSearch] = useState<string>('');
     const [availableProviders, setAvailableProviders] = useState<ProviderInfo[] | null>(null);
 
+    useEffect(() => {
+        const getPrefs = async () => {
 
+            const prefs = await account.getPrefs()
+            if (!prefs?.providers) {
+
+                await account.updatePrefs({ providers: '8', ...prefs })
+            }
+            console.log(prefs)
+        }
+        getPrefs()
+        })
     useEffect(() => {
         const fetchData = async () => {
             const prefs = await account.getPrefs();
@@ -49,7 +60,7 @@ export default function ProvidersSelect() {
 
             const response = await fetch(`https://api.themoviedb.org/3/watch/providers/movie?language=en-US&watch_region=US&query=${search}`, tmdbFetchOptions);
             const data: { results: ProviderInfo[] } = await response.json();
-            console.log({ data })
+            
             setAvailableProviders(data.results);
             //   setProviders(prefs.providers || []);
         };
