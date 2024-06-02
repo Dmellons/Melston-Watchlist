@@ -9,7 +9,7 @@ import Image from "next/image";
 
 export default function Home() {
   const { user, loginWithGoogle } = useUser()
-
+  console.log({user})
   const watchlist:Models.DocumentList<WatchlistDocument> = user?.watchlist 
   
   return (
