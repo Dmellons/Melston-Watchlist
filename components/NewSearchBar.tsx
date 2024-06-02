@@ -33,6 +33,7 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover"
+import Link from "next/link"
 
 const NewSearchBar = ({
     resultsLength = 10
@@ -45,6 +46,7 @@ const NewSearchBar = ({
     const [loading, setLoading] = useState(true)
     const [query, setQuery] = useState<string>("")
     const [results, setResults] = useState<TMDBMultiSearchResult[]>([])
+    const [moreResults, setMoreResults] = useState<boolean>(false)
     const [genreFilter, setGenreFilter] = useState<number[]>([])
 
     const { user } = useUser()
@@ -71,12 +73,16 @@ const NewSearchBar = ({
 
         const res = await fetch(`https://api.themoviedb.org/3/search/multi?query=${query}`, tmdbFetchOptions)
             .then(res => res.json())
-            .then(data => setResults(data.results))
+            .then(data => {
+                setResults(data.results)
+                setMoreResults(data.results.length > resultsLength)
+            })
             // .then(() => setLoading(false))
             .catch(error => console.log(error))
         setLoading(false)
 
     }
+
 
 
 
@@ -128,25 +134,43 @@ const NewSearchBar = ({
                 results.length > 0 && !loading &&
                 // <div id="search-popover" popover="auto" popovertargetaction="show" >
 
-                    <ScrollArea className=" z-40 w-5/8 max-h-[600px] sm:max-w-5xl bg-card/80 rounded-lg py-4 px-2 mx-2 sm:m-auto shadow-xl shadow-black">
+                <ScrollArea className=" z-40 w-5/8 h-[60vh] sm:max-h-[600px] sm:max-w-5xl bg-card/80 rounded-lg py-4 px-2 mx-2 sm:m-auto shadow-xl shadow-black">
 
 
-                        <div className="grid grid-cols-2 sm:flex  lg:flex-row lg:flex-wrap justify-center gap-4 items-center place-items-center lg:w-full m-auto">
-                            {loading ? (
+                    <div className="grid grid-cols-2 sm:flex  lg:flex-row lg:flex-wrap justify-center gap-4 items-center place-items-center lg:w-full m-auto">
+                        {loading ? (
 
-                                <SkeletonMediaSearchCard />
+                            <SkeletonMediaSearchCard />
 
-                            ) : (
+                        ) : (
 
 
-                                results.slice(0, resultsLength).map((result) => (
-                                    <NewSearchCard key={result.id} media={result} userProviders={user?.providers} />
-                                ))
-                            )}
+                            results.slice(0, resultsLength).map((result) => (
+                                <NewSearchCard key={result.id} media={result} userProviders={user?.providers} />
+                            ))
+                            
+                                
+                            )
+                            
+                            }
+                            {moreResults &&
+                            <Button
+                                asChild
+                                variant="link"
+                                disabled
+                                className=" col-span-2 sm:col-span-1text-foreground/60 hover:text-foreground/80 cursor-pointer"
+                            >
+                            <Link href="" >
+                                More Results... 
+                                <br />
+                            (Coming Soon)
+                            </Link>
+                            </Button>
+                            }
 
-                        </div>
+                    </div>
 
-                    </ScrollArea>
+                </ScrollArea>
                 // </div>
             }
 
@@ -155,7 +179,7 @@ const NewSearchBar = ({
 
 
 
-        </div>
+        </div >
         // </div >
     )
 }
