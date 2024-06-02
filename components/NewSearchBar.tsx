@@ -173,7 +173,7 @@ const NewSearchBar = ({
 
     const isDesktop = useMediaQuery("(min-width: 768px)")
     console.log(isDesktop)
-
+    const resultsMarginTop = isDesktop ? "mt-2" : "mt-14"
 
     return (
 
@@ -196,7 +196,7 @@ const NewSearchBar = ({
 
                 >
 
-                    <div className="flex flex-col m-auto gap-1 sm:gap-2 sm:flex-row items-center w-2/5 my-5  ">
+                    <div className="flex flex-col m-auto gap-1 sm:gap-2 sm:flex-row items-center sm:w-2/5  my-5  ">
                         {isDesktop &&
                             <>
                                 <SearchIcon className="h-5 w-5" />
@@ -223,52 +223,49 @@ const NewSearchBar = ({
                             </>
                         }
                         {!isDesktop &&
-                            <div className="group flex flex-col items-center">
-                                <SearchIcon className="h-5 w-5 " />
+                        
+
+                            <Popover>
+                                <PopoverTrigger>
+
+                                <SearchIcon className="h-6 w-6" />
+                                </PopoverTrigger>
+                                <PopoverContent
+                                    className="w-80 p-0 mt-8 text-slate-100"
+                                >
+
                                 <Input
 
-                                    placeholder="Search..."
+                                    placeholder="Search Movies or TV Shows..."
                                     value={query}
-                                    className="bg-muted/90   w-2/5 h-0focus:w-4/5 focus:h-8 text-muted-foreground  rounded-md p-2 "
+                                    className="h-6 bg-muted/90 ring text-muted-foreground  rounded-md  m-0 "
                                     onFocusCapture={() => setIsDialogOpen(true)}
                                     onFocus={() => setIsDialogOpen(true)}
                                     onChange={(e) => {
-
+                                        
                                         setQuery(e.target.value)
                                         console.log(results.length)
                                         console.log(e.target.value !== "" && results.length === 0)
                                         setIsDialogOpen(((e.target.value !== "") && (results.length === 0)))
-
+                                        
                                     }}
                                     onKeyUp={(e) => {
                                         if (e.key === "Enter") {
                                             movieList()
                                         }
                                     }} />
-                            </div>
+                                    </PopoverContent>
+                            </Popover>
+                                    
                         }
 
-
-                        {/* <Button
-                    className="w-18 align-middle h-8 ml-2"
-                    onClick={() => movieList()}
-                >
-                    Search
-                </Button> */}
-                        {/* <Button
-                            variant="secondary"
-                            className="w-24 align-middle ml-4 h-8 bg-destructive/50 hover:bg-destructive/80 text-danger-foreground"
-                            onClick={() => setResults([])}
-                        >
-                            Clear
-                        </Button> */}
                     </div>
                 </PopoverTrigger>
 
                 {/* <GenreFilterDropdown setFilter={setGenreFilter} /> */}
                 <PopoverContent
                     onOpenAutoFocus={(e) => e.preventDefault()}
-                    className="w-full bg-transparent shadow-none border-none p-0 m-0"
+                    className={`w-full bg-transparent shadow-none border-none p-0 m-0 ${resultsMarginTop}`}
                 >
                     {
                         (
@@ -278,7 +275,7 @@ const NewSearchBar = ({
 
 
                         <div
-                            className="w-4/5 bg-card/80 rounded-lg py-4 px-2 sm:px-4 mx-4 sm:m-auto shadow-xl shadow-black ">
+                            className="w-full bg-card/80 rounded-lg py-4 px-2 sm:px-4 sm:m-auto shadow-xl shadow-black ">
 
                             <ScrollArea className=" z-40 w-5/8  h-[350px] sm:h-[600px] sm:max-w-5xl ">
 
