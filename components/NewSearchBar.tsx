@@ -47,6 +47,7 @@ const NewSearchBar = ({
     const [query, setQuery] = useState<string>("")
     const [results, setResults] = useState<TMDBMultiSearchResult[]>([])
     const [moreResults, setMoreResults] = useState<boolean>(false)
+    const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
     const [genreFilter, setGenreFilter] = useState<number[]>([])
 
     const { user } = useUser()
@@ -56,6 +57,7 @@ const NewSearchBar = ({
         setLoading(true)
 
         movieList()
+        setIsDialogOpen(query !== "" && results.length === 0)
 
 
     }, [query])
@@ -93,92 +95,110 @@ const NewSearchBar = ({
 
         <div className="flex flex-col gap-2 items-center w-full">
 
-
-            <div className="flex flex-col gap-1 sm:gap-2 sm:flex-row items-center w-2/5 my-5  ">
-
-                <Input
-                    placeholder="Movie, TV Show, Person..."
-                    value={query}
-                    className="bg-muted/90  text-muted-foreground w-/4 sm:w-72 h-8 rounded-md p-2"
-                    onChange={(e) => {
-
-                        setQuery(e.target.value)
-
-                    }}
-                    onKeyUp={(e) => {
-                        if (e.key === "Enter") {
-                            movieList()
-                        }
-                    }}
-                />
+            <Popover
 
 
-                {/* <Button
+                className=" w-full"
+                onOpenAutoFocus={(e) => e.preventDefault()}
+            >
+
+                <PopoverTrigger asChild
+
+                >
+
+                    <div className="flex flex-col gap-1 sm:gap-2 sm:flex-row items-center w-2/5 my-5  ">
+                        <Input
+                            placeholder="Movie, TV Show, Person..."
+                            value={query}
+                            className="bg-muted/90  text-muted-foreground w-/4 sm:w-72 h-8 rounded-md p-2"
+                            onChange={(e) => {
+
+                                setQuery(e.target.value)
+
+                            }}
+                            onKeyUp={(e) => {
+                                if (e.key === "Enter") {
+                                    movieList()
+                                }
+                            }}
+                        />
+
+
+                        {/* <Button
                     className="w-18 align-middle h-8 ml-2"
                     onClick={() => movieList()}
                 >
                     Search
                 </Button> */}
-                <Button
-                    variant="secondary"
-                    className="w-24 align-middle ml-4 h-8 bg-destructive/50 hover:bg-destructive/80 text-danger-foreground"
-                    onClick={() => setResults([])}
-                >
-                    Clear
-                </Button>
-            </div>
-
-            {/* <GenreFilterDropdown setFilter={setGenreFilter} /> */}
-
-            {
-                results.length > 0 && !loading &&
-                // <div id="search-popover" popover="auto" popovertargetaction="show" >
-
-                <ScrollArea className=" z-40 w-5/8 h-[60vh] sm:max-h-[600px] sm:max-w-5xl bg-card/80 rounded-lg py-4 px-2 mx-2 sm:m-auto shadow-xl shadow-black">
-
-
-                    <div className="grid grid-cols-2 sm:flex  lg:flex-row lg:flex-wrap justify-center gap-4 items-center place-items-center lg:w-full m-auto">
-                        {loading ? (
-
-                            <SkeletonMediaSearchCard />
-
-                        ) : (
-
-
-                            results.slice(0, resultsLength).map((result) => (
-                                <NewSearchCard key={result.id} media={result} userProviders={user?.providers} />
-                            ))
-                            
-                                
-                            )
-                            
-                            }
-                            {moreResults &&
-                            <Button
-                                asChild
-                                variant="link"
-                                disabled
-                                className=" col-span-2 sm:col-span-1text-foreground/60 hover:text-foreground/80 cursor-pointer"
-                            >
-                            <Link href="" >
-                                More Results... 
-                                <br />
-                            (Coming Soon)
-                            </Link>
-                            </Button>
-                            }
-
+                        <Button
+                            variant="secondary"
+                            className="w-24 align-middle ml-4 h-8 bg-destructive/50 hover:bg-destructive/80 text-danger-foreground"
+                            onClick={() => setResults([])}
+                        >
+                            Clear
+                        </Button>
                     </div>
+                </PopoverTrigger>
 
-                </ScrollArea>
-                // </div>
-            }
+                {/* <GenreFilterDropdown setFilter={setGenreFilter} /> */}
+
+                {
+                    results.length > 0 && !loading &&
+                    // <div id="search-popover" popover="auto" popovertargetaction="show" >
+
+                    <Dialog
+                        open={isDialogOpen} 
+                        onClose={() => setIsDialogOpen(false)}
+                        
+                    >
+
+                        <DialogContent 
+                            className="w-4/5 bg-card/80 rounded-lg py-4 px-2 mx-4 sm:m-auto shadow-xl shadow-black ">
+
+                            <ScrollArea className=" z-40 w-5/8  h-[350px] sm:h-[600px] sm:max-w-5xl ">
 
 
+                                <div className="grid grid-cols-2 sm:flex  lg:flex-row lg:flex-wrap justify-center gap-4 items-center place-items-center lg:w-full m-auto">
+                                    {loading ? (
+
+                                        <SkeletonMediaSearchCard />
+
+                                    ) : (
 
 
+                                        results.slice(0, resultsLength).map((result) => (
+                                            <NewSearchCard key={result.id} media={result} userProviders={user?.providers} />
+                                        ))
 
 
+                                    )
+
+                                    }
+                                    {moreResults &&
+                                        <Button
+                                            asChild
+                                            variant="link"
+                                            disabled
+                                            className=" col-span-2 sm:col-span-1text-foreground/60 hover:text-foreground/80 cursor-pointer"
+                                        >
+                                            <Link href="" >
+                                                More Results...
+                                                <br />
+                                                (Coming Soon)
+                                            </Link>
+                                        </Button>
+                                    }
+
+                                </div>
+
+                            </ScrollArea>
+                        </DialogContent>
+                    </Dialog>
+
+                    // </div>
+                }
+
+            </Popover >
         </div >
         // </div >
     )
