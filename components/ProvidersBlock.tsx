@@ -22,7 +22,7 @@ const ProvidersBlock = (
 
     country = 'US',
     userProviders,
-    maxWidth = 'w-full max-w-36',
+    maxWidth = 'w-full max-w-36 lg:max-w-48',
     iconSize = 22, 
     notStreamingValue = 'N / A'
     // setHasProviders
@@ -155,7 +155,7 @@ const ProvidersBlock = (
               ) : (
 
                 // @ts-ignore
-                <div className='flex flex-wrap gap-2 min-w-48 w-4/5 items-center justify-center z-10 bg-card/75 p-2 rounded-lg border border-primary'>
+                <div className='flex sm:flex-row flex-wrap gap-2  w-fill  items-center justify-center z-10 bg-card/75 p-2 rounded-lg border border-primary'>
                   {/* @ts-ignore */}
                   {canStream
                     .slice(0, 5)
