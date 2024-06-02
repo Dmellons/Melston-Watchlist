@@ -23,7 +23,7 @@ const ProvidersBlock = (
     country = 'US',
     userProviders,
     maxWidth = 'w-full max-w-36 lg:max-w-48',
-    iconSize = 22, 
+    iconSize = 22,
     notStreamingValue = 'N / A'
     // setHasProviders
   }: {
@@ -91,7 +91,7 @@ const ProvidersBlock = (
   const notStreaming = () => {
     return (
       <div className="grid items-center h-10 w-full text-foreground/60 ml-2">
-          {notStreamingValue}  
+        {notStreamingValue}
       </div>
     );
   };
@@ -148,14 +148,14 @@ const ProvidersBlock = (
         >
 
 
-          <div className={` m-auto flex-col flex justify-center items-center z-10 ${maxWidth}`}>
+          <div className={` m-auto flex-col  flex justify-center items-center z-10 ${maxWidth}`}>
             <div className='flex hover:cursor-pointer gap-4 justify-center flex-wrap  '>
               {loading ? (
                 <div className='text-center'>Loading...</div>
               ) : (
 
                 // @ts-ignore
-                <div className='flex sm:flex-row flex-wrap gap-2  w-fill  items-center justify-center z-10 bg-card/75 p-2 rounded-lg border border-primary'>
+                <div className='flex sm:flex-row flex-wrap gap-2  w-fill min-w-36  items-center justify-center z-10 bg-card/75 p-2 rounded-lg border border-primary'>
                   {/* @ts-ignore */}
                   {canStream
                     .slice(0, 5)
@@ -175,11 +175,11 @@ const ProvidersBlock = (
                         />
 
                       )
-                    }
-                    )}
+                    })
+                  }
 
                   {data?.results[country]?.flatrate?.length > canStream.length ? (
-                    <div className='text-center'>+{data?.results[country]?.flatrate?.length - canStream.length}</div>
+                    <div className='text-center'>+{inPlex ? data?.results[country]?.flatrate?.length - canStream.length + 1 : data?.results[country]?.flatrate?.length - canStream.length}</div>
                   ) : null}
 
                 </div>
