@@ -36,7 +36,7 @@ const NewSearchCard = ({
 }) => {
 
     const { user } = useUser()
-    console.log({media})
+    
     if (media.media_type === 'person') {
         data = {
             title: media.name,

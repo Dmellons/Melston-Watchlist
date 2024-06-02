@@ -187,7 +187,7 @@ const NewSearchBar = ({
 
                 className=" w-full"
                 onOpenChange={(e) => console.log(e)}
-            // onOpenAutoFocus={(e) => e.preventDefault()}
+            onOpenAutoFocus={(e) => e.preventDefault()}
             >
 
                 <PopoverTrigger
@@ -226,12 +226,14 @@ const NewSearchBar = ({
                         
 
                             <Popover>
-                                <PopoverTrigger>
+                                <PopoverTrigger
+                                    onFocusCapture={() => setIsDialogOpen(true)}>
 
                                 <SearchIcon className="h-6 w-6" />
                                 </PopoverTrigger>
                                 <PopoverContent
                                     className="w-80 p-0 mt-8 text-slate-100"
+                                    
                                 >
 
                                 <Input
