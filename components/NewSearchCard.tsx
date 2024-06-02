@@ -91,10 +91,10 @@ const NewSearchCard = ({
                 <ImageWithFallback
                     src={`https://image.tmdb.org/t/p/w500/${data.poster_path}`}
                     alt={data.title}
-                    className="rounded-lg contain hover:shadow   hover:ease-in-out hover:duration-100 w-auto h-60 sm:h-72"
+                    className="rounded-lg contain hover:shadow  hover:ease-in-out hover:duration-100 w-auto h-60 sm:h-72"
                     // fill={true}
-                    width={100}
-                    height={150}
+                    width={200}
+                    height={300}
                 />
                 <div className="mt-2">
                     <ProvidersBlock tmdbId={data.tmdb_id} tmdbType={data.tmdb_type} userProviders={userProviders}
@@ -150,7 +150,7 @@ const NewSearchCard = ({
                     tmdbId={data.tmdb_id} 
                     tmdbType={data.tmdb_type} 
                     userProviders={userProviders} 
-                    maxWidth="w-12"
+                    maxWidth="w-48"
                     notStreamingValue=" "/>
 
             </DialogContent>
