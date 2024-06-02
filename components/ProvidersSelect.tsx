@@ -31,11 +31,26 @@ export default function ProvidersSelect() {
     const [search, setSearch] = useState<string>('');
     const [availableProviders, setAvailableProviders] = useState<ProviderInfo[] | null>(null);
 
+    useEffect(() => {
+        const getPrefs = async () => {
 
+            const prefs = await account.getPrefs()
+            if (!prefs?.providers) {
+
+                await account.updatePrefs({ providers: '0', ...prefs })
+            }
+            
+        }
+        getPrefs()
+        })
     useEffect(() => {
         const fetchData = async () => {
-            const prefs = await account.getPrefs();
-            console.log({ prefs })
+            let prefs = await account.getPrefs();
+            if (!prefs?.providers) {
+                await account.updatePrefs({ providers: '0', ...prefs })
+                prefs = { providers: '0', ...prefs }
+            }
+           
             if (prefs.providers && typeof prefs.providers === 'string') {
                 const providersArray = prefs.providers.split(',').map(Number)
                 console.log({ providersArray })
@@ -49,7 +64,7 @@ export default function ProvidersSelect() {
 
             const response = await fetch(`https://api.themoviedb.org/3/watch/providers/movie?language=en-US&watch_region=US&query=${search}`, tmdbFetchOptions);
             const data: { results: ProviderInfo[] } = await response.json();
-            console.log({ data })
+            
             setAvailableProviders(data.results);
             //   setProviders(prefs.providers || []);
         };
@@ -59,22 +74,19 @@ export default function ProvidersSelect() {
     useEffect(() => {
         const handleSave = async () => {
             if (providers) {
-                await account.updatePrefs({ providers });
+                // if (providers[0] === 0 && providers.length === 1) {
+                //     await account.updatePrefs({ providers: '0' })
+                // }
+                const prefs = await account.getPrefs();
+
+            
+                await account.updatePrefs({ ...prefs, providers });
             }
         };
         handleSave();
     }, [providers]);
 
-    const handleCheck = (provider: number) => {
-        if (providers?.includes(provider)) {
-            setProviders(prevProviders =>
-                prevProviders?.filter(p => p !== provider)
-            );
-        } else {
-            setProviders(prevProviders => [...prevProviders, provider]);
-        }
-    };
-    console.log({ providers })
+
     return (
         <>
             <div className="gap-2 flex flex-col my-4 border rounded-lg border-gray-300 p-2">
