@@ -24,7 +24,7 @@ export default function MainHeader() {
           "
         >
             <div className="flex justify-center lg:order-none lg:self-center">
-                <Button asChild variant="link" className="text-xl text-title-foreground font-bold hover">
+                <Button asChild variant="link" className="z-20 text-xl text-title-foreground font-bold hover">
 
                     <Link href="/">
                         Watchlist

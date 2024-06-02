@@ -18,20 +18,20 @@ import { Dialog, DialogTrigger, DialogContent } from "./ui/dialog";
 import { IconButton } from "./ui/button";
 
 import { Check, ChevronsUpDown } from "lucide-react"
- 
+
 import { cn } from "@/lib/utils"
 
 import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
+    Command,
+    CommandEmpty,
+    CommandGroup,
+    CommandInput,
+    CommandItem,
 } from "@/components/ui/command"
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
 } from "@/components/ui/popover"
 
 const NewSearchBar = ({
@@ -85,60 +85,60 @@ const NewSearchBar = ({
 
         // <div className="w-full  absolute sm:flex top-0 z-10 font-normal">
 
-            <div className="flex flex-col gap-2 items-center w-full">
+        <div className="flex flex-col gap-2 items-center w-full">
 
 
-                <div className="flex items-center w-fit">
+            <div className="flex items-center w-fit">
 
-                    <Input
-                        placeholder="Movie, TV Show, Person..."
-                        value={query}
-                        className="bg-muted/90  text-muted-foreground w-/4 sm:w-72 h-8 rounded-md p-2"
-                        onChange={(e) => {
+                <Input
+                    placeholder="Movie, TV Show, Person..."
+                    value={query}
+                    className="bg-muted/90  text-muted-foreground w-/4 sm:w-72 h-8 rounded-md p-2"
+                    onChange={(e) => {
 
-                            setQuery(e.target.value)
+                        setQuery(e.target.value)
 
-                        }}
-                        onKeyUp={(e) => {
-                            if (e.key === "Enter") {
-                                movieList()
-                            }
-                        }}
-                    />
+                    }}
+                    onKeyUp={(e) => {
+                        if (e.key === "Enter") {
+                            movieList()
+                        }
+                    }}
+                />
 
 
-                    {/* <Button
-                        className="w-18 align-middle h-8 ml-2"
-                        onClick={() => movieList()}
-                    >
-                        Search
-                    </Button> */}
-                    <Button
-                        variant="secondary"
-                        className="my-5 w-24 align-middle ml-4 h-8 bg-destructive/50 hover:bg-destructive/80 text-danger-foreground"
-                        onClick={() => setResults([])}
-                    >
-                        Clear
-                    </Button>
-                </div>
+                {/* <Button
+                    className="w-18 align-middle h-8 ml-2"
+                    onClick={() => movieList()}
+                >
+                    Search
+                </Button> */}
+                <Button
+                    variant="secondary"
+                    className="my-5 w-24 align-middle ml-4 h-8 bg-destructive/50 hover:bg-destructive/80 text-danger-foreground"
+                    onClick={() => setResults([])}
+                >
+                    Clear
+                </Button>
+            </div>
 
-                {/* <GenreFilterDropdown setFilter={setGenreFilter} /> */}
+            {/* <GenreFilterDropdown setFilter={setGenreFilter} /> */}
 
-                {
-                    results.length > 0 && !loading &&
-                    <div id="search-popover" popover="auto" popovertargetaction="show" >
+            {
+                results.length > 0 && !loading &&
+                // <div id="search-popover" popover="auto" popovertargetaction="show" >
 
                     <ScrollArea className=" z-40 w-5/8 max-h-[600px] sm:max-w-5xl bg-card/80 rounded-lg py-4 px-2 mx-2 sm:m-auto shadow-xl shadow-black">
 
-                    
+
                         <div className="grid grid-cols-2 sm:flex  lg:flex-row lg:flex-wrap justify-center gap-4 items-center place-items-center lg:w-full m-auto">
                             {loading ? (
 
                                 <SkeletonMediaSearchCard />
-                                
+
                             ) : (
 
-                                
+
                                 results.slice(0, resultsLength).map((result) => (
                                     <NewSearchCard key={result.id} media={result} userProviders={user?.providers} />
                                 ))
@@ -147,15 +147,15 @@ const NewSearchBar = ({
                         </div>
 
                     </ScrollArea>
-                            </div>
-                }
+                // </div>
+            }
 
 
 
 
 
 
-            </div>
+        </div>
         // </div >
     )
 }
