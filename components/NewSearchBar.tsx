@@ -88,7 +88,7 @@ const NewSearchBar = ({
         <div className="flex flex-col gap-2 items-center w-full">
 
 
-            <div className="flex items-center w-fit">
+            <div className="flex flex-col gap-1 sm:gap-2 sm:flex-row items-center w-2/5 my-5  ">
 
                 <Input
                     placeholder="Movie, TV Show, Person..."
@@ -115,7 +115,7 @@ const NewSearchBar = ({
                 </Button> */}
                 <Button
                     variant="secondary"
-                    className="my-5 w-24 align-middle ml-4 h-8 bg-destructive/50 hover:bg-destructive/80 text-danger-foreground"
+                    className="w-24 align-middle ml-4 h-8 bg-destructive/50 hover:bg-destructive/80 text-danger-foreground"
                     onClick={() => setResults([])}
                 >
                     Clear
