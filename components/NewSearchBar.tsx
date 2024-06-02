@@ -21,19 +21,46 @@ import { Check, ChevronsUpDown } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
+
+
+import Link from "next/link"
+
+
 import {
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
 } from "@/components/ui/command"
 import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
 } from "@/components/ui/popover"
-import Link from "next/link"
+
+const frameworks = [
+    {
+      value: "next.js",
+      label: "Next.js",
+    },
+    {
+      value: "sveltekit",
+      label: "SvelteKit",
+    },
+    {
+      value: "nuxt.js",
+      label: "Nuxt.js",
+    },
+    {
+      value: "remix",
+      label: "Remix",
+    },
+    {
+      value: "astro",
+      label: "Astro",
+    },
+  ]
 
 const NewSearchBar = ({
     resultsLength = 10
@@ -86,6 +113,64 @@ const NewSearchBar = ({
     }
 
 
+
+
+
+
+    
+   
+    
+
+    //   const [open, setOpen] = useState(false)
+    //   const [value, setValue] = useState("")
+    
+    //   return (
+    //     <Popover open={open} onOpenChange={setOpen}>
+    //       <PopoverTrigger asChild>
+    //         <Button
+    //           variant="outline"
+    //           role="combobox"
+    //           aria-expanded={open}
+    //           className="w-[200px] justify-between"
+    //         >
+    //           {value
+    //             ? frameworks.find((framework) => framework.value === value)?.label
+    //             : "Select framework..."}
+    //           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+    //         </Button>
+    //       </PopoverTrigger>
+    //       <PopoverContent className="w-[200px] p-0">
+    //         <Command>
+    //           <CommandInput placeholder="Search framework..." />
+    //           <CommandEmpty>No framework found.</CommandEmpty>
+    //           <CommandGroup>
+    //             {
+    //             frameworks.length > 0 && frameworks.map((framework) => (
+    //                 console.log(framework),
+    //               <CommandItem
+    //                 key={framework.value}
+    //                 value={framework.value}
+    //                 onSelect={(currentValue) => {
+    //                   setValue(currentValue === value ? "" : currentValue)
+    //                   setOpen(false)
+    //                 }}
+    //               >
+    //                 <Check
+    //                   className={cn(
+    //                     "mr-2 h-4 w-4",
+    //                     value === framework.value ? "opacity-100" : "opacity-0"
+    //                   )}
+    //                 />
+    //                 {framework.label}
+    //               </CommandItem>
+    //             ))}
+    //           </CommandGroup>
+    //         </Command>
+    //       </PopoverContent>
+    //     </Popover>
+    //   )
+    
+    
 
 
     return (
@@ -146,13 +231,9 @@ const NewSearchBar = ({
                     results.length > 0 && !loading &&
                     // <div id="search-popover" popover="auto" popovertargetaction="show" >
 
-                    <Dialog
-                        open={isDialogOpen} 
-                        onClose={() => setIsDialogOpen(false)}
-                        
-                    >
+                    
 
-                        <DialogContent 
+                        <div 
                             className="w-4/5 bg-card/80 rounded-lg py-4 px-2 mx-4 sm:m-auto shadow-xl shadow-black ">
 
                             <ScrollArea className=" z-40 w-5/8  h-[350px] sm:h-[600px] sm:max-w-5xl ">
@@ -192,8 +273,8 @@ const NewSearchBar = ({
                                 </div>
 
                             </ScrollArea>
-                        </DialogContent>
-                    </Dialog>
+                        </div>
+
 
                     // </div>
                 }
