@@ -37,16 +37,20 @@ export default function ProvidersSelect() {
             const prefs = await account.getPrefs()
             if (!prefs?.providers) {
 
-                await account.updatePrefs({ providers: '8', ...prefs })
+                await account.updatePrefs({ providers: '0', ...prefs })
             }
-            console.log(prefs)
+            
         }
         getPrefs()
         })
     useEffect(() => {
         const fetchData = async () => {
-            const prefs = await account.getPrefs();
-            console.log({ prefs })
+            let prefs = await account.getPrefs();
+            if (!prefs?.providers) {
+                await account.updatePrefs({ providers: '0', ...prefs })
+                prefs = { providers: '0', ...prefs }
+            }
+           
             if (prefs.providers && typeof prefs.providers === 'string') {
                 const providersArray = prefs.providers.split(',').map(Number)
                 console.log({ providersArray })
@@ -70,22 +74,19 @@ export default function ProvidersSelect() {
     useEffect(() => {
         const handleSave = async () => {
             if (providers) {
-                await account.updatePrefs({ providers });
+                // if (providers[0] === 0 && providers.length === 1) {
+                //     await account.updatePrefs({ providers: '0' })
+                // }
+                const prefs = await account.getPrefs();
+
+            
+                await account.updatePrefs({ ...prefs, providers });
             }
         };
         handleSave();
     }, [providers]);
 
-    const handleCheck = (provider: number) => {
-        if (providers?.includes(provider)) {
-            setProviders(prevProviders =>
-                prevProviders?.filter(p => p !== provider)
-            );
-        } else {
-            setProviders(prevProviders => [...prevProviders, provider]);
-        }
-    };
-    console.log({ providers })
+
     return (
         <>
             <div className="gap-2 flex flex-col my-4 border rounded-lg border-gray-300 p-2">

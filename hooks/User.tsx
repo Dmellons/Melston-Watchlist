@@ -1,6 +1,6 @@
 'use client'
 import { account, database } from "@/lib/appwrite";
-import { getProviderImage } from "@/lib/getProviderImage";
+// import { getUserProviderImage } from "@/lib/getUserProviderImage";
 import { WatchlistDocument } from "@/types/appwrite";
 import { Models, OAuthProvider } from "appwrite";
 import { redirect, useRouter } from "next/navigation";
@@ -76,7 +76,8 @@ export const UserProvider = ({ children, serverUser }: { children: React.ReactNo
             } else {
 
                 try {
-                    const { $id, email, name, prefs, status, labels, ...rest } = await account.get()
+                    const { $id, email, name, status, labels, ...rest } = await account.get()
+                    const prefs = await account.getPrefs()
 
                     const jwt = await account.createJWT();
                     fetch(`${process.env.NEXT_PUBLIC_URL_BASE}/api/jwt/set`, {
@@ -143,13 +144,54 @@ export const UserProvider = ({ children, serverUser }: { children: React.ReactNo
         }
     };
 
+    // async function getUserProviderImage(): Promise<string | null> {
+    //     // Helper function to get the session
+    //     async function getSession() {
+    //       try {
+    //         const response = await account.getSession('current');
+    //         console.log({ response })
+    //         return response;
+    //       } catch (error) {
+    //         console.error('Error fetching session:', error);
+    //         return null;
+    //       }
+    //     };
+        
+    //     // Fetch the session and access token
+    //     const session = await getSession();
+    //     console.log({ session })
+    //     if (!session) {
+    //       return null;
+    //     }
+      
+    //     const providerAccessToken = session.providerAccessToken;
+      
+    //     // Helper function to get the image data
+    //     const getImageData = async (token: string) => {
+    //       // try {
+    //         const response = await fetch(`https://www.googleapis.com/oauth2/v3/userinfo?access_token=${token}`);
+    //         const imageData = await response.json();
+    //         console.log(imageData)
+    //         return imageData.picture;
+    //       // } catch (error) {
+    //       //   console.error('Error fetching image data:', error);
+    //       //   return null;
+    //       // }
+    //     };
+      
+    //     const image = await getImageData(providerAccessToken);
+    //     console.log(image)
+    //     // Fetch and return the image URL
+    //     return image
+    //   };
+      
     const loginWithGoogle = async () => {
 
         try {
             await account.createOAuth2Session(
                 OAuthProvider.Google,
-                // `${process.env.NEXT_PUBLIC_URL_BASE}/watchlist`,
-                `${process.env.NEXT_PUBLIC_URL_BASE}/`,
+                `${process.env.NEXT_PUBLIC_URL_BASE}/profile`,
+                // `${process.env.NEXT_PUBLIC_URL_BASE}/`,
                 `${process.env.NEXT_PUBLIC_URL_BASE}/failure`,
                 [
                     'https://www.googleapis.com/auth/userinfo.email',
@@ -158,16 +200,19 @@ export const UserProvider = ({ children, serverUser }: { children: React.ReactNo
             );
 
 
-            const imageUrl = await getProviderImage()
+            // const imageUrl = await getUserProviderImage()
+            // console.log({ imageUrl })
+            
 
-            const newPrefs = { ...prefs, profileImage: imageData.picture };
-            const test = await account.updatePrefs({ ...newPrefs });
+            // const newPrefs = { ...prefs, profileImage: imageData.picture };
+            // const test = await account.updatePrefs({ ...newPrefs });
 
-            console.log(test)
+            // console.log(test)
 
 
 
-            const { $id, name, email, prefs, status, ...debug } = await account.get()
+            const { $id, name, email, status, ...debug } = await account.get()
+            const prefs = await account.getPrefs();
             console.log({ prefs })
             const jwt = await account.createJWT();
 
@@ -177,11 +222,7 @@ export const UserProvider = ({ children, serverUser }: { children: React.ReactNo
                 headers: { 'Content-Type': 'application/json' }
             })
 
-            console.log(`Login With Google debug: ${debug}`)
-
-
-            console.log(`Login With Google image: ${imageUrl}`)
-
+            
             setUserState({
                 id: $id,
                 email,

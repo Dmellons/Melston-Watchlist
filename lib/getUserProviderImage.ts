@@ -1,7 +1,7 @@
 import { account } from '@/lib/appwrite';
 
 // Define the function to get the image URL
-export const getProviderImage = async (): Promise<string | null> => {
+ export async function getUserProviderImage(): Promise<string | null> {
   // Helper function to get the session
   const getSession = async () => {
     try {
@@ -23,16 +23,19 @@ export const getProviderImage = async (): Promise<string | null> => {
 
   // Helper function to get the image data
   const getImageData = async (token: string) => {
-    try {
+    // try {
       const response = await fetch(`https://www.googleapis.com/oauth2/v3/userinfo?access_token=${token}`);
       const imageData = await response.json();
+      console.log(imageData)
       return imageData.picture;
-    } catch (error) {
-      console.error('Error fetching image data:', error);
-      return null;
-    }
+    // } catch (error) {
+    //   console.error('Error fetching image data:', error);
+    //   return null;
+    // }
   };
 
+  const image = await getImageData(providerAccessToken);
+  console.log(image)
   // Fetch and return the image URL
-  return await getImageData(providerAccessToken);
+  return image
 };
