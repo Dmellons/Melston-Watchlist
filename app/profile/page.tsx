@@ -38,8 +38,10 @@ const ProfilePage = () => {
         <div>
           <p>Name: {user.name}</p>
           <p>Email: {user.email}</p>
-          <p>Admin: {user.admin ? "Yes" : "No"}</p>
+          { user.admin && <p>Admin: {user.admin ? "Yes" : "No"}</p>}
           <ProvidersSelect />
+          {user.admin && 
+          <>
           <div className="flex items-center space-x-2">
 
           <Label htmlFor="tester">Tester: </Label>
@@ -51,6 +53,8 @@ const ProfilePage = () => {
               <Badge key={label}>{label}</Badge>
             ))}
           </div>
+            </>
+          }
           {
             user.image && (
               <Image className="rounded-full" src={user.image} alt={user.name} width="100" height="100" />
