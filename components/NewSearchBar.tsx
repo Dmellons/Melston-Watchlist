@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "./ui/input"
 import MediaSearchCard from "./MediaSearchCard"
@@ -15,7 +15,6 @@ import GenreFilterDropdown from "./GenreFilterDropdown"
 
 import { ScrollArea } from "./ui/scroll-area"
 import { Dialog, DialogTrigger, DialogContent } from "./ui/dialog";
-import { IconButton } from "./ui/button";
 
 import { Check, ChevronsUpDown, Search, SearchIcon } from "lucide-react"
 
@@ -77,6 +76,7 @@ const NewSearchBar = ({
     const [moreResults, setMoreResults] = useState<boolean>(false)
     const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
     const [genreFilter, setGenreFilter] = useState<number[]>([])
+    const inputRef = useRef<HTMLInputElement>(null)
 
     const { user } = useUser()
 
@@ -112,221 +112,140 @@ const NewSearchBar = ({
         setLoading(false)
 
     }
+    const handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "Enter") {
+            movieList()
+        }
+    }
 
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        // Prevent space key from causing issues
+        if (e.key === " ") {
+            e.stopPropagation()
+        }
+    }
 
-
-
-
-
-
-
-
-
-    //   const [open, setOpen] = useState(false)
-    //   const [value, setValue] = useState("")
-
-    //   return (
-    //     <Popover open={open} onOpenChange={setOpen}>
-    //       <PopoverTrigger asChild>
-    //         <Button
-    //           variant="outline"
-    //           role="combobox"
-    //           aria-expanded={open}
-    //           className="w-[200px] justify-between"
-    //         >
-    //           {value
-    //             ? frameworks.find((framework) => framework.value === value)?.label
-    //             : "Select framework..."}
-    //           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-    //         </Button>
-    //       </PopoverTrigger>
-    //       <PopoverContent className="w-[200px] p-0">
-    //         <Command>
-    //           <CommandInput placeholder="Search framework..." />
-    //           <CommandEmpty>No framework found.</CommandEmpty>
-    //           <CommandGroup>
-    //             {
-    //             frameworks.length > 0 && frameworks.map((framework) => (
-    //                 console.log(framework),
-    //               <CommandItem
-    //                 key={framework.value}
-    //                 value={framework.value}
-    //                 onSelect={(currentValue) => {
-    //                   setValue(currentValue === value ? "" : currentValue)
-    //                   setOpen(false)
-    //                 }}
-    //               >
-    //                 <Check
-    //                   className={cn(
-    //                     "mr-2 h-4 w-4",
-    //                     value === framework.value ? "opacity-100" : "opacity-0"
-    //                   )}
-    //                 />
-    //                 {framework.label}
-    //               </CommandItem>
-    //             ))}
-    //           </CommandGroup>
-    //         </Command>
-    //       </PopoverContent>
-    //     </Popover>
-    //   )
 
     const isDesktop = useMediaQuery("(min-width: 768px)")
     console.log(isDesktop)
-    const resultsMarginTop = isDesktop ? "mt-2" : "mt-14"
-
-    return (
-
-
-        // <div className="w-full  absolute sm:flex top-0 z-10 font-normal">
-
-        <div className="flex flex-col gap-2 items-center w-full">
-
-            <Popover
-
-
-                className=" w-full"
-                onOpenChange={(e) => console.log(e)}
-            onOpenAutoFocus={(e) => e.preventDefault()}
-            >
-
-                <PopoverTrigger
-
-                    className="w-full"
-
+    const resultsMarginTop = isDesktop ? "mt-2" : "mt-2"
+    
+     
+        return (
+    
+    
+            // <div className="w-full  absolute sm:flex top-0 z-10 font-normal">
+    
+            <div className="flex flex-col gap-2 items-center w-full">
+    
+                <Popover
+    
+    
+                    className=" w-full"
+                    onOpenChange={(e) => console.log(e)}
+                onOpenAutoFocus={(e) => e.preventDefault()}
                 >
-
-                    <div className="flex flex-col m-auto gap-1 sm:gap-2 sm:flex-row items-center sm:w-2/5  my-5  ">
-                        {isDesktop &&
-                            <>
-                                <SearchIcon className="h-5 w-5" />
-                                <Input
-
-                                    placeholder="Movie or TV Show..."
-                                    value={query}
-                                    className="bg-muted/90  text-muted-foreground  focus:w-full  transition  h-8 rounded-md p-2"
-                                    onFocusCapture={() => setIsDialogOpen(true)}
-                                    onFocus={() => setIsDialogOpen(true)}
-                                    onChange={(e) => {
-
-                                        setQuery(e.target.value)
-                                        console.log(results.length)
-                                        console.log(e.target.value !== "" && results.length === 0)
-                                        setIsDialogOpen(((e.target.value !== "") && (results.length === 0)))
-
-                                    }}
-                                    onKeyUp={(e) => {
-                                        if (e.key === "Enter") {
-                                            movieList()
-                                        }
-                                    }} />
-                            </>
-                        }
-                        {!isDesktop &&
-                        
-
-                            <Popover>
-                                <PopoverTrigger
-                                    onFocusCapture={() => setIsDialogOpen(true)}>
-
-                                <SearchIcon className="h-6 w-6" />
-                                </PopoverTrigger>
-                                <PopoverContent
-                                    className="w-80 p-0 mt-8 text-slate-100"
-                                    
-                                >
-
-                                <Input
-
-                                    placeholder="Search Movies or TV Shows..."
-                                    value={query}
-                                    className="h-6 bg-muted/90 ring text-muted-foreground  rounded-md  m-0 "
-                                    onFocusCapture={() => setIsDialogOpen(true)}
-                                    onFocus={() => setIsDialogOpen(true)}
-                                    onChange={(e) => {
+    
+                    <PopoverTrigger
+    
+                        className="w-2/3 mt-2"
+    
+                    >
+    
+                        <div className="flex flex-col m-auto gap-1 sm:gap-2 sm:flex-row items-center sm:w-2/5  my-5  ">
+                            
+                                <>
+                                    <SearchIcon className="h-5 w-5" />
+                                    <Input
+    
+                                        placeholder="Movie or TV Show..."
+                                        value={query}
+                                        ref={inputRef}
+                                        className="bg-muted/90  text-muted-foreground  focus:w-full  transition  h-8 rounded-md p-2"
+                                        onFocusCapture={() => setIsDialogOpen(true)}
+                                        onFocus={() => setIsDialogOpen(true)}
                                         
-                                        setQuery(e.target.value)
-                                        console.log(results.length)
-                                        console.log(e.target.value !== "" && results.length === 0)
-                                        setIsDialogOpen(((e.target.value !== "") && (results.length === 0)))
-                                        
-                                    }}
-                                    onKeyUp={(e) => {
-                                        if (e.key === "Enter") {
-                                            movieList()
-                                        }
-                                    }} />
-                                    </PopoverContent>
-                            </Popover>
-                                    
-                        }
-
-                    </div>
-                </PopoverTrigger>
-
-                {/* <GenreFilterDropdown setFilter={setGenreFilter} /> */}
-                <PopoverContent
-                    onOpenAutoFocus={(e) => e.preventDefault()}
-                    className={`w-full bg-transparent shadow-none border-none p-0 m-0 ${resultsMarginTop}`}
-                >
-                    {
-                        (
-                            (results.length > 0 && !loading) || (results.length > 0 && isDialogOpen)) &&
-                        // <div id="search-popover" popover="auto" popovertargetaction="show" >
-
-
-
-                        <div
-                            className="w-full bg-card/80 rounded-lg py-4 px-2 sm:px-4 sm:m-auto shadow-xl shadow-black ">
-
-                            <ScrollArea className=" z-40 w-5/8  h-[350px] sm:h-[600px] sm:max-w-5xl ">
-
-
-                                <div className="grid grid-cols-2 sm:flex  lg:flex-row lg:flex-wrap justify-center gap-4 items-center place-items-center lg:w-full m-auto">
-                                    {loading ? (
-
-                                        <SkeletonMediaSearchCard />
-
-                                    ) : (
-
-
-                                        results.slice(0, resultsLength).map((result) => (
-                                            <NewSearchCard key={result.id} media={result} userProviders={user?.providers} />
-                                        ))
-
-
-                                    )
-
-                                    }
-                                    {moreResults &&
-                                        <Button
-                                            asChild
-                                            variant="link"
-                                            disabled
-                                            className=" col-span-2 sm:col-span-1text-foreground/60 hover:text-foreground/80 cursor-pointer"
-                                        >
-                                            <Link href="" >
-                                                More Results...
-                                                <br />
-                                                (Coming Soon)
-                                            </Link>
-                                        </Button>
-                                    }
-
-                                </div>
-
-                            </ScrollArea>
+                                        onChange={(e) => {
+    
+                                            setQuery(e.target.value)
+                                            console.log(results.length)
+                                            console.log(e.target.value !== "" && results.length === 0)
+                                            setIsDialogOpen(((e.target.value !== "") && (results.length === 0)))
+    
+                                        }}
+                                        onKeyUp={handleKeyUp} 
+                                        onKeyDown={handleKeyDown}
+                                        />
+                                </>
+                            
+                            
                         </div>
+                    </PopoverTrigger>
+    
+                    {/* <GenreFilterDropdown setFilter={setGenreFilter} /> */}
+                    <PopoverContent
+                        onOpenAutoFocus={(e) => e.preventDefault()}
+                        className={`w-full bg-transparent shadow-none border-none p-0 m-0 ${resultsMarginTop}`}
+                    >
+                        {
+                            (
+                                (results.length > 0 && !loading) || (results.length > 0 && isDialogOpen)) &&
+                            // <div id="search-popover" popover="auto" popovertargetaction="show" >
+    
+    
+    
+                            <div
+                                className="w-full bg-card/80 rounded-lg py-4 px-2 sm:px-4 sm:m-auto shadow-xl shadow-black ">
+    
+                                <ScrollArea className=" z-40 w-5/8  h-[350px] sm:h-[600px] sm:max-w-5xl ">
+    
+    
+                                    <div className="grid grid-cols-2 sm:flex  lg:flex-row lg:flex-wrap justify-center gap-4 items-center place-items-center lg:w-full m-auto">
+                                        {loading ? (
+    
+                                            <SkeletonMediaSearchCard />
+    
+                                        ) : (
+    
+    
+                                            results.slice(0, resultsLength).map((result) => (
+                                                <NewSearchCard key={result.id} media={result} userProviders={user?.providers} />
+                                            ))
+    
+    
+                                        )
+    
+                                        }
+                                        {moreResults &&
+                                            // <Button
+                                            //     asChild
+                                            //     variant="link"
+                                            //     disabled
+                                            //     className=" col-span-2 sm:col-span-1text-foreground/60 hover:text-foreground/80 cursor-pointer"
+                                            // >
+                                                <Link href="" >
+                                                    More Results...
+                                                    <br />
+                                                    (Coming Soon)
+                                                </Link>
+                                            // </Button>
+                                        }
+    
+                                    </div>
+    
+                                </ScrollArea>
+                            </div>
+    
+    
+                            // </div>
+                        }
+                    </PopoverContent>
+    
+                </Popover >
+            </div >
+            // </div >
+        )
 
-
-                        // </div>
-                    }
-                </PopoverContent>
-
-            </Popover >
-        </div >
-        // </div >
-    )
-}
+    }
 
 export default NewSearchBar

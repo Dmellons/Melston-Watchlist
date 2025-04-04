@@ -2,11 +2,13 @@ import Link from "next/link";
 import LoginButton from "../buttons/LoginButton";
 import { Button } from "@/components/ui/button";
 import NewSearchBar from "../NewSearchBar";
+import { useMediaQuery } from "@/hooks/MediaQuery";
+
 
 export default function MainHeader() {
 
     // const session = await serverAuth()   
-
+    const isDesktop = true
     return (
 
         <nav
@@ -69,6 +71,7 @@ export default function MainHeader() {
             <div className="my-3 z-20 mx-2">
                 <LoginButton />
             </div>
+           
             <div className="w-full absolute sm:flex top-0 z-10 font-normal">
                 <NewSearchBar />
             </div>

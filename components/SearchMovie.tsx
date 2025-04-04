@@ -12,6 +12,7 @@ import NewSearchCard from "@/components/NewSearchCard"
 import { useUser } from "@/hooks/User"
 import { tmdbFetchOptions } from "@/lib/tmdb"
 import GenreFilterDropdown from "./GenreFilterDropdown"
+import { useMediaQuery } from "@/hooks/MediaQuery"
 
 
 const SearchMovie = ({
@@ -29,7 +30,10 @@ const SearchMovie = ({
 
     const { user } = useUser()
 
-
+    const isDesktop = useMediaQuery("(min-width: 768px)")
+    if (!isDesktop) {
+        return (<></>)
+    }
     // useEffect(() => {
     //     setLoading(true)
 
