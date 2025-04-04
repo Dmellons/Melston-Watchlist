@@ -136,6 +136,7 @@ const WatchlistMediaCard = ({
                     tmdbType={data.tmdb_type}
                     country="US"
                     userProviders
+                    maxWidth="w-48"
                     />
                     {/* </div> */}
             </CardContent>

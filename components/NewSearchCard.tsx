@@ -36,7 +36,7 @@ const NewSearchCard = ({
 }) => {
 
     const { user } = useUser()
-    console.log({media})
+    
     if (media.media_type === 'person') {
         data = {
             title: media.name,
@@ -81,14 +81,7 @@ const NewSearchCard = ({
             description: media.overview ? media.overview : "No description available"
         }
     }
-
-
-    console.log({data})
-
-
-
-
-   
+ 
 
 
     return (
@@ -98,13 +91,14 @@ const NewSearchCard = ({
                 <ImageWithFallback
                     src={`https://image.tmdb.org/t/p/w500/${data.poster_path}`}
                     alt={data.title}
-                    className="rounded-lg contain group-hover:border-2 group-hover:border-primary group-hover:scale-105 group-hover:ease-in-out group-hover:duration-300 w-full h-full"
+                    className="rounded-lg contain hover:shadow  hover:ease-in-out hover:duration-100 w-auto h-60 sm:h-72"
+                    // fill={true}
                     width={200}
                     height={300}
                 />
                 <div className="mt-2">
                     <ProvidersBlock tmdbId={data.tmdb_id} tmdbType={data.tmdb_type} userProviders={userProviders}
-                    // maxWidth="w-48"
+                    // maxWidth="-mt-14"
                     />
 
                 </div>
@@ -115,9 +109,10 @@ const NewSearchCard = ({
                     <ImageWithFallback
                         src={`https://image.tmdb.org/t/p/w500/${data.backdrop_path}`}
                         alt={data.title}
-                        className="rounded-lg w-full my-4"
-                        width={200}
-                        height={100} />
+                        className="rounded-lg w-full my-4 h-auto"
+                        
+                        width={300}
+                        height={200} />
                     <DialogTitle className="flex justify-between ">
 
                         {data.title}
@@ -151,7 +146,12 @@ const NewSearchCard = ({
                             </Button>
                         } */}
 
-                <ProvidersBlock tmdbId={data.tmdb_id} tmdbType={data.tmdb_type} userProviders={userProviders} notStreamingValue=" "/>
+                <ProvidersBlock 
+                    tmdbId={data.tmdb_id} 
+                    tmdbType={data.tmdb_type} 
+                    userProviders={userProviders} 
+                    maxWidth="w-48"
+                    notStreamingValue=" "/>
 
             </DialogContent>
         </Dialog>

@@ -15,6 +15,7 @@ import { Skeleton } from "./ui/skeleton";
 import { useUser } from "@/hooks/User";
 import PlexRequestToggle from "./PlexRequestToggle";
 import { Star } from "lucide-react";
+import ImageWithFallback from "./ImageWithFallback";
 
 type CardData = {
     title: string,
@@ -140,21 +141,26 @@ const NewWatchlistCard = ({
                     <DeleteButton title={data.title} document_id={media.$id} />
                             </div>
                 </CardContent>
-                
-                <Image
+                <div className="h-36">
+
+                <ImageWithFallback
                     src={imageUrl}
                     alt={data.title}
-                    fill={true}
-                    sizes="(max-width: 768px) 100vw,
+                    fallback="https://via.placeholder.com/200x300"
+                    // fill={true}
+                    width={100}
+                    height={150}
+                    sizes="(max-width: 768px) 100px,
                         (max-width: 1200px) 50vw,
                         33vw"
                     priority={true}
                     style={{
                         zIndex: -1
                     }}
-
+                    
                     className="w-full h-auto absolute top-0 left-0 opacity-100  group-hover:scale-110 transition-all duration-500 ease-in-out"
-                />
+                    />
+                    </div>
             </Card>
             <div className="h-10 p-1 -mt-12"><>
 

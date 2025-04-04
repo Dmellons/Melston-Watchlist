@@ -5,11 +5,13 @@ const ImageWithFallback = ({
     src,
     alt,
     fallback,
+    priority,
     ...props
 }:{
     src: string,
     alt: string,
     fallback?: string,
+    priority?: boolean
     [key: string]: any
 }) => {
     
@@ -30,6 +32,7 @@ const ImageWithFallback = ({
         alt={alt}
         onError={setError}
         src={error ? fallback : src}
+        priority={!!priority}
         {...props}
       />
     )
