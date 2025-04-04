@@ -40,9 +40,10 @@ const ProfilePage = () => {
         <div>
           <p>Name: {user.name}</p>
           <p>Email: {user.email}</p>
-          <p>Admin: {user.admin ? "Yes" : "No"}</p>
-          <ProvidersSelect />
+          { user.admin && <p>Admin: {user.admin ? "Yes" : "No"}</p>}
+          <ProvidersSe
           {/* <div className="flex items-center space-x-2">
+
 
           <Label htmlFor="tester">Tester: </Label>
           <Switch id="tester" value={isTester}/>
@@ -53,6 +54,7 @@ const ProfilePage = () => {
               <Badge key={label}>{label}</Badge>
             ))}
           </div>
+
         </div>
       )} {!user && <p>No user found</p>}
 

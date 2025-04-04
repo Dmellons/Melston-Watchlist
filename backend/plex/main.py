@@ -95,7 +95,9 @@ def update_plex_library( section:str = 'Movies') -> None:
     
     new_media = get_new_to_plex_library()
    
-    if new_media is None: return
+    if new_media is None: 
+        ic('No new media found.')
+        return
     for media in new_media:
 
         if type(media) != Media or media.tmdb_id is None : continue          
