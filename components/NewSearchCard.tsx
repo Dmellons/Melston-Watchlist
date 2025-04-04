@@ -98,7 +98,7 @@ const NewSearchCard = ({
                 />
                 <div className="mt-2">
                     <ProvidersBlock tmdbId={data.tmdb_id} tmdbType={data.tmdb_type} userProviders={userProviders}
-                    // maxWidth="w-48"
+                    // maxWidth="-mt-14"
                     />
 
                 </div>

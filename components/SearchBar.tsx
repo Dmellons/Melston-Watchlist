@@ -1,234 +1,136 @@
-'use client'
-import { Input } from "@/components/ui/input"
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
+"use client"
+
+import { Check, SearchIcon } from "lucide-react"
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 import { useEffect, useState } from "react"
 import { tmdbFetchOptions } from "@/lib/tmdb"
 import { TMDBMultiSearchResult } from "@/types/tmdbApi"
-import NewSearchCard from "@/components/NewSearchCard"
-import { useUser } from "@/hooks/User"
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
-import { Button } from "./ui/button"
-import { SearchIcon } from "lucide-react"
+import { Separator } from "./ui/separator"
+import ImageWithFallback from "./ImageWithFallback"
 
-type School = {
-  sc: string
-  name: string
-}
-const SearchBar = ({
-  resultsLength = 10
-  // query
-}: {
-  resultsLength?: number
-  // query:string
+const frameworks = [
+  {
+    value: "next.js",
+    label: "Next.js",
+  },
+  {
+    value: "sveltekit",
+    label: "SvelteKit",
+  },
+  {
+    value: "nuxt.js",
+    label: "Nuxt.js",
+  },
+  {
+    value: "remix",
+    label: "Remix",
+  },
+  {
+    value: "astro",
+    label: "Astro",
+  },
+]
 
-}) => {
-
+export default function SearchBar() {
   const [open, setOpen] = useState(false)
-  const [selectedSchool, setSelectedSchool] = useState<string | null>(null)
-  return (
-    <div>
-      <SearchResultsBox setOpen={setOpen} setSelectedSchool={setSelectedSchool} />
-    </div>
-  )
-}
-
-function SearchResultsBox({
-  resultsLength = 10
-  // query
-}: {
-  resultsLength?: number
-  // query:string
-
-}) {
-
-  const [searchResults, setSearchResults] = useState<School[] | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [query, setQuery] = useState<string>("")
+  const [showResults, setShowResults] = useState(true)
+  const [query, setQuery] = useState("")
   const [results, setResults] = useState<TMDBMultiSearchResult[]>([])
-  const [moreResults, setMoreResults] = useState<boolean>(false)
-  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false)
-
-
-  const { user } = useUser()
-
-  // useEffect(() => {
-  //   //   setOpen(true)
-  //   const schools: School[] = [
-
-  //     {
-
-  //       sc: "1",
-  //       name: "SLUSD District School",
-  //     },
-  //     {
-  //       sc: "2",
-  //       name: "Garfield Elementary School",
-  //     },
-  //     {
-  //       sc: "3",
-  //       name: "Jefferson Elementary School",
-  //     },
-  //     {
-  //       sc: "4",
-  //       name: "Madison Elementary School",
-  //     },
-  //     {
-  //       sc: "5",
-  //       name: "McKinley Elementary School",
-  //     },
-  //     {
-  //       sc: "6",
-  //       name: "Monroe Elementary School",
-  //     },
-  //     {
-  //       sc: "7",
-  //       name: "Roosevelt Elementary School",
-  //     },
-  //     {
-  //       sc: "8",
-  //       name: "Washington Elementary School",
-  //     },
-  //     {
-  //       sc: "9",
-  //       name: "Halkin Elementary School",
-  //     },
-  //     {
-  //       sc: "11",
-  //       name: "Bancroft Middle School",
-  //     },
-  //     {
-  //       sc: "12",
-  //       name: "John Muir Middle School",
-  //     },
-  //     {
-  //       sc: "15",
-  //       name: "Lincoln High School",
-  //     },
-  //     {
-  //       sc: "16",
-  //       name: "San Leandro High school",
-  //     },
-  //     {
-  //       sc: "50",
-  //       name: "Non-Public School",
-  //     },
-  //     {
-  //       sc: "60",
-  //       name: "SLVA Elementary",
-  //     },
-  //     {
-  //       sc: "61",
-  //       name: "SLVA Middle",
-  //     },
-  //     {
-  //       sc: "62",
-  //       name: "SLVA High",
-  //     },
-  //   ]
-  //   const results = schools
-
-  //   setSearchResults(results)
-
-  // }, [])
-
+  const [loading, setLoading] = useState(false)
+  const [moreResults, setMoreResults] = useState(false)
+  const [resultsLength, setResultsLength] = useState(5)
 
   useEffect(() => {
     setLoading(true)
+    const movieList = async () => {
+      // setLoading(false)
+      // setResults([])
+      console.log(query)
+      const res = await fetch(`https://api.themoviedb.org/3/search/multi?query=${query}`, tmdbFetchOptions)
+        .then(res => res.json())
+        .then(data => {
+          console.log(data)
+          setResults(data.results)
+          setMoreResults(data.results.length > resultsLength)
+
+        })
+        // .then(() => setLoading(false))
+        .catch(error => console.log(error))
+      setLoading(false)
+
+    }
 
     movieList()
-    setIsDialogOpen(query !== "" && results.length === 0)
+    // setShowResults(!query.length > 0)
+    // setIsDialogOpen(query !== "" && results.length === 0)
 
 
   }, [query])
-  const movieList = async () => {
-    setLoading(false)
-    setResults([])
 
-    const options = {
-      method: 'GET',
-      headers: {
-        accept: 'application/json',
-        Authorization: `Bearer ${process.env.NEXT_PUBLIC_TMDB_API_READ_ACCESS_TOKEN}`
-      }
-    };
-
-    const res = await fetch(`https://api.themoviedb.org/3/search/multi?query=${query}`, tmdbFetchOptions)
-      .then(res => res.json())
-      .then(data => {
-        console.log(data)
-        setResults(data.results)
-        setMoreResults(data.results.length > resultsLength)
-      })
-      // .then(() => setLoading(false))
-      .catch(error => console.log(error))
-    setLoading(false)
-
-  }
-
+  console.log(results)
+  // const [value, setValue] = React.useState("")
 
   return (
-    // <div className="flex justify-center w-full h-full">
-    <Popover open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-      <PopoverTrigger >
-        <Button
-          variant="outline"
-          className="w-32"
-        >
-        <SearchIcon className="w-6 h-6" />
-          Search
-        </Button>
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <SearchIcon strokeWidth={4} className="ml-2 h-4 w-4 shrink-0 opacity-80 " />
       </PopoverTrigger>
-      <PopoverContent className="p-0" side="right" align="start">
-        <Command className="bg-transparent">
-          <CommandInput placeholder="Movie or TV Show..." value={query}
-            className=" text-muted-foreground sm:w-72 rounded-md p-2"
-            onChangeCapture={(e) => {
+      <PopoverContent className="w-[200px] p-0">
+        <Command>
+          <CommandInput
+            value={query}
 
-              setQuery(e.target.value)
+            onValueChange={(e) => setQuery(e)}
+            placeholder="Movies, TV..." />
+          {showResults &&
+            <CommandList>
+              {/* <CommandEmpty>No framework found.</CommandEmpty> */}
+              <CommandGroup>
+                {results.map((result) => {
+                  const name = result.title || result.name
 
-            }}
-            onKeyUp={(e) => {
-              if (e.key === "Enter") {
-                movieList()
-              }
-            }}
-          />
-          <CommandList
-            className="max-h-[600px] bg-transparent overflow-y-auto"
+                  return (
 
+                    <CommandItem
+                      key={result.id}
+                      value={name}
+                    // onSelect={(currentValue) => {
+                    //   setValue(currentValue === value ? "" : currentValue)
+                    //   setOpen(false)
+                    // }}
+                    >
+                      <div className="ml-2 flex gap-2">
+                        {/* <ImageWithFallback
+                          src={`https://image.tmdb.org/t/p/w500${result.poster_path}`
+                  // alt=`${result.title || result.name} poster`}
+                  /> */}
 
-          // className="grid grid-cols-2 sm:flex w-4/5  justify-center gap-4 items-center place-items-center lg:w-full m-auto"
-          >
-
-            {results && results.slice(0, resultsLength).map((result) => (
-
-
-              <div key={result.id}
-                className="w-full p-2 m-auto bg-muted/10 hover:bg-muted/80 rounded-md cursor-pointer"
-              >
-                <NewSearchCard media={result} userProviders={user?.providers} />
-                <CommandItem
-                  key={result.id}
-                  value={result.id.toString()}
-                >
-                  {result.name}
-                </CommandItem>
-              </div>
-
-            ))}
-            {/* {results.slice(0, resultsLength).map((result) => (
-          <CommandItem key={result.id} value={result.id.toString()}>
-          
-          </CommandItem>
-        ))} */}
-
-          </CommandList>
+                        {name}
+                      </div>
+                      {/* <Separator /> */}
+                    </CommandItem>
+                  )
+                }
+                )}
+              </CommandGroup>
+            </CommandList>
+          }
         </Command>
       </PopoverContent>
-    </Popover >
-    // </div>
+    </Popover>
   )
 }
 
 
-export default SearchBar
