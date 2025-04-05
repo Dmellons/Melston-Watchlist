@@ -1,14 +1,22 @@
+
+'use client'
 import Link from "next/link";
 import LoginButton from "../buttons/LoginButton";
 import { Button } from "@/components/ui/button";
 import NewSearchBar from "../NewSearchBar";
 import { useMediaQuery } from "@/hooks/MediaQuery";
+import { usePathname } from "next/navigation";
 
 
 export default function MainHeader() {
 
     // const session = await serverAuth()   
-    const isDesktop = true
+    const isDesktop = useMediaQuery("(min-width: 768px)")
+    const pathname = usePathname();
+    const showSearchBar = ![
+        "/profile"
+        , "/admin"
+    ].some(path => pathname.includes(path));      
     return (
 
         <nav
@@ -71,9 +79,10 @@ export default function MainHeader() {
             <div className="my-3 z-20 mx-2">
                 <LoginButton />
             </div>
-           
+            
             <div className="w-full absolute sm:flex top-0 z-10 font-normal">
-                <NewSearchBar />
+                
+                {showSearchBar && <NewSearchBar />}
             </div>
         </nav>
     )
