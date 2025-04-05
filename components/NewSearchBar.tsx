@@ -39,28 +39,6 @@ import {
 } from "@/components/ui/popover"
 import { useMediaQuery } from "@/hooks/MediaQuery"
 
-const frameworks = [
-    {
-        value: "next.js",
-        label: "Next.js",
-    },
-    {
-        value: "sveltekit",
-        label: "SvelteKit",
-    },
-    {
-        value: "nuxt.js",
-        label: "Nuxt.js",
-    },
-    {
-        value: "remix",
-        label: "Remix",
-    },
-    {
-        value: "astro",
-        label: "Astro",
-    },
-]
 
 const NewSearchBar = ({
     resultsLength = 10
@@ -127,8 +105,8 @@ const NewSearchBar = ({
 
 
     const isDesktop = useMediaQuery("(min-width: 768px)")
-    console.log(isDesktop)
-    const resultsMarginTop = isDesktop ? "mt-2" : "mt-2"
+   
+    const resultsMarginTop = isDesktop ? "mt-2" : "mt-14"
     
      
         return (
@@ -152,10 +130,13 @@ const NewSearchBar = ({
     
                     >
     
-                        <div className="flex flex-col m-auto gap-1 sm:gap-2 sm:flex-row items-center sm:w-2/5  my-5  ">
+                        <div className={`flex flex-col m-auto gap-1 sm:gap-2 sm:flex-row items-center sm:w-2/5 ${resultsMarginTop}`}>
                             
-                                <>
+                                <> 
+                                    {isDesktop ?
                                     <SearchIcon className="h-5 w-5" />
+                                     :<></> 
+                                    }
                                     <Input
     
                                         placeholder="Movie or TV Show..."
@@ -185,7 +166,7 @@ const NewSearchBar = ({
                     {/* <GenreFilterDropdown setFilter={setGenreFilter} /> */}
                     <PopoverContent
                         onOpenAutoFocus={(e) => e.preventDefault()}
-                        className={`w-full bg-transparent shadow-none border-none p-0 m-0 ${resultsMarginTop}`}
+                        className={`w-full bg-transparent shadow-none border-none p-0 m-0 mt-2`}
                     >
                         {
                             (

@@ -41,13 +41,8 @@ const ProfilePage = () => {
           <p>Name: {user.name}</p>
           <p>Email: {user.email}</p>
           { user.admin && <p>Admin: {user.admin ? "Yes" : "No"}</p>}
-          <ProvidersSe
-          {/* <div className="flex items-center space-x-2">
-
-
-          <Label htmlFor="tester">Tester: </Label>
-          <Switch id="tester" value={isTester}/>
-          </div> */}
+          <ProvidersSelect />
+    
           <h2 className="text-md">Labels:</h2>
           <div className="border flex justify-center gap-2 p-2 border-gray-200 rounded-lg">
             {user.labels?.map(label => (
