@@ -1,8 +1,7 @@
-
+// types/appwrite.d.ts - Enhanced version
 import { Models } from "appwrite"
 
 export type AppwriteUser = {
-
     id: string,
     createdAt: string,
     updatedAt: string,
@@ -52,6 +51,8 @@ export enum Platform {
     CrunchyRoll = 'CrunchyRoll'
 }
 
+
+
 export type WatchlistDocumentCreate = {
     title: string,
     watched?: boolean,
@@ -60,14 +61,28 @@ export type WatchlistDocumentCreate = {
     imdb_id?: string,
     tmdb_type: string,
     release_date?: string,
-    poster_url: string ,
+    poster_url: string,
     backdrop_url?: string | null,
     plex_request: boolean,
     description: string,
     genre_ids: number[],
-    notes?: string[],   
-
+    notes?: string[],
+    // New fields
+    watch_status: WatchStatus,
+    user_rating?: number, // 1-10 scale
+    user_review?: string,
+    date_watched?: string,
+    rewatch_count?: number,
+    is_favorite?: boolean,
+    tags?: string[], // Custom user tags
+    progress?: {
+        current_episode?: number,
+        total_episodes?: number,
+        current_season?: number,
+        total_seasons?: number,
+    }
 }
+
 export type DocumentType = {
     label: string,
     icon?: string,
@@ -77,10 +92,26 @@ export type ContentTypeType = {
     label: string,
     icon?: string,
     website?: string
-
 } & Models.Document
 
 export type WatchlistDocument = WatchlistDocumentCreate & {
     platform: Platform[],
-
 } & Models.Document
+
+// New type for user statistics
+export type UserStats = {
+    total_items: number,
+    movies_watched: number,
+    tv_shows_watched: number,
+    total_watch_time: number, // in minutes
+    average_rating: number,
+    favorite_genres: Array<{genre: string, count: number}>,
+    yearly_stats: Array<{year: number, count: number}>,
+    watch_status_breakdown: {
+        want_to_watch: number,
+        watching: number,
+        completed: number,
+        on_hold: number,
+        dropped: number,
+    }
+}
