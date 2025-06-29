@@ -158,8 +158,8 @@ const NewSearchBar = ({ resultsLength = 10 }: NewSearchBarProps) => {
     if (!isMounted) {
         return (
             <div className="flex flex-col gap-2 items-center w-full">
-                <div className="w-2/3 mt-2">
-                    <div className="flex flex-col m-auto gap-1 sm:gap-2 sm:flex-row items-center sm:w-2/5 mt-2">
+                <div className="w-full">
+                    <div className="flex flex-col m-auto gap-1 sm:gap-2 sm:flex-row items-center w-full">
                         <div className="w-full">
                             <Input
                                 placeholder="Movie or TV Show..."
@@ -179,8 +179,8 @@ const NewSearchBar = ({ resultsLength = 10 }: NewSearchBarProps) => {
                 open={isPopoverOpen} 
                 onOpenChange={handlePopoverOpenChange}
             >
-                <PopoverTrigger asChild className="w-2/3 mt-2">
-                    <div className={`flex flex-col m-auto gap-1 sm:gap-2 sm:flex-row items-center sm:w-2/5 ${isDesktop ? "mt-2" : "mt-14"}`}>
+                <PopoverTrigger asChild className="w-full">
+                    <div className="flex flex-col m-auto gap-1 sm:gap-2 sm:flex-row items-center w-full">
                         {isDesktop && (
                             <SafeIcon 
                                 icon={SearchIcon} 

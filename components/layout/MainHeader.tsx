@@ -20,23 +20,61 @@ export default function MainHeader() {
         setHasMounted(true);
     }, []);
 
+    if (!hasMounted) {
+        // Render a basic header structure during SSR/hydration
+        return (
+            <nav className="bg-title text-title-foreground w-full">
+                <div className="flex items-center justify-between p-4">
+                    <Button asChild variant="link" className="text-xl text-title-foreground font-bold">
+                        <Link href="/">
+                            Watchlist
+                        </Link>
+                    </Button>
+                    <LoginButton />
+                </div>
+            </nav>
+        );
+    }
+
+    if (isDesktop) {
+        // Desktop layout: single row with search bar integrated
+        return (
+            <nav className="bg-title text-title-foreground w-full">
+                <div className="flex items-center justify-between p-4">
+                    <Button asChild variant="link" className="text-xl text-title-foreground font-bold">
+                        <Link href="/">
+                            Watchlist
+                        </Link>
+                    </Button>
+                    
+                    {showSearchBar && (
+                        <div className="flex-1 max-w-md mx-8">
+                            <NewSearchBar />
+                        </div>
+                    )}
+                    
+                    <LoginButton />
+                </div>
+            </nav>
+        );
+    }
+
+    // Mobile layout: stacked elements with proper spacing
     return (
-        <nav className="flex flex-wrap items-center justify-between bg-title text-title-foreground w-full text-xl font-bold lg:flex-nowrap">
-            <div className="flex justify-center lg:order-none lg:self-center">
-                <Button asChild variant="link" className="z-20 text-xl text-title-foreground font-bold hover">
+        <nav className="bg-title text-title-foreground w-full">
+            {/* Top row: Watchlist title and login button */}
+            <div className="flex items-center justify-between p-4 pb-2">
+                <Button asChild variant="link" className="text-xl text-title-foreground font-bold">
                     <Link href="/">
                         Watchlist
                     </Link>
                 </Button>
-            </div>
-
-            <div className="my-3 z-20 mx-2">
                 <LoginButton />
             </div>
             
-            {/* Only render search bar after hydration and on appropriate pages */}
-            {hasMounted && showSearchBar && (
-                <div className="w-full absolute sm:flex top-0 z-10 font-normal">
+            {/* Search bar row (mobile only) */}
+            {showSearchBar && (
+                <div className="px-4 pb-4">
                     <NewSearchBar />
                 </div>
             )}
