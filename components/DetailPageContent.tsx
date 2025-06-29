@@ -6,7 +6,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ProvidersBlock from '@/components/ProvidersBlock';
+import RatingComponent from '@/components/RatingComponent';
+// import WatchStatusComponent from '@/components/WatchStatusComponent';
+import WatchStatusComponent from './WatchStatusComponent';
 import SafeIcon from '@/components/SafeIcon';
+import { useUser } from '@/hooks/User';
+// import { WatchStatus } from '@/types/appwrite';
+import { WatchStatus } from '@/types/customTypes'
+import { useState, useEffect } from 'react';
 import { 
     Calendar, 
     Clock, 
@@ -21,7 +28,10 @@ import {
     MapPin,
     Building,
     Languages,
-    Zap
+    Zap,
+    Heart,
+    Share2,
+    Bookmark
 } from "lucide-react";
 
 function StatCard({ icon: Icon, label, value, className = "" }: { 
@@ -84,20 +94,53 @@ function CastCard({ member }: { member: any }) {
     );
 }
 
-interface DetailPageContentProps {
+interface EnhancedDetailPageContentProps {
     data: any;
     tmdbType: 'movie' | 'tv';
     releaseDate: string;
     runtime: number;
 }
 
-export default function DetailPageContent({ 
+export default function EnhancedDetailPageContent({ 
     data, 
     tmdbType, 
     releaseDate, 
     runtime 
-}: DetailPageContentProps) {
+}: EnhancedDetailPageContentProps) {
+    const { user } = useUser();
     const isMovie = tmdbType === 'movie';
+    const [watchlistItem, setWatchlistItem] = useState<any>(null);
+    const [isInWatchlist, setIsInWatchlist] = useState(false);
+
+    // Check if item is in user's watchlist
+    useEffect(() => {
+        if (user?.watchlist?.documents) {
+            const item = user.watchlist.documents.find(
+                (doc: any) => doc.tmdb_id.toString() === data.id.toString()
+            );
+            setWatchlistItem(item);
+            setIsInWatchlist(!!item);
+        }
+    }, [user, data.id]);
+
+    const handleRatingUpdate = (rating: number, review?: string) => {
+        if (watchlistItem) {
+            setWatchlistItem({
+                ...watchlistItem,
+                user_rating: rating,
+                user_review: review
+            });
+        }
+    };
+
+    const handleStatusUpdate = (status: WatchStatus) => {
+        if (watchlistItem) {
+            setWatchlistItem({
+                ...watchlistItem,
+                watch_status: status
+            });
+        }
+    };
     
     return (
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-12">
@@ -136,7 +179,7 @@ export default function DetailPageContent({
                             
                             <StatCard
                                 icon={Star}
-                                label="Rating"
+                                label="TMDB Rating"
                                 value={`${data.vote_average.toFixed(1)}/10`}
                                 className="col-span-2 sm:col-span-1"
                             />
@@ -173,6 +216,30 @@ export default function DetailPageContent({
                             )}
                         </div>
                     </section>
+
+                    {/* User Rating & Status - Only show if item is in watchlist */}
+                    {isInWatchlist && watchlistItem && user && (
+                        <section>
+                            <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Your Experience</h2>
+                            <div className="grid gap-6 lg:grid-cols-2">
+                                <WatchStatusComponent
+                                    currentStatus={watchlistItem.watch_status || WatchStatus.WANT_TO_WATCH}
+                                    documentId={watchlistItem.$id}
+                                    mediaTitle={data.title || data.name}
+                                    mediaType={tmdbType}
+                                    onStatusUpdate={handleStatusUpdate}
+                                />
+                                
+                                <RatingComponent
+                                    currentRating={watchlistItem.user_rating || 0}
+                                    currentReview={watchlistItem.user_review || ''}
+                                    documentId={watchlistItem.$id}
+                                    mediaTitle={data.title || data.name}
+                                    onRatingUpdate={handleRatingUpdate}
+                                />
+                            </div>
+                        </section>
+                    )}
 
                     {/* Tabs for Additional Content */}
                     <section>
@@ -248,6 +315,34 @@ export default function DetailPageContent({
 
                 {/* Sidebar */}
                 <div className="space-y-6 sm:space-y-8">
+                    {/* Action Buttons */}
+                    {isInWatchlist && (
+                        <Card className="transition-all duration-300 hover:shadow-lg hover:shadow-primary/10 hover:-translate-y-1">
+                            <CardContent className="p-4 sm:p-6">
+                                <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 flex items-center gap-2">
+                                    <SafeIcon icon={Heart} className="h-4 w-4 sm:h-5 sm:w-5" size={20} />
+                                    Quick Actions
+                                </h3>
+                                <div className="space-y-2 sm:space-y-3">
+                                    <Button variant="outline" className="w-full justify-start text-xs sm:text-sm h-9 sm:h-10">
+                                        <SafeIcon icon={Heart} className="h-3 w-3 sm:h-4 sm:w-4 mr-2" size={16} />
+                                        Add to Favorites
+                                    </Button>
+                                    
+                                    <Button variant="outline" className="w-full justify-start text-xs sm:text-sm h-9 sm:h-10">
+                                        <SafeIcon icon={Share2} className="h-3 w-3 sm:h-4 sm:w-4 mr-2" size={16} />
+                                        Share
+                                    </Button>
+                                    
+                                    <Button variant="outline" className="w-full justify-start text-xs sm:text-sm h-9 sm:h-10">
+                                        <SafeIcon icon={Bookmark} className="h-3 w-3 sm:h-4 sm:w-4 mr-2" size={16} />
+                                        Add to Collection
+                                    </Button>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    )}
+
                     {/* Streaming Providers */}
                     <Card className="transition-all duration-300 hover:shadow-lg hover:shadow-primary/10 hover:-translate-y-1">
                         <CardContent className="p-4 sm:p-6">
