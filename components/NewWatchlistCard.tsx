@@ -6,7 +6,7 @@ import { WatchlistDocument } from "@/types/appwrite";
 import { useEffect, useState } from "react";
 import { useUser } from "@/hooks/User";
 import PlexRequestToggle from "./PlexRequestToggle";
-import { Star, Play, Info, Calendar, Tv, Film } from "lucide-react";
+import { Trash2, Star, Play, Info, Calendar, Tv, Film } from "lucide-react";
 import ImageWithFallback from "./ImageWithFallback";
 import DeleteButton from "./DeleteButton";
 import { Button } from "./ui/button";
@@ -132,7 +132,7 @@ const NewWatchlistCard = ({ media }: { media: WatchlistDocument }) => {
                                 title={data.title} 
                                 document_id={media.$id}
                                 buttonVariant="outline"
-                                buttonText={<SafeIcon icon={Star} className="h-4 w-4" size={16} />}
+                                buttonText={<SafeIcon icon={Trash2} className="h-4 w-4" size={16} />}
                             />
                         </div>
                     </div>
