@@ -7,23 +7,32 @@ import { type WatchlistDocumentCreate } from "@/types/appwrite"
 import { type TMDBMultiSearchResult } from "@/types/tmdbApi"
 import { useState } from "react"
 import { toast } from "sonner"
-import { Loader2, Plus } from "lucide-react"
+import { Loader2, Plus, Check } from "lucide-react"
+import SafeIcon from "@/components/SafeIcon"
+import { Card, CardContent } from "@/components/ui/card"
 
 interface AddWatchlistButtonProps {
     media: TMDBMultiSearchResult | WatchlistDocumentCreate;
     width?: string;
     query?: boolean;
     disabled?: boolean;
+    variant?: "default" | "outline" | "secondary" | "ghost" | "link" | "destructive";
+    size?: "default" | "sm" | "lg" | "icon";
+    showSuccess?: boolean;
 }
 
 const AddWatchlistButton = ({ 
     media, 
     width = "w-full", 
     query = false,
-    disabled = false 
+    disabled = false,
+    variant = "default",
+    size = "default",
+    showSuccess = true
 }: AddWatchlistButtonProps) => {
     const { user, setUser } = useUser();
     const [isLoading, setIsLoading] = useState(false);
+    const [isSuccess, setIsSuccess] = useState(false);
 
     if (!user) return null;
 
@@ -79,7 +88,7 @@ const AddWatchlistButton = ({
     };
 
     const handleAddWatchlist = async () => {
-        if (isLoading) return;
+        if (isLoading || isSuccess) return;
         
         setIsLoading(true);
         
@@ -104,7 +113,17 @@ const AddWatchlistButton = ({
                 watchlist: updatedWatchlist,
             } : null);
 
-            toast.success(`Added "${watchlistDocument.title}" to your watchlist!`);
+            if (showSuccess) {
+                setIsSuccess(true);
+                setTimeout(() => setIsSuccess(false), 2000);
+                
+                toast.success(
+                    `Added "${watchlistDocument.title}" to your watchlist!`,
+                    {
+                        description: "You can view it in your watchlist anytime."
+                    }
+                );
+            }
             
         } catch (error) {
             console.error('Error adding to watchlist:', error);
@@ -113,30 +132,66 @@ const AddWatchlistButton = ({
                 ? error.message 
                 : 'Failed to add to watchlist';
                 
-            toast.error(`Error: ${errorMessage}`);
+            toast.error(
+                `Error adding to watchlist`,
+                {
+                    description: errorMessage
+                }
+            );
         } finally {
             setIsLoading(false);
         }
     };
 
-    return (
-        <Button
-            variant="default"
-            className={`${width} min-w-16 text-primary-foreground hover:bg-primary/70`}
-            onClick={handleAddWatchlist}
-            disabled={disabled || isLoading}
-        >
-            {isLoading ? (
+    const buttonContent = () => {
+        if (isLoading) {
+            return (
                 <>
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    <SafeIcon icon={Loader2} className="h-4 w-4 mr-2 animate-spin" size={16} />
                     Adding...
                 </>
-            ) : (
+            );
+        }
+        
+        if (isSuccess) {
+            return (
                 <>
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add
+                    <SafeIcon icon={Check} className="h-4 w-4 mr-2 text-green-500" size={16} />
+                    Added!
                 </>
-            )}
+            );
+        }
+        
+        return (
+            <>
+                <SafeIcon icon={Plus} className="h-4 w-4 mr-2" size={16} />
+                Add to Watchlist
+            </>
+        );
+    };
+
+    const getButtonClass = () => {
+        if (isSuccess) {
+            return "bg-green-500 hover:bg-green-600 text-white border-green-500";
+        }
+        return "";
+    };
+
+    return (
+        <Button
+            variant={isSuccess ? "default" : variant}
+            size={size}
+            className={`
+                ${width} 
+                min-w-16 
+                transition-all duration-200 ease-out
+                hover:scale-105 active:scale-95
+                ${getButtonClass()}
+            `}
+            onClick={handleAddWatchlist}
+            disabled={disabled || isLoading || isSuccess}
+        >
+            {buttonContent()}
         </Button>
     );
 };

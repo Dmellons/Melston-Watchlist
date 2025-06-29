@@ -9,7 +9,10 @@ import { useUser } from "@/hooks/User"
 import { useEffect, useState } from "react"
 import ImageWithFallback from "@/components/ImageWithFallback"
 import SafeIcon from "@/components/SafeIcon"
-import { Info, Calendar, Film, Tv, Eye } from "lucide-react"
+import { Info, Calendar, Film, Tv, Eye, Star, Play } from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card"
+import { Badge } from "./ui/badge"
+import { Separator } from "./ui/separator"
 
 type CardData = {
     title: string,
@@ -74,50 +77,72 @@ const NewSearchCard = ({
     const mediaTypeIcon = data.content_type === 'movie' ? Film : Tv;
 
     return (
-        <div className="flex flex-col space-y-3 group">
+        <div className="flex flex-col space-y-2 sm:space-y-3 group w-full">
             {/* Poster and Info */}
-            <div 
-                className="relative transition-all duration-200 hover:scale-105"
+            <Card 
+                className={`
+                    relative transition-all duration-300 overflow-hidden
+                    hover:shadow-xl hover:shadow-primary/20 hover:-translate-y-1 sm:hover:-translate-y-2
+                    border border-border/50 hover:border-primary/30
+                    bg-card/50 backdrop-blur-sm hover:bg-card/80
+                    ${isHovered ? 'ring-2 ring-primary/20' : ''}
+                    w-full
+                `}
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
             >
                 {/* Media Type Badge */}
-                <div className="absolute top-2 right-2 z-10">
-                    <div className="bg-background/90 backdrop-blur-sm rounded-full px-2 py-1 shadow-lg">
-                        <div className="flex items-center gap-1">
-                            <SafeIcon
-                                icon={mediaTypeIcon}
-                                className="h-3 w-3 text-muted-foreground"
-                                size={12}
-                            />
-                            <span className="text-xs font-medium text-muted-foreground uppercase">
-                                {data.content_type}
-                            </span>
-                        </div>
-                    </div>
+                <div className="absolute top-1 sm:top-2 right-1 sm:right-2 z-10">
+                    <Badge className="bg-background/90 backdrop-blur-sm text-foreground border border-border/50 text-xs">
+                        <SafeIcon
+                            icon={mediaTypeIcon}
+                            className="h-2 w-2 sm:h-3 sm:w-3 mr-1"
+                            size={10}
+                        />
+                        <span className="text-xs font-medium uppercase hidden sm:inline">
+                            {data.content_type}
+                        </span>
+                        <span className="text-xs font-medium uppercase sm:hidden">
+                            {data.content_type === 'movie' ? 'M' : 'TV'}
+                        </span>
+                    </Badge>
                 </div>
 
-                <ImageWithFallback
-                    src={`https://image.tmdb.org/t/p/w500/${data.poster_path}`}
-                    alt={data.title}
-                    className="rounded-lg w-auto h-60 sm:h-72 shadow-lg transition-all duration-200 group-hover:shadow-xl"
-                    width={200}
-                    height={300}
-                />
+                <CardContent className="p-0">
+                    <div className="relative">
+                        <ImageWithFallback
+                            src={`https://image.tmdb.org/t/p/w500/${data.poster_path}`}
+                            alt={data.title}
+                            className="w-full h-40 sm:h-60 md:h-72 object-cover transition-transform duration-500 group-hover:scale-110"
+                            width={200}
+                            height={300}
+                        />
 
-                {/* Title overlay on hover */}
-                <div className={`
-                    absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent 
-                    rounded-lg transition-opacity duration-200 flex items-end p-3
-                    ${isHovered ? 'opacity-100' : 'opacity-0'}
-                `}>
-                    <div className="text-white">
-                        <h3 className="font-bold text-sm line-clamp-2 mb-1">{data.title}</h3>
-                        <div className="flex items-center gap-1 text-xs text-white/80">
-                            <SafeIcon icon={Calendar} className="h-3 w-3" size={12} />
-                            <span>{releaseYear}</span>
+                        {/* Gradient overlay on hover (hidden on mobile) */}
+                        <div className={`
+                            absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent 
+                            transition-opacity duration-300 flex items-end p-2 sm:p-3
+                            ${isHovered ? 'opacity-100' : 'opacity-0'}
+                            hidden sm:flex
+                        `}>
+                            <div className="text-white space-y-1">
+                                <h3 className="font-bold text-sm line-clamp-2">{data.title}</h3>
+                                <div className="flex items-center gap-1 text-xs text-white/80">
+                                    <SafeIcon icon={Calendar} className="h-3 w-3" size={12} />
+                                    <span>{releaseYear}</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
+                </CardContent>
+            </Card>
+
+            {/* Title and Year for Mobile (shown below image) */}
+            <div className="sm:hidden px-1 space-y-1">
+                <h3 className="font-semibold text-xs line-clamp-2 leading-tight">{data.title}</h3>
+                <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                    <SafeIcon icon={Calendar} className="h-3 w-3" size={12} />
+                    <span>{releaseYear}</span>
                 </div>
             </div>
 
@@ -128,129 +153,140 @@ const NewSearchCard = ({
                     tmdbType={data.tmdb_type} 
                     userProviders={userProviders} 
                     maxWidth="w-full"
-                    iconSize={20}
-                    notStreamingValue={
-                        <div className="flex items-center justify-center p-2 bg-muted/20 rounded-md border border-dashed border-muted-foreground/30">
-                            <span className="text-xs text-muted-foreground">N/A</span>
-                        </div>
-                    }
+                    iconSize={16}
                 />
             </div>
 
             {/* Action Buttons */}
-            <div className="flex flex-col gap-2 px-1">
+            <div className="flex flex-col gap-1 sm:gap-2 px-1">
                 <AddWatchlistButton 
                     media={media} 
                     query={true}
                     width="w-full"
+                    variant="default"
+                    size="sm"
                 />
                 
-                <div className="flex gap-2">
-                    <Button asChild variant="outline" size="sm" className="flex-1">
+                <div className="flex gap-1 sm:gap-2">
+                    <Button asChild variant="outline" size="sm" className="flex-1 transition-all duration-200 hover:scale-105 text-xs sm:text-sm">
                         <Link href={`/${data.tmdb_type}/${data.tmdb_id}`}>
                             <SafeIcon icon={Info} className="h-3 w-3 mr-1" size={12} />
-                            More Info
+                            <span className="hidden sm:inline">Details</span>
+                            <span className="sm:hidden">Info</span>
                         </Link>
                     </Button>
 
                     {/* Quick View Dialog */}
                     <Dialog>
                         <DialogTrigger asChild>
-                            <Button variant="outline" size="sm" className="px-2">
+                            <Button variant="outline" size="sm" className="px-2 sm:px-3 transition-all duration-200 hover:scale-105">
                                 <SafeIcon icon={Eye} className="h-3 w-3" size={12} />
                             </Button>
                         </DialogTrigger>
 
                         <DialogContent className="w-11/12 max-w-2xl max-h-[90vh] overflow-y-auto">
-                            <DialogHeader className="space-y-4">
-                                {/* Backdrop Image */}
-                                {data.backdrop_path && (
-                                    <div className="relative w-full h-48 sm:h-64 rounded-lg overflow-hidden">
-                                        <ImageWithFallback
-                                            src={`https://image.tmdb.org/t/p/w500/${data.backdrop_path}`}
-                                            alt={data.title}
-                                            className="w-full h-full object-cover"
-                                            width={500}
-                                            height={280}
-                                        />
-                                        {/* Title overlay on backdrop */}
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex items-end p-4">
-                                            <div className="text-white">
-                                                <DialogTitle className="text-2xl font-bold mb-2">{data.title}</DialogTitle>
-                                                <div className="flex items-center gap-4 text-sm">
-                                                    <div className="flex items-center gap-1">
-                                                        <SafeIcon icon={Calendar} className="h-4 w-4" size={16} />
-                                                        <span>{releaseYear}</span>
-                                                    </div>
-                                                    <div className="flex items-center gap-1">
-                                                        <SafeIcon icon={mediaTypeIcon} className="h-4 w-4" size={16} />
-                                                        <span className="capitalize">{data.content_type}</span>
+                            <Card className="border-none shadow-none">
+                                <DialogHeader className="space-y-4">
+                                    {/* Backdrop Image */}
+                                    {data.backdrop_path && (
+                                        <div className="relative w-full h-48 sm:h-64 rounded-lg overflow-hidden">
+                                            <ImageWithFallback
+                                                src={`https://image.tmdb.org/t/p/w500/${data.backdrop_path}`}
+                                                alt={data.title}
+                                                className="w-full h-full object-cover"
+                                                width={500}
+                                                height={280}
+                                            />
+                                            {/* Title overlay on backdrop */}
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-4">
+                                                <div className="text-white space-y-2">
+                                                    <DialogTitle className="text-2xl font-bold">{data.title}</DialogTitle>
+                                                    <div className="flex items-center gap-4 text-sm">
+                                                        <div className="flex items-center gap-1">
+                                                            <SafeIcon icon={Calendar} className="h-4 w-4" size={16} />
+                                                            <span>{releaseYear}</span>
+                                                        </div>
+                                                        <div className="flex items-center gap-1">
+                                                            <SafeIcon icon={mediaTypeIcon} className="h-4 w-4" size={16} />
+                                                            <span className="capitalize">{data.content_type}</span>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                )}
+                                    )}
 
-                                {/* Fallback title if no backdrop */}
-                                {!data.backdrop_path && (
-                                    <div className="text-center space-y-2">
-                                        <DialogTitle className="text-2xl font-bold">{data.title}</DialogTitle>
-                                        <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground">
-                                            <div className="flex items-center gap-1">
-                                                <SafeIcon icon={Calendar} className="h-4 w-4" size={16} />
-                                                <span>{releaseYear}</span>
+                                    {/* Fallback title if no backdrop */}
+                                    {!data.backdrop_path && (
+                                        <div className="text-center space-y-3 py-6">
+                                            <div className="flex justify-center">
+                                                <div className="p-4 rounded-full bg-primary/10">
+                                                    <SafeIcon icon={mediaTypeIcon} className="h-8 w-8 text-primary" size={32} />
+                                                </div>
                                             </div>
-                                            <div className="flex items-center gap-1">
-                                                <SafeIcon icon={mediaTypeIcon} className="h-4 w-4" size={16} />
-                                                <span className="capitalize">{data.content_type}</span>
+                                            <DialogTitle className="text-2xl font-bold">{data.title}</DialogTitle>
+                                            <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground">
+                                                <div className="flex items-center gap-1">
+                                                    <SafeIcon icon={Calendar} className="h-4 w-4" size={16} />
+                                                    <span>{releaseYear}</span>
+                                                </div>
+                                                <div className="flex items-center gap-1">
+                                                    <SafeIcon icon={mediaTypeIcon} className="h-4 w-4" size={16} />
+                                                    <span className="capitalize">{data.content_type}</span>
+                                                </div>
                                             </div>
                                         </div>
+                                    )}
+                                </DialogHeader>
+
+                                <CardContent className="space-y-6 pt-6">
+                                    {/* Description */}
+                                    <div className="space-y-3">
+                                        <h3 className="font-semibold text-lg flex items-center gap-2">
+                                            <SafeIcon icon={Info} className="h-5 w-5 text-primary" size={20} />
+                                            Description
+                                        </h3>
+                                        <DialogDescription className="text-base leading-relaxed text-muted-foreground">
+                                            {data.description}
+                                        </DialogDescription>
                                     </div>
-                                )}
-                            </DialogHeader>
 
-                            <div className="space-y-6">
-                                {/* Description */}
-                                <DialogDescription className="text-base leading-relaxed">
-                                    <h3 className="font-semibold mb-2 text-foreground">Description</h3>
-                                    <p className="text-muted-foreground">{data.description}</p>
-                                </DialogDescription>
+                                    <Separator />
 
-                                {/* Providers */}
-                                <div className="space-y-2">
-                                    <h3 className="font-semibold text-sm">Available On</h3>
-                                    <ProvidersBlock 
-                                        tmdbId={data.tmdb_id} 
-                                        tmdbType={data.tmdb_type} 
-                                        userProviders={userProviders} 
-                                        maxWidth="w-full"
-                                        notStreamingValue={
-                                            <div className="flex items-center justify-center p-3 bg-muted/30 rounded-lg border border-dashed border-muted-foreground/30">
-                                                <span className="text-sm text-muted-foreground">
-                                                    Not available for streaming
-                                                </span>
-                                            </div>
-                                        }
-                                    />
-                                </div>
+                                    {/* Providers */}
+                                    <div className="space-y-3">
+                                        <h3 className="font-semibold text-lg flex items-center gap-2">
+                                            <SafeIcon icon={Play} className="h-5 w-5 text-primary" size={20} />
+                                            Available On
+                                        </h3>
+                                        <ProvidersBlock 
+                                            tmdbId={data.tmdb_id} 
+                                            tmdbType={data.tmdb_type} 
+                                            userProviders={userProviders} 
+                                            maxWidth="w-full"
+                                        />
+                                    </div>
 
-                                {/* Action Buttons in Dialog */}
-                                <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t">
-                                    <AddWatchlistButton 
-                                        media={media} 
-                                        query={true}
-                                        width="flex-1"
-                                    />
-                                    
-                                    <Button asChild variant="outline" className="flex-1">
-                                        <Link href={`/${data.tmdb_type}/${data.tmdb_id}`}>
-                                            <SafeIcon icon={Info} className="h-4 w-4 mr-2" size={16} />
-                                            More Info
-                                        </Link>
-                                    </Button>
-                                </div>
-                            </div>
+                                    <Separator />
+
+                                    {/* Action Buttons in Dialog */}
+                                    <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                                        <AddWatchlistButton 
+                                            media={media} 
+                                            query={true}
+                                            width="flex-1"
+                                            variant="default"
+                                        />
+                                        
+                                        <Button asChild variant="outline" className="flex-1 transition-all duration-200 hover:scale-105">
+                                            <Link href={`/${data.tmdb_type}/${data.tmdb_id}`}>
+                                                <SafeIcon icon={Info} className="h-4 w-4 mr-2" size={16} />
+                                                Full Details
+                                            </Link>
+                                        </Button>
+                                    </div>
+                                </CardContent>
+                            </Card>
                         </DialogContent>
                     </Dialog>
                 </div>
