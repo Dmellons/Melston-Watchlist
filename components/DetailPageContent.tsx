@@ -253,7 +253,7 @@ export default function DetailPageContent({
                         <CardContent className="p-4 sm:p-6">
                             <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 flex items-center gap-2">
                                 <SafeIcon icon={Play} className="h-4 w-4 sm:h-5 sm:w-5" size={20} />
-                                Watch Now
+                                Streaming on
                             </h3>
                             <ProvidersBlock
                                 tmdbId={data.id}
