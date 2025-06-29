@@ -3,8 +3,6 @@
 @tailwind utilities;
  
 @layer base {
-  
-@layer base {
   :root {
     --background: 200 0% 94%;
     --foreground: 240 0% 0%;
@@ -28,6 +26,11 @@
     --input: 240 5.9% 90%;
     --ring: 200 76.2% 36.3%;
     --radius: 0.5rem;
+
+    /* Custom properties for enhanced design */
+    --shadow-color: 200 10% 20%;
+    --backdrop-blur: blur(12px);
+    --animation-duration: 200ms;
   }
 
   .dark {
@@ -52,16 +55,331 @@
     --border: 240 3.7% 15.9%;
     --input: 240 3.7% 15.9%;
     --ring: 200 71.8% 29.2%;
-  }
-}
 
-}
- 
-@layer base {
+    /* Dark mode adjustments */
+    --shadow-color: 0 0% 0%;
+  }
+
   * {
     @apply border-border;
   }
+  
   body {
     @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* Improved scrollbar styling */
+  ::-webkit-scrollbar {
+    @apply w-2;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-border rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-border/80;
+  }
+
+  /* Custom selection colors */
+  ::selection {
+    @apply bg-primary/20 text-foreground;
+  }
+
+  /* Focus visible improvements */
+  :focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+}
+
+@layer components {
+  /* Enhanced card hover effects */
+  .card-hover {
+    @apply transition-all duration-300 ease-out hover:shadow-lg hover:shadow-primary/10 hover:-translate-y-1 hover:border-primary/30;
+  }
+
+  /* Smooth fade in animation */
+  .fade-in {
+    animation: fadeIn var(--animation-duration) ease-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Staggered animation for grid items */
+  .stagger-animation {
+    animation: staggerFadeIn 0.5s ease-out both;
+  }
+
+  @keyframes staggerFadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  /* Enhanced glass morphism effect */
+  .glass {
+    @apply bg-background/80 backdrop-blur-xl border border-border/50;
+  }
+
+  .glass-strong {
+    @apply bg-background/95 backdrop-blur-xl border border-border/50;
+  }
+
+  /* Improved gradient backgrounds */
+  .gradient-bg {
+    background: linear-gradient(135deg, hsl(var(--primary) / 0.1) 0%, hsl(var(--primary) / 0.05) 50%, transparent 100%);
+  }
+
+  /* Enhanced button hover states */
+  .button-hover {
+    @apply transition-all duration-200 hover:scale-105 active:scale-95;
+  }
+
+  /* Improved input focus states */
+  .input-focus {
+    @apply transition-all duration-200 focus:ring-2 focus:ring-primary/20 focus:border-primary/50 focus:shadow-lg focus:shadow-primary/10;
+  }
+
+  /* Loading shimmer effect */
+  .shimmer {
+    background: linear-gradient(90deg, 
+      hsl(var(--muted)) 0%, 
+      hsl(var(--muted) / 0.8) 20%, 
+      hsl(var(--muted) / 0.5) 60%, 
+      hsl(var(--muted)) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+  }
+
+  @keyframes shimmer {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+
+  /* Enhanced popover animations */
+  .popover-content {
+    animation: popoverIn 0.2s ease-out;
+  }
+
+  @keyframes popoverIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  /* Improved text truncation */
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .line-clamp-4 {
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Enhanced image loading states */
+  .image-loading {
+    @apply bg-muted animate-pulse;
+  }
+
+  .image-loaded {
+    @apply transition-opacity duration-300 opacity-100;
+  }
+
+  .image-error {
+    @apply bg-muted/50 flex items-center justify-center text-muted-foreground;
+  }
+
+  /* Better responsive text scaling */
+  .text-responsive {
+    @apply text-sm sm:text-base lg:text-lg;
+  }
+
+  .heading-responsive {
+    @apply text-lg sm:text-xl lg:text-2xl xl:text-3xl;
+  }
+
+  /* Enhanced badge styles */
+  .badge-glow {
+    @apply shadow-lg shadow-primary/20;
+  }
+
+  /* Improved spacing for mobile */
+  .mobile-padding {
+    @apply px-4 sm:px-6 lg:px-8;
+  }
+
+  .mobile-margin {
+    @apply mx-4 sm:mx-6 lg:mx-8;
+  }
+
+  /* Custom scrollbar for specific elements */
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--border)) transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--border));
+    border-radius: 4px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--border) / 0.8);
+  }
+}
+
+@layer utilities {
+  /* Enhanced animation utilities */
+  .animate-in {
+    animation: animateIn 0.3s ease-out;
+  }
+
+  @keyframes animateIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-out {
+    animation: animateOut 0.2s ease-in;
+  }
+
+  @keyframes animateOut {
+    from {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+  }
+
+  /* Slide animations */
+  .slide-in-from-top-2 {
+    animation: slideInFromTop 0.2s ease-out;
+  }
+
+  @keyframes slideInFromTop {
+    from {
+      transform: translateY(-8px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  .slide-in-from-bottom-4 {
+    animation: slideInFromBottom 0.3s ease-out;
+  }
+
+  @keyframes slideInFromBottom {
+    from {
+      transform: translateY(16px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  /* Fade animations */
+  .fade-in-0 {
+    animation: fadeInZero 0.3s ease-out;
+  }
+
+  @keyframes fadeInZero {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  /* Enhanced backdrop blur utilities */
+  .backdrop-blur-xs {
+    backdrop-filter: blur(2px);
+  }
+
+  .backdrop-blur-sm {
+    backdrop-filter: blur(4px);
+  }
+
+  .backdrop-blur-md {
+    backdrop-filter: blur(8px);
+  }
+
+  .backdrop-blur-lg {
+    backdrop-filter: blur(12px);
+  }
+
+  .backdrop-blur-xl {
+    backdrop-filter: blur(16px);
+  }
+
+  .backdrop-blur-2xl {
+    backdrop-filter: blur(24px);
+  }
+
+  .backdrop-blur-3xl {
+    backdrop-filter: blur(40px);
   }
 }
