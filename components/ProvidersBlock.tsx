@@ -14,7 +14,9 @@ import { database } from '@/lib/appwrite';
 import { Query } from 'appwrite';
 import { Badge } from './ui/badge';
 import SafeIcon from './SafeIcon';
-import { ExternalLink, Sparkles } from 'lucide-react';
+import { ExternalLink, Sparkles, Play, Loader2 } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { Button } from './ui/button';
 
 interface ProvidersBlockProps {
     tmdbId: number;
@@ -86,20 +88,23 @@ const ProvidersBlock = ({
         }
         
         return (
-            <div className="flex items-center justify-center p-3 bg-muted/20 rounded-lg border border-dashed border-muted-foreground/20">
-                <span className="text-xs text-muted-foreground">N/A</span>
-            </div>
+            <Card className="border-dashed border-2 border-muted-foreground/20 bg-muted/10">
+                <CardContent className="flex items-center justify-center p-3">
+                    <span className="text-xs text-muted-foreground font-medium">Not available for streaming</span>
+                </CardContent>
+            </Card>
         );
     };
 
     if (loading) {
         return (
             <div className={`${maxWidth} animate-pulse`}>
-                <div className="flex gap-2 justify-center items-center bg-muted/50 p-3 rounded-lg">
-                    <div className="h-6 w-6 bg-muted rounded" />
-                    <div className="h-6 w-6 bg-muted rounded" />
-                    <div className="h-6 w-6 bg-muted rounded" />
-                </div>
+                <Card className="border border-border/50">
+                    <CardContent className="flex gap-2 justify-center items-center p-3">
+                        <SafeIcon icon={Loader2} className="h-4 w-4 animate-spin text-muted-foreground" size={16} />
+                        <span className="text-xs text-muted-foreground">Loading providers...</span>
+                    </CardContent>
+                </Card>
             </div>
         );
     }
@@ -107,9 +112,11 @@ const ProvidersBlock = ({
     if (error) {
         return (
             <div className={`${maxWidth}`}>
-                <div className="flex items-center justify-center p-3 bg-destructive/10 rounded-lg border border-destructive/20">
-                    <span className="text-xs text-destructive">Failed to load</span>
-                </div>
+                <Card className="border-destructive/20 bg-destructive/5">
+                    <CardContent className="flex items-center justify-center p-3">
+                        <span className="text-xs text-destructive">Failed to load providers</span>
+                    </CardContent>
+                </Card>
             </div>
         );
     }
@@ -158,155 +165,174 @@ const ProvidersBlock = ({
         <div className={`${maxWidth} m-auto`}>
             <Popover>
                 <PopoverTrigger asChild>
-                    <div className="
-                        flex items-center justify-center gap-2 p-3 
-                        bg-gradient-to-r from-primary/5 to-primary/10 
+                    <Card className={`
+                        transition-all duration-300 cursor-pointer group
+                        hover:shadow-lg hover:shadow-primary/10 hover:-translate-y-1 
+                        border border-primary/20 bg-gradient-to-r from-primary/5 to-primary/10
                         hover:from-primary/10 hover:to-primary/20
-                        rounded-lg border border-primary/20 
-                        cursor-pointer transition-all duration-200 
-                        hover:shadow-lg hover:shadow-primary/10
-                        group
-                    ">
-                        {displayedProviders.map((provider: StreamingInfo, index: number) => {
-                            const isPlexProvider = provider.provider_name === 'Plex';
-                            const imageSrc = isPlexProvider 
-                                ? provider.logo_path 
-                                : `https://image.tmdb.org/t/p/w500${provider.logo_path}`;
+                    `}>
+                        <CardContent className="p-3">
+                            <div className="flex items-center justify-center gap-2">
+                                {displayedProviders.map((provider: StreamingInfo, index: number) => {
+                                    const isPlexProvider = provider.provider_name === 'Plex';
+                                    const imageSrc = isPlexProvider 
+                                        ? provider.logo_path 
+                                        : `https://image.tmdb.org/t/p/w500${provider.logo_path}`;
 
-                            return (
-                                <div
-                                    key={index}
-                                    className={`
-                                        relative transition-transform duration-200 
-                                        group-hover:scale-110 group-hover:-translate-y-1
-                                        ${isPlexProvider ? 'ring-2 ring-amber-400/50 rounded-md' : ''}
-                                    `}
-                                    style={{ 
-                                        animationDelay: `${index * 50}ms`,
-                                        zIndex: displayedProviders.length - index 
-                                    }}
-                                >
-                                    <Image
-                                        src={imageSrc}
-                                        alt={provider.provider_name}
-                                        width={iconSize}
-                                        height={iconSize}
-                                        className={`
-                                            rounded transition-all duration-200
-                                            ${isPlexProvider ? 'ring-1 ring-amber-400/30' : ''}
-                                        `}
-                                    />
-                                    {isPlexProvider && (
-                                        <div className="absolute -top-1 -right-1">
-                                            <SafeIcon
-                                                icon={Sparkles}
-                                                className="h-3 w-3 text-amber-400 fill-current"
-                                                size={12}
+                                    return (
+                                        <div
+                                            key={index}
+                                            className={`
+                                                relative transition-transform duration-200 
+                                                group-hover:scale-110 group-hover:-translate-y-1
+                                                ${isPlexProvider ? 'ring-2 ring-amber-400/50 rounded-md' : ''}
+                                            `}
+                                            style={{ 
+                                                animationDelay: `${index * 50}ms`,
+                                                zIndex: displayedProviders.length - index 
+                                            }}
+                                        >
+                                            <Image
+                                                src={imageSrc}
+                                                alt={provider.provider_name}
+                                                width={iconSize}
+                                                height={iconSize}
+                                                className={`
+                                                    rounded transition-all duration-200
+                                                    ${isPlexProvider ? 'ring-1 ring-amber-400/30' : ''}
+                                                `}
                                             />
+                                            {isPlexProvider && (
+                                                <div className="absolute -top-1 -right-1">
+                                                    <SafeIcon
+                                                        icon={Sparkles}
+                                                        className="h-3 w-3 text-amber-400 fill-current"
+                                                        size={12}
+                                                    />
+                                                </div>
+                                            )}
                                         </div>
-                                    )}
-                                </div>
-                            );
-                        })}
+                                    );
+                                })}
 
-                        {remainingCount > 0 && (
-                            <Badge 
-                                variant="secondary" 
-                                className="
-                                    text-xs bg-muted/80 hover:bg-muted 
-                                    transition-colors duration-200
-                                    group-hover:scale-110
-                                "
-                            >
-                                +{remainingCount}
-                            </Badge>
-                        )}
+                                {remainingCount > 0 && (
+                                    <Badge 
+                                        variant="secondary" 
+                                        className="
+                                            text-xs bg-muted/80 hover:bg-muted 
+                                            transition-colors duration-200
+                                            group-hover:scale-110
+                                        "
+                                    >
+                                        +{remainingCount}
+                                    </Badge>
+                                )}
 
-                        <SafeIcon
-                            icon={ExternalLink}
-                            className="h-3 w-3 text-muted-foreground ml-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-                            size={12}
-                        />
-                    </div>
+                                <SafeIcon
+                                    icon={ExternalLink}
+                                    className="h-3 w-3 text-muted-foreground ml-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                                    size={12}
+                                />
+                            </div>
+                        </CardContent>
+                    </Card>
                 </PopoverTrigger>
 
                 <PopoverContent
                     side="top"
                     sideOffset={10}
-                    className="w-80 p-4 bg-background/95 backdrop-blur-xl border border-border/50 shadow-xl"
+                    className="w-80 p-0 bg-background/95 backdrop-blur-xl border border-border/50 shadow-xl"
                 >
-                    <div className="space-y-4">
-                        <div className="text-center">
-                            <h4 className="font-semibold text-sm mb-1">
-                                Available on these platforms
-                            </h4>
+                    <Card className="border-none shadow-none">
+                        <CardHeader className="pb-3">
+                            <CardTitle className="flex items-center justify-between text-base">
+                                <div className="flex items-center gap-2">
+                                    <SafeIcon icon={Play} className="h-4 w-4 text-primary" size={16} />
+                                    <span>Available on these platforms</span>
+                                </div>
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="h-6 w-6 p-0"
+                                    onClick={() => setIsPopoverOpen(false)}
+                                >
+                                    <SafeIcon icon={ExternalLink} className="h-3 w-3" size={12} />
+                                </Button>
+                            </CardTitle>
                             <p className="text-xs text-muted-foreground">
                                 Click any logo to visit their website
                             </p>
-                        </div>
+                        </CardHeader>
 
-                        <div className="grid grid-cols-4 gap-3">
-                            {availableProviders.map((provider: StreamingInfo, index: number) => {
-                                const isPlexProvider = provider.provider_name === 'Plex';
-                                const imageSrc = isPlexProvider 
-                                    ? provider.logo_path 
-                                    : `https://image.tmdb.org/t/p/w500${provider.logo_path}`;
+                        <CardContent className="pt-0">
+                            <div className="grid grid-cols-4 gap-3 mb-4">
+                                {availableProviders.map((provider: StreamingInfo, index: number) => {
+                                    const isPlexProvider = provider.provider_name === 'Plex';
+                                    const imageSrc = isPlexProvider 
+                                        ? provider.logo_path 
+                                        : `https://image.tmdb.org/t/p/w500${provider.logo_path}`;
 
-                                return (
-                                    <TooltipProvider key={index}>
-                                        <Tooltip>
-                                            <TooltipTrigger asChild>
-                                                <div className={`
-                                                    relative p-3 rounded-lg border border-border/50 
-                                                    hover:border-primary/50 hover:bg-primary/5 
-                                                    transition-all duration-200 cursor-pointer
-                                                    group flex items-center justify-center
-                                                    ${isPlexProvider ? 'bg-amber-50/10 border-amber-400/30' : ''}
-                                                `}>
-                                                    <Image
-                                                        src={imageSrc}
-                                                        alt={provider.provider_name}
-                                                        width={40}
-                                                        height={40}
-                                                        className="rounded transition-transform duration-200 group-hover:scale-110"
-                                                    />
-                                                    {isPlexProvider && (
-                                                        <div className="absolute -top-1 -right-1">
-                                                            <SafeIcon
-                                                                icon={Sparkles}
-                                                                className="h-4 w-4 text-amber-400 fill-current"
-                                                                size={16}
-                                                            />
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            </TooltipTrigger>
-                                            <TooltipContent>
-                                                <p className="font-medium">{provider.provider_name}</p>
-                                                {isPlexProvider && (
-                                                    <p className="text-xs text-muted-foreground">Available in your Plex library</p>
-                                                )}
-                                            </TooltipContent>
-                                        </Tooltip>
-                                    </TooltipProvider>
-                                );
-                            })}
-                        </div>
+                                    return (
+                                        <TooltipProvider key={index}>
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <Card className={`
+                                                        transition-all duration-200 cursor-pointer
+                                                        group flex items-center justify-center
+                                                        hover:shadow-lg hover:-translate-y-1
+                                                        ${isPlexProvider ? 'bg-amber-50/10 border-amber-400/30 hover:bg-amber-50/20' : 'hover:border-primary/50 hover:bg-primary/5'}
+                                                    `}>
+                                                        <CardContent className="p-3">
+                                                            <div className="relative">
+                                                                <Image
+                                                                    src={imageSrc}
+                                                                    alt={provider.provider_name}
+                                                                    width={40}
+                                                                    height={40}
+                                                                    className="rounded transition-transform duration-200 group-hover:scale-110"
+                                                                />
+                                                                {isPlexProvider && (
+                                                                    <div className="absolute -top-1 -right-1">
+                                                                        <SafeIcon
+                                                                            icon={Sparkles}
+                                                                            className="h-4 w-4 text-amber-400 fill-current"
+                                                                            size={16}
+                                                                        />
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        </CardContent>
+                                                    </Card>
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                    <div className="text-center">
+                                                        <p className="font-medium">{provider.provider_name}</p>
+                                                        {isPlexProvider && (
+                                                            <p className="text-xs text-muted-foreground">Available in your Plex library</p>
+                                                        )}
+                                                    </div>
+                                                </TooltipContent>
+                                            </Tooltip>
+                                        </TooltipProvider>
+                                    );
+                                })}
+                            </div>
 
-                        <div className="text-center pt-2 border-t border-border/30">
-                            <p className="text-xs text-muted-foreground">
-                                Streaming data provided by{' '}
-                                <a 
-                                    href="https://www.justwatch.com/" 
-                                    target="_blank" 
-                                    rel="noopener noreferrer"
-                                    className="text-primary hover:underline"
-                                >
-                                    JustWatch
-                                </a>
-                            </p>
-                        </div>
-                    </div>
+                            <div className="text-center pt-3 border-t border-border/30">
+                                <p className="text-xs text-muted-foreground">
+                                    Streaming data provided by{' '}
+                                    <a 
+                                        href="https://www.justwatch.com/" 
+                                        target="_blank" 
+                                        rel="noopener noreferrer"
+                                        className="text-primary hover:underline font-medium"
+                                    >
+                                        JustWatch
+                                    </a>
+                                </p>
+                            </div>
+                        </CardContent>
+                    </Card>
                 </PopoverContent>
             </Popover>
         </div>

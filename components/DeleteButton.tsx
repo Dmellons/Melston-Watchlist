@@ -19,11 +19,13 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer"
-import { Trash2, Loader2 } from "lucide-react"
+import { Trash2, Loader2, AlertTriangle } from "lucide-react"
 import { toast } from "sonner"
 import { useUser } from "@/hooks/User"
 import { database } from "@/lib/appwrite"
 import { useState } from "react"
+import { Card, CardContent } from "@/components/ui/card"
+import SafeIcon from "@/components/SafeIcon"
 
 interface DeleteButtonProps {
   buttonVariant?: "link" | "outline" | "default" | "secondary" | "ghost" | "destructive" | null;
@@ -109,23 +111,37 @@ export default function DeleteButton({
   };
 
   const DeleteContent = () => (
-    <>
-      <div className="text-center mb-4">
-        <Trash2 className="h-12 w-12 text-destructive mx-auto mb-2" />
-        <p className="text-lg font-semibold">Delete Item</p>
+    <div className="space-y-6">
+      <Card className="border-destructive/20 bg-destructive/5">
+        <CardContent className="flex items-center gap-3 p-4">
+          <div className="p-2 rounded-full bg-destructive/10">
+            <SafeIcon icon={AlertTriangle} className="h-5 w-5 text-destructive" size={20} />
+          </div>
+          <div>
+            <h3 className="font-semibold text-destructive">Delete Item</h3>
+            <p className="text-sm text-destructive/80">This action cannot be undone</p>
+          </div>
+        </CardContent>
+      </Card>
+      
+      <div className="space-y-3">
+        <p className="text-center text-muted-foreground">
+          Are you sure you want to delete{" "}
+          {title && <span className="font-semibold text-foreground">"{title}"</span>}
+          {!title && "this item"} from your watchlist?
+        </p>
+        
+        <p className="text-center text-sm text-muted-foreground">
+          You'll need to add it again if you change your mind.
+        </p>
       </div>
       
-      <p className="text-center text-muted-foreground mb-6">
-        Are you sure you want to delete{" "}
-        {title && <strong>"{title}"</strong>}
-        {!title && "this item"}? This action cannot be undone.
-      </p>
-      
-      <div className="flex gap-2 justify-end">
+      <div className="flex gap-3 justify-end">
         <Button
           variant="outline"
           onClick={() => setOpen(false)}
           disabled={isDeleting}
+          className="flex-1 sm:flex-none"
         >
           Cancel
         </Button>
@@ -133,11 +149,12 @@ export default function DeleteButton({
           variant="destructive"
           onClick={handleDelete}
           disabled={isDeleting}
+          className="flex-1 sm:flex-none"
         >
           {buttonContent}
         </Button>
       </div>
-    </>
+    </div>
   );
 
   if (isDesktop) {
@@ -148,6 +165,7 @@ export default function DeleteButton({
             variant={buttonVariant} 
             disabled={disabled || isDeleting}
             size="sm"
+            className="transition-all duration-200 hover:scale-105 active:scale-95"
           >
             {buttonContent}
           </Button>
@@ -172,6 +190,7 @@ export default function DeleteButton({
           variant={buttonVariant} 
           disabled={disabled || isDeleting}
           size="sm"
+          className="transition-all duration-200 hover:scale-105 active:scale-95"
         >
           {buttonContent}
         </Button>
