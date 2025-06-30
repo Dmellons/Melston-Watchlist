@@ -7,13 +7,13 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ProvidersBlock from '@/components/ProvidersBlock';
 import RatingComponent from '@/components/RatingComponent';
-// import WatchStatusComponent from '@/components/WatchStatusComponent';
 import WatchStatusComponent from './WatchStatusComponent';
 import SafeIcon from '@/components/SafeIcon';
 import { useUser } from '@/hooks/User';
-// import { WatchStatus } from '@/types/appwrite';
 import { WatchStatus } from '@/types/customTypes'
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { database } from '@/lib/appwrite';
+import { toast } from 'sonner';
 import { 
     Calendar, 
     Clock, 
@@ -107,38 +107,126 @@ export default function EnhancedDetailPageContent({
     releaseDate, 
     runtime 
 }: EnhancedDetailPageContentProps) {
-    const { user } = useUser();
+    const { user, setUser } = useUser();
     const isMovie = tmdbType === 'movie';
     const [watchlistItem, setWatchlistItem] = useState<any>(null);
     const [isInWatchlist, setIsInWatchlist] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     // Check if item is in user's watchlist
     useEffect(() => {
         if (user?.watchlist?.documents) {
             const item = user.watchlist.documents.find(
-                (doc: any) => doc.tmdb_id.toString() === data.id.toString()
+                (doc: any) => doc.tmdb_id.toString() === data.id.toString() && doc.tmdb_type === tmdbType
             );
             setWatchlistItem(item);
             setIsInWatchlist(!!item);
         }
-    }, [user, data.id]);
+    }, [user, data.id, tmdbType]);
 
-    const handleRatingUpdate = (rating: number, review?: string) => {
-        if (watchlistItem) {
-            setWatchlistItem({
-                ...watchlistItem,
+    // Function to refresh user data
+    const refreshUserData = useCallback(async () => {
+        if (!user) return;
+        
+        try {
+            const updatedWatchlist = await database.listDocuments(
+                'watchlist', 
+                process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID!
+            );
+            
+            setUser(prevUser => prevUser ? {
+                ...prevUser,
+                watchlist: updatedWatchlist,
+            } : null);
+            
+            // Update local watchlist item
+            const updatedItem = updatedWatchlist.documents.find(
+                (doc: any) => doc.tmdb_id.toString() === data.id.toString() && doc.tmdb_type === tmdbType
+            );
+            setWatchlistItem(updatedItem);
+            
+        } catch (error) {
+            console.error('Error refreshing user data:', error);
+        }
+    }, [user, data.id, tmdbType, setUser]);
+
+    const handleRatingUpdate = async (rating: number, review?: string) => {
+        if (!watchlistItem || isLoading) return;
+        
+        setIsLoading(true);
+        
+        try {
+            await database.updateDocument(
+                'watchlist',
+                process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID!,
+                watchlistItem.$id,
+                {
+                    user_rating: rating || null,
+                    user_review: review || null,
+                    ...(rating > 0 && { date_watched: new Date().toISOString() })
+                }
+            );
+
+            // Update local state immediately for better UX
+            setWatchlistItem((prev: any) => prev ? {
+                ...prev,
                 user_rating: rating,
-                user_review: review
-            });
+                user_review: review,
+                ...(rating > 0 && { date_watched: new Date().toISOString() })
+            } : null);
+
+            // Refresh user data to sync with backend
+            await refreshUserData();
+            
+            toast.success(`Rating ${rating > 0 ? 'updated' : 'removed'} successfully!`);
+            
+        } catch (error) {
+            console.error('Error updating rating:', error);
+            toast.error('Failed to save rating');
+        } finally {
+            setIsLoading(false);
         }
     };
 
-    const handleStatusUpdate = (status: WatchStatus) => {
-        if (watchlistItem) {
-            setWatchlistItem({
-                ...watchlistItem,
+    const handleStatusUpdate = async (status: WatchStatus) => {
+        if (!watchlistItem || isLoading) return;
+        
+        setIsLoading(true);
+        
+        try {
+            const updateData: any = {
                 watch_status: status
-            });
+            };
+
+            // If marking as completed, set date_watched
+            if (status === WatchStatus.COMPLETED) {
+                updateData.date_watched = new Date().toISOString();
+            }
+
+            await database.updateDocument(
+                'watchlist',
+                process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID!,
+                watchlistItem.$id,
+                updateData
+            );
+
+            // Update local state immediately for better UX
+            setWatchlistItem((prev: any) => prev ? {
+                ...prev,
+                watch_status: status,
+                ...updateData
+            } : null);
+
+            // Refresh user data to sync with backend
+            await refreshUserData();
+            
+            toast.success(`Status updated to ${status.replace('_', ' ')}`);
+            
+        } catch (error) {
+            console.error('Error updating status:', error);
+            toast.error('Failed to update status');
+        } finally {
+            setIsLoading(false);
         }
     };
     
@@ -370,7 +458,7 @@ export default function EnhancedDetailPageContent({
                             <div className="space-y-2 sm:space-y-3">
                                 <Button variant="outline" className="w-full justify-start text-xs sm:text-sm h-9 sm:h-10" asChild>
                                     <Link
-                                        href={`https://www.imdb.com/title/${data.id}`}
+                                        href={`https://www.imdb.com/title/${data.imdb_id || data.id}`}
                                         target="_blank"
                                         rel="noopener noreferrer"
                                     >
