@@ -1,15 +1,16 @@
+// components/buttons/AddWatchlistButton.tsx - Updated version
 'use client'
 import { Button } from "@/components/ui/button"
 import { useUser } from "@/hooks/User"
-import { ID, database } from "@/lib/appwrite"
+import { ID, database, Permission, Role } from "@/lib/appwrite"
 import { tmdbFetchOptions } from "@/lib/tmdb"
 import { type WatchlistDocumentCreate } from "@/types/appwrite"
 import { type TMDBMultiSearchResult } from "@/types/tmdbApi"
+import { WatchStatus } from "@/types/customTypes"
 import { useState } from "react"
 import { toast } from "sonner"
 import { Loader2, Plus, Check } from "lucide-react"
 import SafeIcon from "@/components/SafeIcon"
-import { Card, CardContent } from "@/components/ui/card"
 
 interface AddWatchlistButtonProps {
     media: TMDBMultiSearchResult | WatchlistDocumentCreate;
@@ -72,7 +73,14 @@ const AddWatchlistButton = ({
             genre_ids: mediaData.genres?.map((g: any) => g.id) || mediaData.genre_ids || [],
             plex_request: false,
             title: '',
-            release_date: ''
+            release_date: '',
+            // NEW: Initialize personalized fields with defaults
+            watch_status: WatchStatus.WANT_TO_WATCH,
+            user_rating: undefined,
+            user_review: undefined,
+            date_watched: undefined,
+            rewatch_count: 0,
+            is_favorite: false,
         };
 
         // Set title and release date based on media type
@@ -95,11 +103,24 @@ const AddWatchlistButton = ({
         try {
             const watchlistDocument = await createWatchlistDocument(media);
             
+            // Create document with user-specific permissions
             const result = await database.createDocument(
                 'watchlist', 
                 process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID!, 
                 ID.unique(), 
-                watchlistDocument
+                watchlistDocument,
+                [
+                    // Only the creator can read, update, and delete their own watchlist items
+                    Permission.read(Role.user(user.id!)),
+                    Permission.update(Role.user(user.id!)),
+                    Permission.delete(Role.user(user.id!)),
+                    // Admin users can also access any document
+                    ...(user.admin ? [
+                        Permission.read(Role.label('admin')),
+                        Permission.update(Role.label('admin')),
+                        Permission.delete(Role.label('admin'))
+                    ] : [])
+                ]
             );
 
             // Update user state with new watchlist
@@ -120,7 +141,7 @@ const AddWatchlistButton = ({
                 toast.success(
                     `Added "${watchlistDocument.title}" to your watchlist!`,
                     {
-                        description: "You can view it in your watchlist anytime."
+                        description: "You can now rate and track your progress."
                     }
                 );
             }
