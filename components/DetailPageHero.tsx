@@ -158,10 +158,10 @@ export default function DetailPageHero({
                         <div className="space-y-3">
                             {/* Primary Actions */}
                             <div className="grid grid-cols-2 gap-3">
-                                <Button size="default" className="bg-primary hover:bg-primary/90 text-sm">
+                                {/* <Button size="default" className="bg-primary hover:bg-primary/90 text-sm">
                                     <SafeIcon icon={Play} className="h-4 w-4 mr-1" size={16} />
                                     Watch
-                                </Button>
+                                </Button> */}
                                 
                                 <AddWatchlistButton 
                                     media={addButtonData} 
@@ -170,7 +170,7 @@ export default function DetailPageHero({
                             </div>
                             
                             {/* Secondary Actions */}
-                            <div className="grid grid-cols-2 gap-3">
+                            {/* <div className="grid grid-cols-2 gap-3">
                                 <Button variant="outline" size="default" className="bg-background/20 backdrop-blur-sm border-white/20 text-white hover:bg-background/30 text-sm">
                                     <SafeIcon icon={Bookmark} className="h-4 w-4 mr-1" size={16} />
                                     Save
@@ -180,7 +180,7 @@ export default function DetailPageHero({
                                     <SafeIcon icon={Share2} className="h-4 w-4 mr-1" size={16} />
                                     Share
                                 </Button>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </div>
