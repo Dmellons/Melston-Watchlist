@@ -26,10 +26,23 @@ import {
     X,
     ChevronDown,
     Settings,
-    TrendingUp
+    TrendingUp,
+    Calendar,
+    MoreVertical,
+    Trash2
 } from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 import { useBreakpoint } from "@/hooks/MediaQuery"
+import Link from "next/link"
+import DeleteButton from "@/components/DeleteButton"
+import PlexRequestToggle from "@/components/PlexRequestToggle"
+import { useUser } from "@/hooks/User"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 interface WatchlistGridProps {
     watchlist: Models.DocumentList<WatchlistDocument>;
@@ -257,6 +270,8 @@ const FilterSidebar = ({
 };
 
 const MobileWatchlistCard = ({ media }: { media: WatchlistDocument }) => {
+    const { user } = useUser();
+    const [plexRequest, setPlexRequest] = useState(media.plex_request);
     const year = media.release_date ? new Date(media.release_date).getFullYear() : '';
     
     return (
@@ -306,9 +321,54 @@ const MobileWatchlistCard = ({ media }: { media: WatchlistDocument }) => {
                             </div>
                         </div>
                         
-                        {media.plex_request && (
-                            <SafeIcon icon={Star} className="h-4 w-4 fill-amber-400 text-amber-400" size={16} />
-                        )}
+                        <div className="flex items-center gap-1">
+                            {media.plex_request && (
+                                <SafeIcon icon={Star} className="h-4 w-4 fill-amber-400 text-amber-400" size={16} />
+                            )}
+                            
+                            {/* Mobile Actions Dropdown */}
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
+                                        <SafeIcon icon={MoreVertical} className="h-3 w-3" size={12} />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end" className="w-48">
+                                    <DropdownMenuItem asChild>
+                                        <Link 
+                                            href={`/${media.tmdb_type}/${media.tmdb_id}`}
+                                            className="flex items-center gap-2 w-full"
+                                        >
+                                            <SafeIcon icon={Eye} className="h-4 w-4" size={16} />
+                                            View Details
+                                        </Link>
+                                    </DropdownMenuItem>
+                                    
+                                    {user?.labels?.includes('plex') && (
+                                        <DropdownMenuItem 
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                // The PlexRequestToggle will handle the toggle
+                                            }}
+                                        >
+                                            <SafeIcon icon={Star} className="h-4 w-4 mr-2" size={16} />
+                                            {plexRequest ? 'Remove Plex Request' : 'Request on Plex'}
+                                        </DropdownMenuItem>
+                                    )}
+                                    
+                                    <DropdownMenuItem 
+                                        className="text-destructive focus:text-destructive"
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            // The DeleteButton will handle the deletion
+                                        }}
+                                    >
+                                        <SafeIcon icon={Trash2} className="h-4 w-4 mr-2" size={16} />
+                                        Delete
+                                    </DropdownMenuItem>
+                                </DropdownMenuContent>
+                            </DropdownMenu>
+                        </div>
                     </div>
 
                     {/* Description */}
@@ -320,13 +380,32 @@ const MobileWatchlistCard = ({ media }: { media: WatchlistDocument }) => {
 
                     {/* Actions */}
                     <div className="flex gap-2">
-                        <Button size="sm" className="flex-1 h-7 text-xs">
-                            View Details
+                        <Button size="sm" className="flex-1 h-7 text-xs" asChild>
+                            <Link href={`/${media.tmdb_type}/${media.tmdb_id}`}>
+                                <SafeIcon icon={Eye} className="h-3 w-3 mr-1" size={12} />
+                                View Details
+                            </Link>
                         </Button>
-                        <Button variant="outline" size="sm" className="h-7 px-2">
-                            <SafeIcon icon={Settings} className="h-3 w-3" size={12} />
-                        </Button>
+                        
+                        <DeleteButton 
+                            title={media.title} 
+                            document_id={media.$id}
+                            buttonVariant="outline"
+                            buttonText={<SafeIcon icon={Trash2} className="h-3 w-3" size={12} />}
+                        />
                     </div>
+
+                    {/* Plex Request Toggle for Mobile */}
+                    {user?.labels?.includes('plex') && (
+                        <div className="mt-2">
+                            <PlexRequestToggle
+                                documentId={media.$id}
+                                requested={plexRequest}
+                                mediaTitle={media.title}
+                                setPlexRequest={setPlexRequest}
+                            />
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
@@ -622,8 +701,6 @@ const WatchlistGrid = ({ watchlist }: WatchlistGridProps) => {
                     {/* Mobile Results Header with Filter Button */}
                     <div className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
                         <div className="flex items-center gap-3">
-                            {/* <SafeIcon icon={Eye} className="h-5 w-5 text-primary" size={20} /> */}
-                            {/* <h2 className="text-xl font-bold">Your Watchlist</h2> */}
                             <Badge variant="secondary" className="text-sm">
                                 {filteredAndSortedWatchlist.length} of {stats.total} items
                             </Badge>

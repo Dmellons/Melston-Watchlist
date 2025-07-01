@@ -6,7 +6,7 @@ import { WatchlistDocument } from "@/types/appwrite";
 import { useEffect, useState } from "react";
 import { useUser } from "@/hooks/User";
 import PlexRequestToggle from "./PlexRequestToggle";
-import { Trash2, Star, Play, Info, Calendar, Tv, Film } from "lucide-react";
+import { Trash2, Star, Play, Info, Calendar, Tv, Film, Settings } from "lucide-react";
 import ImageWithFallback from "./ImageWithFallback";
 import DeleteButton from "./DeleteButton";
 import { Button } from "./ui/button";

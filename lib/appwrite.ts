@@ -1,6 +1,6 @@
 import { WatchlistDocumentCreate } from '@/types/appwrite';
 import { AutocompleteResult } from '@/types/watchmodeApi';
-import { Client, Account, Databases, ID } from 'appwrite';
+import { Client, Account, Databases, ID, Permission, Role } from 'appwrite';
 import { toast } from 'sonner';
 
 export const client = new Client();
@@ -11,7 +11,7 @@ client
 export const account = new Account(client);
 export const database = new Databases(client)
 
-export { ID, type Models } from 'appwrite';
+export { ID, Permission, Role, type Models } from 'appwrite';
 
 
 export async function updateUserPreferences(preferences: object): Promise<object> {

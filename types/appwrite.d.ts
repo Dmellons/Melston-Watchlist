@@ -68,7 +68,7 @@ export type WatchlistDocumentCreate = {
     genre_ids: number[],
     notes?: string[],
     // New fields
-    watch_status: WatchStatus,
+    watch_status?: WatchStatus,
     user_rating?: number, // 1-10 scale
     user_review?: string,
     date_watched?: string,
