@@ -1,10 +1,9 @@
-// components/buttons/AddWatchlistButton.tsx - Updated version
+// components/buttons/AddWatchlistButton.tsx - Updated for ratings collection
 'use client'
 import { Button } from "@/components/ui/button"
 import { useUser } from "@/hooks/User"
-import { ID, database, Permission, Role } from "@/lib/appwrite"
 import { tmdbFetchOptions } from "@/lib/tmdb"
-import { type WatchlistDocumentCreate } from "@/types/appwrite"
+import { RatingsService, CreateRatingData } from "@/lib/services/ratingsService"
 import { type TMDBMultiSearchResult } from "@/types/tmdbApi"
 import { WatchStatus } from "@/types/customTypes"
 import { useState } from "react"
@@ -13,7 +12,7 @@ import { Loader2, Plus, Check } from "lucide-react"
 import SafeIcon from "@/components/SafeIcon"
 
 interface AddWatchlistButtonProps {
-    media: TMDBMultiSearchResult | WatchlistDocumentCreate;
+    media: TMDBMultiSearchResult;
     width?: string;
     query?: boolean;
     disabled?: boolean;
@@ -37,9 +36,10 @@ const AddWatchlistButton = ({
 
     if (!user) return null;
 
-    const createWatchlistDocument = async (mediaData: any): Promise<WatchlistDocumentCreate> => {
+    const prepareMediaData = async (mediaData: TMDBMultiSearchResult): Promise<CreateRatingData> => {
+        let fullMediaData = mediaData;
+
         if (query) {
-            // Fetch full details if coming from search query
             try {
                 const endpoint = mediaData.media_type === 'movie' 
                     ? `https://api.themoviedb.org/3/movie/${mediaData.id}`
@@ -50,49 +50,29 @@ const AddWatchlistButton = ({
                     throw new Error('Failed to fetch media details');
                 }
                 
-                const fullMediaData = await response.json();
-                fullMediaData.media_type = mediaData.media_type;
-                mediaData = fullMediaData;
+                const detailedData = await response.json();
+                fullMediaData = { ...mediaData, ...detailedData };
             } catch (error) {
                 console.error('Error fetching full media details:', error);
-                throw new Error('Failed to fetch complete media information');
+                // Continue with basic data if detailed fetch fails
             }
         }
 
-        const baseDocument: WatchlistDocumentCreate = {
-            tmdb_id: mediaData.id || mediaData.tmdb_id,
-            tmdb_type: mediaData.media_type || mediaData.tmdb_type,
-            content_type: mediaData.media_type || mediaData.tmdb_type,
-            poster_url: mediaData.poster_path 
-                ? `https://image.tmdb.org/t/p/w500${mediaData.poster_path}`
-                : mediaData.poster_url || '',
-            backdrop_url: mediaData.backdrop_path 
-                ? `https://image.tmdb.org/t/p/w500${mediaData.backdrop_path}`
-                : mediaData.backdrop_url || null,
-            description: mediaData.overview || mediaData.description || "No description available",
-            genre_ids: mediaData.genres?.map((g: any) => g.id) || mediaData.genre_ids || [],
-            plex_request: false,
-            title: '',
-            release_date: '',
-            // NEW: Initialize personalized fields with defaults
+        const title = fullMediaData.media_type === 'tv' 
+            ? (fullMediaData as any).name || mediaData.name
+            : (fullMediaData as any).title || mediaData.title;
+
+        return {
+            user_id: user.id!,
+            user_name: user.name,
+            tmdb_id: fullMediaData.id,
+            tmdb_type: fullMediaData.media_type,
+            media_title: title,
             watch_status: WatchStatus.WANT_TO_WATCH,
-            user_rating: undefined,
-            user_review: undefined,
-            date_watched: undefined,
             rewatch_count: 0,
             is_favorite: false,
+            tags: []
         };
-
-        // Set title and release date based on media type
-        if (mediaData.media_type === 'tv' || mediaData.tmdb_type === 'tv') {
-            baseDocument.title = mediaData.name || mediaData.title;
-            baseDocument.release_date = mediaData.first_air_date || mediaData.release_date;
-        } else {
-            baseDocument.title = mediaData.title;
-            baseDocument.release_date = mediaData.release_date;
-        }
-
-        return baseDocument;
     };
 
     const handleAddWatchlist = async () => {
@@ -101,47 +81,35 @@ const AddWatchlistButton = ({
         setIsLoading(true);
         
         try {
-            const watchlistDocument = await createWatchlistDocument(media);
-            
-            // Create document with user-specific permissions
-            const result = await database.createDocument(
-                'watchlist', 
-                process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID!, 
-                ID.unique(), 
-                watchlistDocument,
-                [
-                    // Only the creator can read, update, and delete their own watchlist items
-                    Permission.read(Role.user(user.id!)),
-                    Permission.update(Role.user(user.id!)),
-                    Permission.delete(Role.user(user.id!)),
-                    // Admin users can also access any document
-                    ...(user.admin ? [
-                        Permission.read(Role.label('admin')),
-                        Permission.update(Role.label('admin')),
-                        Permission.delete(Role.label('admin'))
-                    ] : [])
-                ]
+            // Check if item already exists
+            const existingRating = await RatingsService.getUserRating(
+                user.id!, 
+                media.id, 
+                media.media_type
             );
 
-            // Update user state with new watchlist
-            const updatedWatchlist = await database.listDocuments(
-                'watchlist', 
-                process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID!
-            );
-            
-            setUser(prevUser => prevUser ? {
-                ...prevUser,
-                watchlist: updatedWatchlist,
-            } : null);
+            if (existingRating) {
+                toast.error('This item is already in your watchlist!');
+                return;
+            }
 
+            // Prepare the rating data
+            const ratingData = await prepareMediaData(media);
+
+            // Add to ratings/watchlist
+            await RatingsService.addOrUpdateRating(ratingData);
+
+            // Update user context if needed
+            // You might want to refresh the user's watchlist here
+            
             if (showSuccess) {
                 setIsSuccess(true);
                 setTimeout(() => setIsSuccess(false), 2000);
                 
                 toast.success(
-                    `Added "${watchlistDocument.title}" to your watchlist!`,
+                    `Added "${ratingData.media_title}" to your watchlist!`,
                     {
-                        description: "You can now rate and track your progress."
+                        description: "You can now track and rate this item."
                     }
                 );
             }
@@ -149,16 +117,18 @@ const AddWatchlistButton = ({
         } catch (error) {
             console.error('Error adding to watchlist:', error);
             
-            const errorMessage = error instanceof Error 
-                ? error.message 
-                : 'Failed to add to watchlist';
-                
-            toast.error(
-                `Error adding to watchlist`,
-                {
-                    description: errorMessage
+            let errorMessage = 'Failed to add to watchlist';
+            if (error instanceof Error) {
+                if (error.message.includes('already exists') || error.message.includes('unique')) {
+                    errorMessage = 'This item is already in your watchlist!';
+                } else {
+                    errorMessage = error.message;
                 }
-            );
+            }
+                
+            toast.error('Error adding to watchlist', {
+                description: errorMessage
+            });
         } finally {
             setIsLoading(false);
         }
