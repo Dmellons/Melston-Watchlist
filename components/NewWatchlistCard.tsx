@@ -2,6 +2,7 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import Link from "next/link"
 import ProvidersBlock from "@/components/ProvidersBlock";
+import MobileDebugProviders from "@/components/MobileDebugProviders"; // Import the debug component
 import { WatchlistDocument } from "@/types/appwrite";
 import { useEffect, useState } from "react";
 import { useUser } from "@/hooks/User";
@@ -23,12 +24,13 @@ type CardData = {
     plexRequest?: boolean
 }
 
-const NewWatchlistCard = ({ media }: { media: WatchlistDocument }) => {
+const DebugNewWatchlistCard = ({ media }: { media: WatchlistDocument }) => {
     const { user } = useUser()
     const [data, setData] = useState<CardData | null>(null)
     const [isLoading, setIsLoading] = useState<boolean>(true)
     const [plexRequest, setPlexRequest] = useState<boolean>(media.plex_request)
     const [isHovered, setIsHovered] = useState(false)
+    const [showDebug, setShowDebug] = useState(true) // Always show debug initially
 
     useEffect(() => {
         if (media.content_type === 'tv' || media.content_type === 'movie') {
@@ -66,6 +68,7 @@ const NewWatchlistCard = ({ media }: { media: WatchlistDocument }) => {
 
     return (
         <div className="flex flex-col group">
+            {/* Original Card */}
             <Card
                 className={`
                     w-64 bg-card/50 backdrop-blur-sm rounded-xl min-h-[400px] 
@@ -177,21 +180,49 @@ const NewWatchlistCard = ({ media }: { media: WatchlistDocument }) => {
                 </CardContent>
             </Card>
 
-            {/* Providers Section */}
+            {/* Debug Toggle Button */}
+            {/* <Button 
+                onClick={() => setShowDebug(!showDebug)}
+                variant="outline" 
+                size="sm" 
+                className="mt-2 w-full"
+            >
+                {showDebug ? 'Hide Debug' : 'Show Debug'}
+            </Button> */}
+
+            {/* DEBUG SECTION - Remove this in production */}
+            {/* {showDebug && (
+                <div className="mt-3 px-2">
+                    <MobileDebugProviders
+                        tmdbId={data.tmdb_id}
+                        tmdbType={data.tmdb_type}
+                        userProviders={user?.providers}
+                    />
+                </div>
+            )} */}
+
+            {/* ORIGINAL Providers Section */}
             <div className="mt-3 px-2">
-                <ProvidersBlock
-                    tmdbId={data.tmdb_id}
-                    tmdbType={data.tmdb_type}
-                    userProviders={user?.providers}
-                    maxWidth="w-full"
-                    notStreamingValue={
-                        <div className="flex items-center justify-center p-3 bg-muted/30 rounded-lg border border-dashed border-muted-foreground/30">
-                            <span className="text-xs text-muted-foreground font-medium">
-                                No streaming available
-                            </span>
-                        </div>
-                    }
-                />
+                        <ProvidersBlock
+                            tmdbId={data.tmdb_id}
+                            tmdbType={data.tmdb_type}
+                            userProviders={user?.providers}
+                            maxWidth="w-full"
+                            iconSize={24}
+                            country="US"
+                            notStreamingValue={
+                                <div className="flex items-center justify-center p-3 bg-muted/30 rounded-lg border border-dashed border-muted-foreground/30">
+                                    <span className="text-xs text-muted-foreground font-medium">
+                                        No streaming available
+                                    </span>
+                                </div>
+                            }
+                        />
+                {/* <Card className="border-2 border-blue-500 bg-blue-50">
+                    <CardContent className="p-2">
+                        <div className="text-xs font-semibold text-blue-800 mb-2">Original ProvidersBlock:</div>
+                    </CardContent>
+                </Card> */}
             </div>
 
             {/* Plex Request Toggle */}
@@ -209,4 +240,4 @@ const NewWatchlistCard = ({ media }: { media: WatchlistDocument }) => {
     )
 }
 
-export default NewWatchlistCard
+export default DebugNewWatchlistCard
