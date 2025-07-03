@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from "react"
-import { Switch } from "./ui/switch"
 import { database } from "@/lib/appwrite"
 import { toast } from "sonner"
 import { Label } from "./ui/label"
@@ -95,63 +94,49 @@ const PlexRequestToggle = ({
             <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                        <div className={`
-                            p-2 rounded-lg transition-colors duration-200
-                            ${requestState 
-                                ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400' 
-                                : 'bg-muted text-muted-foreground'
-                            }
-                        `}>
-                            {isLoading ? (
-                                <SafeIcon icon={Loader2} className="h-4 w-4 animate-spin" size={16} />
-                            ) : (
-                                <SafeIcon 
-                                    icon={Star} 
-                                    className={`h-4 w-4 ${requestState ? 'fill-current' : ''}`} 
-                                    size={16} 
-                                />
-                            )}
+                        <div className="relative group">
+                            <button
+                                onClick={handleToggle}
+                                disabled={isLoading}
+                                className={`
+                                    p-2 rounded-lg transition-all duration-200
+                                    ${requestState 
+                                        ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 hover:bg-amber-500/20' 
+                                        : 'bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground'
+                                    }
+                                    ${isLoading ? 'cursor-not-allowed' : 'cursor-pointer hover:scale-110'}
+                                    disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-amber-500/50
+                                `}
+                            >
+                                {isLoading ? (
+                                    <SafeIcon icon={Loader2} className="h-4 w-4 animate-spin" size={16} />
+                                ) : (
+                                    <SafeIcon 
+                                        icon={Star} 
+                                        className={`h-4 w-4 transition-all duration-200 ${requestState ? 'fill-current' : ''}`} 
+                                        size={16} 
+                                    />
+                                )}
+                            </button>
+                            
+                            {/* Tooltip */}
+                            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-1 bg-gray-900 text-white text-xs rounded-lg opacity-0 hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
+                                {requestState 
+                                    ? "Requested from Plex server" 
+                                    : "Click star to request from Plex server"
+                                }
+                                <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-900"></div>
+                            </div>
                         </div>
                         
                         <div className="space-y-1">
                             <Label 
                                 htmlFor="plex-request-toggle" 
-                                className="text-sm font-medium cursor-pointer"
+                                className="text-sm font-medium"
                             >
-                                Plex 
+                                Plex Request
                             </Label>
-                            {/* <p className="text-xs text-muted-foreground">
-                                {requestState 
-                                    ? "Requested from Plex server" 
-                                    : "Request from Plex server"
-                                }
-                            </p> */}
                         </div>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                        {requestState && (
-                            <Badge 
-                                variant="secondary" 
-                                className="bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-400"
-                            >
-                                Requested
-                            </Badge>
-                        )}
-                        
-                        <Switch
-                            id="plex-request-toggle"
-                            checked={requestState}
-                            onCheckedChange={handleToggle}
-                            disabled={isLoading}
-                            className={`
-                                transition-all duration-200
-                                ${requestState 
-                                    ? 'data-[state=checked]:bg-amber-500' 
-                                    : ''
-                                }
-                            `}
-                        />
                     </div>
                 </div>
             </CardContent>

@@ -43,6 +43,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import ProvidersBlock from "../ProvidersBlock"
 
 interface WatchlistGridProps {
     watchlist: Models.DocumentList<WatchlistDocument>;
@@ -394,18 +395,41 @@ const MobileWatchlistCard = ({ media }: { media: WatchlistDocument }) => {
                             buttonText={<SafeIcon icon={Trash2} className="h-3 w-3" size={12} />}
                         />
                     </div>
+                    <div className="px-2 flex space- items-center justify-between">
+                        <div >
 
+                        {/* Providers Block */}
+                        <ProvidersBlock
+                            tmdbId={media.tmdb_id}
+                            tmdbType={media.tmdb_type}
+                            userProviders={user?.providers}
+                            maxWidth="w-full"
+                            iconSize={24}
+                            country="US"
+                            notStreamingValue={
+                                <div className="flex items-center justify-center p-3 bg-muted/30 rounded-lg border border-dashed border-muted-foreground/30">
+                                    <span className="text-xs text-muted-foreground font-medium">
+                                        No streaming available
+                                    </span>
+                                </div>
+                            }
+                            />
+                            </div>
+                        <div>
+                            
                     {/* Plex Request Toggle for Mobile */}
                     {user?.labels?.includes('plex') && (
-                        <div className="mt-2">
-                            <PlexRequestToggle
-                                documentId={media.$id}
-                                requested={plexRequest}
-                                mediaTitle={media.title}
-                                setPlexRequest={setPlexRequest}
-                            />
-                        </div>
+                        
+                        <PlexRequestToggle
+                        documentId={media.$id}
+                        requested={plexRequest}
+                        mediaTitle={media.title}
+                        setPlexRequest={setPlexRequest}
+                        />
+                        
                     )}
+                    </div>
+                    </div>
                 </div>
             </div>
         </div>

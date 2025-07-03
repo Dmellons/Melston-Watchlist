@@ -41,6 +41,7 @@ const ProvidersBlock = ({
     const [loading, setLoading] = useState(true);
     const [inPlex, setInPlex] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
     const { user } = useUser();
 
@@ -133,14 +134,7 @@ const ProvidersBlock = ({
         return <NotStreamingComponent />;
     }
 
-    let availableProviders: StreamingInfo[] = data?.results[country]?.flatrate || [];
-
-    // Filter by user's providers if specified
-    if (userProviders && Array.isArray(userProviders) && userProviders.length > 0) {
-        availableProviders = availableProviders.filter((provider: StreamingInfo) =>
-            userProviders.includes(provider.provider_id)
-        );
-    }
+    let allProviders: StreamingInfo[] = data?.results[country]?.flatrate || [];
 
     // Add Plex if available
     if (inPlex) {
@@ -150,20 +144,37 @@ const ProvidersBlock = ({
             provider_name: 'Plex',
             display_priority: 1
         };
-        availableProviders = [plexProvider, ...availableProviders];
+        allProviders = [plexProvider, ...allProviders];
     }
 
-    // If no providers available after filtering
-    if (availableProviders.length === 0) {
+    // If no providers available at all
+    if (allProviders.length === 0) {
         return <NotStreamingComponent />;
     }
 
-    const displayedProviders = availableProviders.slice(0, 4);
-    const remainingCount = availableProviders.length - displayedProviders.length;
+    // Split providers into user's and others
+    let userAvailableProviders: StreamingInfo[] = [];
+    let notInUserProviders: StreamingInfo[] = [];
+
+    if (userProviders && Array.isArray(userProviders) && userProviders.length > 0) {
+        userAvailableProviders = allProviders.filter((provider: StreamingInfo) =>
+            userProviders.includes(provider.provider_id) || provider.provider_name === 'Plex'
+        );
+        notInUserProviders = allProviders.filter((provider: StreamingInfo) =>
+            !userProviders.includes(provider.provider_id) && provider.provider_name !== 'Plex'
+        );
+    } else {
+        // If no user providers specified, show all as available
+        userAvailableProviders = allProviders;
+        notInUserProviders = [];
+    }
+
+    const displayedProviders = userAvailableProviders.slice(0, 3);
+    const remainingUserProviders = userAvailableProviders.length - displayedProviders.length;
 
     return (
         <div className={`${maxWidth} m-auto`}>
-            <Popover>
+            <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
                 <PopoverTrigger asChild>
                     <Card className={`
                         transition-all duration-300 cursor-pointer group
@@ -172,67 +183,96 @@ const ProvidersBlock = ({
                         hover:from-primary/10 hover:to-primary/20
                     `}>
                         <CardContent className="p-3">
-                            <div className="flex items-center justify-center gap-2">
-                                {displayedProviders.map((provider: StreamingInfo, index: number) => {
-                                    const isPlexProvider = provider.provider_name === 'Plex';
-                                    const imageSrc = isPlexProvider 
-                                        ? provider.logo_path 
-                                        : `https://image.tmdb.org/t/p/w500${provider.logo_path}`;
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center justify-center gap-2 flex-1">
+                                    {displayedProviders.map((provider: StreamingInfo, index: number) => {
+                                        const isPlexProvider = provider.provider_name === 'Plex';
+                                        const imageSrc = isPlexProvider 
+                                            ? provider.logo_path 
+                                            : `https://image.tmdb.org/t/p/w500${provider.logo_path}`;
 
-                                    return (
-                                        <div
-                                            key={index}
-                                            className={`
-                                                relative transition-transform duration-200 
-                                                group-hover:scale-110 group-hover:-translate-y-1
-                                                ${isPlexProvider ? 'ring-2 ring-amber-400/50 rounded-md' : ''}
-                                            `}
-                                            style={{ 
-                                                animationDelay: `${index * 50}ms`,
-                                                zIndex: displayedProviders.length - index 
-                                            }}
-                                        >
-                                            <Image
-                                                src={imageSrc}
-                                                alt={provider.provider_name}
-                                                width={iconSize}
-                                                height={iconSize}
+                                        return (
+                                            <div
+                                                key={index}
                                                 className={`
-                                                    rounded transition-all duration-200
-                                                    ${isPlexProvider ? 'ring-1 ring-amber-400/30' : ''}
+                                                    relative transition-transform duration-200 
+                                                    group-hover:scale-110 group-hover:-translate-y-1
+                                                    ${isPlexProvider ? 'ring-2 ring-amber-400/50 rounded-md' : ''}
                                                 `}
-                                            />
-                                            {isPlexProvider && (
-                                                <div className="absolute -top-1 -right-1">
-                                                    <SafeIcon
-                                                        icon={Sparkles}
-                                                        className="h-3 w-3 text-amber-400 fill-current"
-                                                        size={12}
-                                                    />
-                                                </div>
-                                            )}
-                                        </div>
-                                    );
-                                })}
+                                                style={{ 
+                                                    animationDelay: `${index * 50}ms`,
+                                                    zIndex: displayedProviders.length - index 
+                                                }}
+                                            >
+                                                <Image
+                                                    src={imageSrc}
+                                                    alt={provider.provider_name}
+                                                    width={iconSize}
+                                                    height={iconSize}
+                                                    className={`
+                                                        rounded transition-all duration-200
+                                                        ${isPlexProvider ? 'ring-1 ring-amber-400/30' : ''}
+                                                    `}
+                                                />
+                                                {isPlexProvider && (
+                                                    <div className="absolute -top-1 -right-1">
+                                                        <SafeIcon
+                                                            icon={Sparkles}
+                                                            className="h-3 w-3 text-amber-400 fill-current"
+                                                            size={12}
+                                                        />
+                                                    </div>
+                                                )}
+                                            </div>
+                                        );
+                                    })}
 
-                                {remainingCount > 0 && (
-                                    <Badge 
-                                        variant="secondary" 
-                                        className="
-                                            text-xs bg-muted/80 hover:bg-muted 
-                                            transition-colors duration-200
-                                            group-hover:scale-110
-                                        "
-                                    >
-                                        +{remainingCount}
-                                    </Badge>
+                                    {remainingUserProviders > 0 && (
+                                        <Badge 
+                                            variant="secondary" 
+                                            className="
+                                                text-xs bg-muted/80 hover:bg-muted 
+                                                transition-colors duration-200
+                                                group-hover:scale-110
+                                            "
+                                        >
+                                            +{remainingUserProviders}
+                                        </Badge>
+                                    )}
+
+                                    <SafeIcon
+                                        icon={ExternalLink}
+                                        className="h-3 w-3 text-muted-foreground ml-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                                        size={12}
+                                    />
+                                </div>
+
+                                {notInUserProviders.length > 0 && (
+                                    <div className="flex items-center">
+                                        <TooltipProvider>
+                                            <Tooltip>
+                                                <TooltipTrigger asChild>
+                                                    <Badge 
+                                                        variant="outline" 
+                                                        className="
+                                                            text-xs border-muted-foreground/30 text-muted-foreground
+                                                            bg-muted/30 hover:bg-muted/50 
+                                                            transition-colors duration-200
+                                                            group-hover:scale-110
+                                                        "
+                                                    >
+                                                        +{notInUserProviders.length}
+                                                    </Badge>
+                                                </TooltipTrigger>
+                                                <TooltipContent>
+                                                    <p className="text-xs">
+                                                        {notInUserProviders.length} more provider{notInUserProviders.length !== 1 ? 's' : ''} available
+                                                    </p>
+                                                </TooltipContent>
+                                            </Tooltip>
+                                        </TooltipProvider>
+                                    </div>
                                 )}
-
-                                <SafeIcon
-                                    icon={ExternalLink}
-                                    className="h-3 w-3 text-muted-foreground ml-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-                                    size={12}
-                                />
                             </div>
                         </CardContent>
                     </Card>
@@ -265,58 +305,108 @@ const ProvidersBlock = ({
                         </CardHeader>
 
                         <CardContent className="pt-0">
-                            <div className="grid grid-cols-4 gap-3 mb-4">
-                                {availableProviders.map((provider: StreamingInfo, index: number) => {
-                                    const isPlexProvider = provider.provider_name === 'Plex';
-                                    const imageSrc = isPlexProvider 
-                                        ? provider.logo_path 
-                                        : `https://image.tmdb.org/t/p/w500${provider.logo_path}`;
+                            {userAvailableProviders.length > 0 && (
+                                <div className="mb-4">
+                                    <h4 className="text-sm font-medium mb-2 text-primary">Your Services</h4>
+                                    <div className="grid grid-cols-4 gap-3">
+                                        {userAvailableProviders.map((provider: StreamingInfo, index: number) => {
+                                            const isPlexProvider = provider.provider_name === 'Plex';
+                                            const imageSrc = isPlexProvider 
+                                                ? provider.logo_path 
+                                                : `https://image.tmdb.org/t/p/w500${provider.logo_path}`;
 
-                                    return (
-                                        <TooltipProvider key={index}>
-                                            <Tooltip>
-                                                <TooltipTrigger asChild>
-                                                    <Card className={`
-                                                        transition-all duration-200 cursor-pointer
-                                                        group flex items-center justify-center
-                                                        hover:shadow-lg hover:-translate-y-1
-                                                        ${isPlexProvider ? 'bg-amber-50/10 border-amber-400/30 hover:bg-amber-50/20' : 'hover:border-primary/50 hover:bg-primary/5'}
-                                                    `}>
-                                                        <CardContent className="p-3">
-                                                            <div className="relative">
-                                                                <Image
-                                                                    src={imageSrc}
-                                                                    alt={provider.provider_name}
-                                                                    width={40}
-                                                                    height={40}
-                                                                    className="rounded transition-transform duration-200 group-hover:scale-110"
-                                                                />
-                                                                {isPlexProvider && (
-                                                                    <div className="absolute -top-1 -right-1">
-                                                                        <SafeIcon
-                                                                            icon={Sparkles}
-                                                                            className="h-4 w-4 text-amber-400 fill-current"
-                                                                            size={16}
+                                            return (
+                                                <TooltipProvider key={index}>
+                                                    <Tooltip>
+                                                        <TooltipTrigger asChild>
+                                                            <Card className={`
+                                                                transition-all duration-200 cursor-pointer
+                                                                group flex items-center justify-center
+                                                                hover:shadow-lg hover:-translate-y-1
+                                                                ${isPlexProvider ? 'bg-amber-50/10 border-amber-400/30 hover:bg-amber-50/20' : 'hover:border-primary/50 hover:bg-primary/5'}
+                                                            `}>
+                                                                <CardContent className="p-3">
+                                                                    <div className="relative">
+                                                                        <Image
+                                                                            src={imageSrc}
+                                                                            alt={provider.provider_name}
+                                                                            width={40}
+                                                                            height={40}
+                                                                            className="rounded transition-transform duration-200 group-hover:scale-110"
                                                                         />
+                                                                        {isPlexProvider && (
+                                                                            <div className="absolute -top-1 -right-1">
+                                                                                <SafeIcon
+                                                                                    icon={Sparkles}
+                                                                                    className="h-4 w-4 text-amber-400 fill-current"
+                                                                                    size={16}
+                                                                                />
+                                                                            </div>
+                                                                        )}
                                                                     </div>
+                                                                </CardContent>
+                                                            </Card>
+                                                        </TooltipTrigger>
+                                                        <TooltipContent>
+                                                            <div className="text-center">
+                                                                <p className="font-medium">{provider.provider_name}</p>
+                                                                {isPlexProvider && (
+                                                                    <p className="text-xs text-muted-foreground">Available in your Plex library</p>
                                                                 )}
                                                             </div>
-                                                        </CardContent>
-                                                    </Card>
-                                                </TooltipTrigger>
-                                                <TooltipContent>
-                                                    <div className="text-center">
-                                                        <p className="font-medium">{provider.provider_name}</p>
-                                                        {isPlexProvider && (
-                                                            <p className="text-xs text-muted-foreground">Available in your Plex library</p>
-                                                        )}
-                                                    </div>
-                                                </TooltipContent>
-                                            </Tooltip>
-                                        </TooltipProvider>
-                                    );
-                                })}
-                            </div>
+                                                        </TooltipContent>
+                                                    </Tooltip>
+                                                </TooltipProvider>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            )}
+
+                            {notInUserProviders.length > 0 && (
+                                <div className="mb-4">
+                                    <h4 className="text-sm font-medium mb-2 text-muted-foreground">Other Services</h4>
+                                    <div className="grid grid-cols-4 gap-3">
+                                        {notInUserProviders.map((provider: StreamingInfo, index: number) => {
+                                            const imageSrc = `https://image.tmdb.org/t/p/w500${provider.logo_path}`;
+
+                                            return (
+                                                <TooltipProvider key={index}>
+                                                    <Tooltip>
+                                                        <TooltipTrigger asChild>
+                                                            <Card className="
+                                                                transition-all duration-200 cursor-pointer
+                                                                group flex items-center justify-center
+                                                                hover:shadow-lg hover:-translate-y-1
+                                                                bg-muted/30 border-muted-foreground/20
+                                                                hover:border-muted-foreground/40 hover:bg-muted/50
+                                                            ">
+                                                                <CardContent className="p-3">
+                                                                    <div className="relative opacity-75 group-hover:opacity-100 transition-opacity">
+                                                                        <Image
+                                                                            src={imageSrc}
+                                                                            alt={provider.provider_name}
+                                                                            width={40}
+                                                                            height={40}
+                                                                            className="rounded transition-transform duration-200 group-hover:scale-110"
+                                                                        />
+                                                                    </div>
+                                                                </CardContent>
+                                                            </Card>
+                                                        </TooltipTrigger>
+                                                        <TooltipContent>
+                                                            <div className="text-center">
+                                                                <p className="font-medium">{provider.provider_name}</p>
+                                                                <p className="text-xs text-muted-foreground">Not in your services</p>
+                                                            </div>
+                                                        </TooltipContent>
+                                                    </Tooltip>
+                                                </TooltipProvider>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            )}
 
                             <div className="text-center pt-3 border-t border-border/30">
                                 <p className="text-xs text-muted-foreground">
