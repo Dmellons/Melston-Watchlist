@@ -110,6 +110,7 @@ const NewSearchCard = ({
 
                 <CardContent className="p-0">
                     <div className="relative">
+                        <Link href={`/${data.tmdb_type}/${data.tmdb_id}`}>
                         <ImageWithFallback
                             src={`https://image.tmdb.org/t/p/w500/${data.poster_path}`}
                             alt={data.title}
@@ -117,6 +118,7 @@ const NewSearchCard = ({
                             width={200}
                             height={300}
                         />
+                        </Link>
 
                         {/* Gradient overlay on hover (hidden on mobile) */}
                         <div className={`
@@ -190,6 +192,7 @@ const NewSearchCard = ({
                                     {/* Backdrop Image */}
                                     {data.backdrop_path && (
                                         <div className="relative w-full h-48 sm:h-64 rounded-lg overflow-hidden">
+                                            <Link href={`${data.tmdb_type}/${data.tmdb_id}`}>
                                             <ImageWithFallback
                                                 src={`https://image.tmdb.org/t/p/w500/${data.backdrop_path}`}
                                                 alt={data.title}
@@ -197,6 +200,7 @@ const NewSearchCard = ({
                                                 width={500}
                                                 height={280}
                                             />
+                                            </Link>
                                             {/* Title overlay on backdrop */}
                                             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-4">
                                                 <div className="text-white space-y-2">

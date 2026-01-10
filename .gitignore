@@ -40,3 +40,6 @@ next-env.d.ts
 *venv/
 *tests/
 *.log
+
+.claude/
+*CLAUDE*
