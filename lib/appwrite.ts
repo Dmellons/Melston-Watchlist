@@ -38,7 +38,7 @@ export async function getCurrentPreferences(): Promise<object> {
 
 
 export function handleWatchlistDelete({ id }: { id: string }) {
-    toast.promise(database.deleteDocument('watchlist', process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID, id), {
+    toast.promise(database.deleteDocument('watchlist', process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID!, id), {
         loading: 'Deleting...',
         success: (res) => {
             console.log({ res })

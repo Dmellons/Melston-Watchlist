@@ -323,7 +323,7 @@ const NewSearchBar = ({ resultsLength = 10 }: NewSearchBarProps) => {
                                                     <Card className="p-3 sm:p-4 border-muted bg-muted/20">
                                                         <div className="flex flex-col items-center gap-2">
                                                             <SafeIcon icon={SearchIcon} className="h-6 w-6 sm:h-8 sm:w-8 text-muted-foreground" size={isDesktop ? 32 : 24} />
-                                                            <p className="font-medium text-sm sm:text-base">No results found for <strong>"{query}"</strong></p>
+                                                            <p className="font-medium text-sm sm:text-base">No results found for <strong>&quot;{query}&quot;</strong></p>
                                                             <p className="text-xs sm:text-sm text-muted-foreground">Try searching with different keywords</p>
                                                         </div>
                                                     </Card>

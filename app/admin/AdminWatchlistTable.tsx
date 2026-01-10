@@ -32,7 +32,7 @@ export default async function AdminWatchlistTable() {
     // const watchlist: Models.DocumentList<WatchlistDocument> = await databases?.listDocuments('watchlist', process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID)
     const watchlist: Models.DocumentList<WatchlistDocument> = await databases.listDocuments(
         'watchlist',
-         process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID,
+         process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID!,
         [
             Query.limit(1000)
         ]);
@@ -58,7 +58,7 @@ export default async function AdminWatchlistTable() {
         <section className='pt-6'>
             <div className="container">
                 <h1 className="text-3xl font-bold mb-2">Plex Requests ({requests.length})</h1>
-                <DataTable columns={columns} data={data} suppressHydrationWarning  />
+                <DataTable columns={columns} data={data} />
             </div>
         </section>
     )

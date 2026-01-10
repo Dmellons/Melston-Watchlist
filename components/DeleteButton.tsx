@@ -127,12 +127,12 @@ export default function DeleteButton({
       <div className="space-y-3">
         <p className="text-center text-muted-foreground">
           Are you sure you want to delete{" "}
-          {title && <span className="font-semibold text-foreground">"{title}"</span>}
+          {title && <span className="font-semibold text-foreground">&quot;{title}&quot;</span>}
           {!title && "this item"} from your watchlist?
         </p>
         
         <p className="text-center text-sm text-muted-foreground">
-          You'll need to add it again if you change your mind.
+          You&apos;ll need to add it again if you change your mind.
         </p>
       </div>
       

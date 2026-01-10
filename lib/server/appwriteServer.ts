@@ -6,7 +6,7 @@ import { type UserType } from "@/hooks/User";
 
 
 export async function createSessionClient() {
-  const jwt = cookies().get(process.env.COOKIE_NAME)?.value;
+  const jwt = cookies().get(process.env.COOKIE_NAME!)?.value;
   // // console.log({ jwt });
   if (!jwt) {
     return {
@@ -17,8 +17,8 @@ export async function createSessionClient() {
       };
   }
   const client = new Client()
-    .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT_URL)
-    .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID)
+    .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT_URL!)
+    .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID!)
     .setJWT(jwt);
   // console.log("Client: ", { client });
   client.setSession(jwt);
@@ -31,20 +31,17 @@ export async function createSessionClient() {
   const users = new Users(client)
  try {
   const user = await account.get()
-  
-}catch (error){(error) => {
+} catch (error: any) {
     if (error.code === 401 && error.type === "user_jwt_invalid") {
-      async () => {
-        await fetch(`${process.env.next_public_url_base}/api/jwt/delete`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-        });
-      };
+      await fetch(`${process.env.next_public_url_base}/api/jwt/delete`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
       // throw new Error("Invalid JWT");
     } else {
       throw error;
     }
-  }};
+  }
 
   // console.log('User2: ',{ user });
   const returnObj = {
@@ -61,9 +58,9 @@ export async function createSessionClient() {
 
 export async function createAdminClient() {
   const client = new Client()
-    .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT_URL)
-    .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID)
-    .setKey(process.env.APPWRITE_API_KEY);
+    .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT_URL!)
+    .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID!)
+    .setKey(process.env.APPWRITE_API_KEY!);
 
   const account = new Account(client);
   const databases = new Databases(client)
@@ -83,18 +80,24 @@ export async function getLoggedInUser() {
   try {
     const { account, client } = await createSessionClient();
 
-    const { $id, email, name, prefs, status, labels, ...rest } = await account.get().catch((error) => {
+    if (!account || !client) return null;
+
+    const userResponse = await account.get().catch((error: any) => {
       if(error.code === 401 && error.type === 'user_jwt_invalid') {
         // Handle invalid JWT
         return null;
       } else {
         throw error;
       }
-    }); 
+    });
+
+    if (!userResponse) return null;
+
+    const { $id, email, name, prefs, status, labels, ...rest } = userResponse;
 
     if (!$id) return null;
 
-    const session = cookies().get(process.env.COOKIE_NAME);
+    const session = cookies().get(process.env.COOKIE_NAME!);
     if(!session || !session.value) {
       throw new Error("No session");
     }

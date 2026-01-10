@@ -15,7 +15,7 @@ const ImageWithFallback = ({
     [key: string]: any
 }) => {
     
-    const [error, setError] = useState(null)
+    const [error, setError] = useState<boolean | null>(null)
     const [imageSrc, setImageSrc] = useState<string>("")
     
     // Create fallback URL if not provided

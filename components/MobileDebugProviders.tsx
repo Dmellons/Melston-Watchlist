@@ -28,7 +28,7 @@ const MobileDebugProviders = ({ tmdbId, tmdbType, userProviders }: MobileDebugPr
 
     useEffect(() => {
         // Initial debug info
-        setDebugInfo(prev => ({
+        setDebugInfo((prev: any) => ({
             ...prev,
             mounted: true,
             windowWidth: typeof window !== 'undefined' ? window.innerWidth : 0,
@@ -43,7 +43,7 @@ const MobileDebugProviders = ({ tmdbId, tmdbType, userProviders }: MobileDebugPr
         // Simulate API call with detailed logging
         const testProvidersAPI = async () => {
             try {
-                setDebugInfo(prev => ({ ...prev, apiCalled: true }));
+                setDebugInfo((prev: any) => ({ ...prev, apiCalled: true }));
 
                 const url = `https://api.themoviedb.org/3/${tmdbType}/${tmdbId}/watch/providers`;
                 
@@ -61,7 +61,7 @@ const MobileDebugProviders = ({ tmdbId, tmdbType, userProviders }: MobileDebugPr
 
                 const data = await response.json();
                 
-                setDebugInfo(prev => ({
+                setDebugInfo((prev: any) => ({
                     ...prev,
                     apiSuccess: true,
                     apiData: data,
@@ -70,7 +70,7 @@ const MobileDebugProviders = ({ tmdbId, tmdbType, userProviders }: MobileDebugPr
                 }));
 
             } catch (error) {
-                setDebugInfo(prev => ({
+                setDebugInfo((prev: any) => ({
                     ...prev,
                     apiError: error instanceof Error ? error.message : 'Unknown error',
                     finalResult: 'error'

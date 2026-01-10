@@ -17,40 +17,43 @@ export async function getAnalyticsData() {
       ]
     );
 
+    // Cast documents to any for easier access
+    const docs = allWatchlistItems.documents as any[];
+
     // Calculate analytics
     const analytics = {
       totalItems: allWatchlistItems.total,
-      movies: allWatchlistItems.documents.filter(item => item.content_type === 'movie').length,
-      tvShows: allWatchlistItems.documents.filter(item => item.content_type === 'tv').length,
-      plexRequests: allWatchlistItems.documents.filter(item => item.plex_request).length,
-      
+      movies: docs.filter(item => item.content_type === 'movie').length,
+      tvShows: docs.filter(item => item.content_type === 'tv').length,
+      plexRequests: docs.filter(item => item.plex_request).length,
+
       // Watch status breakdown
       watchStatusBreakdown: {
-        want_to_watch: allWatchlistItems.documents.filter(item => item.watch_status === 'want_to_watch').length,
-        watching: allWatchlistItems.documents.filter(item => item.watch_status === 'watching').length,
-        completed: allWatchlistItems.documents.filter(item => item.watch_status === 'completed').length,
-        on_hold: allWatchlistItems.documents.filter(item => item.watch_status === 'on_hold').length,
-        dropped: allWatchlistItems.documents.filter(item => item.watch_status === 'dropped').length,
+        want_to_watch: docs.filter(item => item.watch_status === 'want_to_watch').length,
+        watching: docs.filter(item => item.watch_status === 'watching').length,
+        completed: docs.filter(item => item.watch_status === 'completed').length,
+        on_hold: docs.filter(item => item.watch_status === 'on_hold').length,
+        dropped: docs.filter(item => item.watch_status === 'dropped').length,
       },
 
       // Rating analytics
       ratingAnalytics: {
-        totalRated: allWatchlistItems.documents.filter(item => item.user_rating && item.user_rating > 0).length,
-        averageRating: calculateAverageRating(allWatchlistItems.documents),
-        ratingDistribution: getRatingDistribution(allWatchlistItems.documents),
+        totalRated: docs.filter(item => item.user_rating && item.user_rating > 0).length,
+        averageRating: calculateAverageRating(docs),
+        ratingDistribution: getRatingDistribution(docs),
       },
 
       // Recent activity
-      recentlyAdded: allWatchlistItems.documents.slice(0, 10),
-      recentlyCompleted: allWatchlistItems.documents
+      recentlyAdded: docs.slice(0, 10),
+      recentlyCompleted: docs
         .filter(item => item.watch_status === 'completed' && item.date_watched)
-        .sort((a, b) => new Date(b.date_watched!).getTime() - new Date(a.date_watched!).getTime())
+        .sort((a: any, b: any) => new Date(b.date_watched!).getTime() - new Date(a.date_watched!).getTime())
         .slice(0, 10),
 
       // Top rated content
-      topRated: allWatchlistItems.documents
+      topRated: docs
         .filter(item => item.user_rating && item.user_rating > 0)
-        .sort((a, b) => (b.user_rating || 0) - (a.user_rating || 0))
+        .sort((a: any, b: any) => (b.user_rating || 0) - (a.user_rating || 0))
         .slice(0, 10),
     };
 
@@ -112,17 +115,17 @@ export async function getUserAnalytics(userId: string) {
     );
 
     // Filter by permissions to get user-specific documents
-    const userItems = userWatchlistItems.documents.filter(doc => 
-      doc.$permissions.some(permission => permission.includes(`user:${userId}`))
+    const userItems = (userWatchlistItems.documents as any[]).filter(doc =>
+      doc.$permissions.some((permission: string) => permission.includes(`user:${userId}`))
     );
 
     return {
       success: true,
       data: {
         totalItems: userItems.length,
-        movies: userItems.filter(item => item.content_type === 'movie').length,
-        tvShows: userItems.filter(item => item.content_type === 'tv').length,
-        completed: userItems.filter(item => item.watch_status === 'completed').length,
+        movies: userItems.filter((item: any) => item.content_type === 'movie').length,
+        tvShows: userItems.filter((item: any) => item.content_type === 'tv').length,
+        completed: userItems.filter((item: any) => item.watch_status === 'completed').length,
         averageRating: calculateAverageRating(userItems),
         favoriteGenres: calculateFavoriteGenres(userItems),
       }

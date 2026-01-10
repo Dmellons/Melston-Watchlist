@@ -80,11 +80,11 @@ export function DataTable<TData, TValue>({
   console.log({ rowSelection })
   console.log({ table })
 
-  function handleEmailFilterChange(e) {
+  function handleEmailFilterChange(e: React.ChangeEvent<HTMLInputElement>) {
     return table.getColumn("email")?.setFilterValue(e.target.value)
   }
 
-  function getUniqueValues(data: PlexRequest[], key: string) {
+  function getUniqueValues(data: PlexRequest[], key: keyof PlexRequest) {
     const uniqueValues = new Set()
     data.forEach((row) => {
       if (key in row) {

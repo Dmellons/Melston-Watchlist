@@ -1,8 +1,9 @@
 // components/ui/loading-states.tsx
 import { cn } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@/components/ui/button';
 import SafeIcon from '@/components/SafeIcon';
-import { Loader2, Film, Tv, Search } from 'lucide-react';
+import { Loader2, Film, Tv, Search, AlertTriangle } from 'lucide-react';
 
 interface LoadingSpinnerProps {
   size?: 'sm' | 'md' | 'lg' | 'xl';
@@ -122,7 +123,7 @@ export function ProvidersBlockSkeleton() {
 }
 
 interface EmptyStateProps {
-  icon?: React.ComponentType;
+  icon?: any;
   title: string;
   description: string;
   action?: React.ReactNode;

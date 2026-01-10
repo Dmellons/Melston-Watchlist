@@ -155,10 +155,10 @@ export default function ProvidersSelect() {
                                                 const isChecked = providers.includes(provider.provider_id);
                                                 if (isChecked) {
                                                     setProviders(prevProviders =>
-                                                        prevProviders.filter(p => p !== provider.provider_id)
+                                                        (prevProviders || []).filter(p => p !== provider.provider_id)
                                                     );
                                                 } else {
-                                                    setProviders(prevProviders => [...prevProviders, provider.provider_id]);
+                                                    setProviders(prevProviders => [...(prevProviders || []), provider.provider_id]);
                                                 }
                                             }}
                                             className="flex flex-col items-center cursor-pointer mt-4"
@@ -203,10 +203,10 @@ export default function ProvidersSelect() {
                                                 const isChecked = providers.includes(provider.provider_id);
                                                 if (isChecked) {
                                                     setProviders(prevProviders =>
-                                                        prevProviders.filter(p => p !== provider.provider_id)
+                                                        (prevProviders || []).filter(p => p !== provider.provider_id)
                                                     );
                                                 } else {
-                                                    setProviders(prevProviders => [...prevProviders, provider.provider_id]);
+                                                    setProviders(prevProviders => [...(prevProviders || []), provider.provider_id]);
                                                 }
                                             }}
                                             className="flex flex-col items-center cursor-pointer mt-4"

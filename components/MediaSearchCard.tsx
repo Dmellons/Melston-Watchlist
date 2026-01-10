@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/card"
 import AddWatchlistButton from "@/components/buttons/AddWatchlistButton"
 
-import { TMDBMultiSearchResult, TMDBTelevisionSearchResult } from "@/types/tmdbApi"
+import { TMDBMultiSearchResult, TMDBTelevisionSearchResult, TMDBMovieSearchResult } from "@/types/tmdbApi"
 import { Separator } from "./ui/separator"
 import ProvidersBlock from "@/components/ProvidersBlock"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion"
@@ -42,21 +42,22 @@ const MediaSearchCard = ({
             tmdb_id: media.id,
             tmdb_type: media.media_type,
             year: media.first_air_date,
-            image_url: media.poster_path,
+            image_url: media.poster_path || '',
             description: media.overview ? media.overview : "No description available"
         }
 
     }
 
     if (media.media_type === 'movie') {
+        const movieMedia = media as TMDBMovieSearchResult
         data = {
-            title: media.title,
-            content_type: media.media_type,
-            tmdb_id: media.id,
-            tmdb_type: media.media_type,
-            year: media.release_date,
-            image_url: media.poster_path,
-            description: media.overview ? media.overview : "No description available"
+            title: movieMedia.title,
+            content_type: movieMedia.media_type,
+            tmdb_id: movieMedia.id,
+            tmdb_type: movieMedia.media_type,
+            year: movieMedia.release_date,
+            image_url: movieMedia.poster_path || '',
+            description: movieMedia.overview ? movieMedia.overview : "No description available"
         }
     }
 

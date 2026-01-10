@@ -25,7 +25,7 @@ export const tmdbFetchOptions = {
   }
   
   export type Results = {
-    [key: string]: CountryInfo[];
+    [key: string]: CountryInfo;
   }
   
   export type ProvidersApiCall = {

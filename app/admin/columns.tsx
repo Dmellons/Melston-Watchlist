@@ -193,7 +193,7 @@ export const columns: ColumnDef<PlexRequest, unknown>[] = [
                             onClick={() => {
                                 const id = media.id
                                 toast.promise(
-                                    database.updateDocument('watchlist', process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID, id, {
+                                    database.updateDocument('watchlist', process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID!, id, {
                                         plex_request: !media.requested
                                     })
                                     ,
@@ -218,7 +218,7 @@ export const columns: ColumnDef<PlexRequest, unknown>[] = [
                                 const id = media.id
                                 toast.promise(
 
-                                    database.deleteDocument('watchlist', process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID, id)
+                                    database.deleteDocument('watchlist', process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID!, id)
                                     ,
                                     {
                                         loading: 'Deleting...',

@@ -144,7 +144,7 @@ export default function RatingComponent({
         // Update existing rating (database will enforce user permissions)
         await database.updateDocument(
           'watchlist',
-          process.env.NEXT_PUBLIC_APPWRITE_RATINGS_COLLECTION_ID,
+          process.env.NEXT_PUBLIC_APPWRITE_RATINGS_COLLECTION_ID!,
           userRating.$id,
           {
             ...ratingData,
@@ -156,7 +156,7 @@ export default function RatingComponent({
         // Check if user already has a rating (in case of race condition)
         const existingRatings = await database.listDocuments(
           'watchlist',
-          process.env.NEXT_PUBLIC_APPWRITE_RATINGS_COLLECTION_ID,
+          process.env.NEXT_PUBLIC_APPWRITE_RATINGS_COLLECTION_ID!,
           [
             Query.equal('user_id', user.id!),
             Query.equal('tmdb_id', tmdbId),
@@ -173,7 +173,7 @@ export default function RatingComponent({
         // Create new rating with document-level permissions
         await database.createDocument(
           'watchlist',
-          process.env.NEXT_PUBLIC_APPWRITE_RATINGS_COLLECTION_ID,
+          process.env.NEXT_PUBLIC_APPWRITE_RATINGS_COLLECTION_ID!,
           ID.unique(),
           ratingData,
           [
@@ -188,11 +188,12 @@ export default function RatingComponent({
       // Reload ratings to update UI
       await loadRatings()
       setShowReviewForm(false)
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error submitting rating:', error)
-      
+
       // Check for unique constraint violation
-      if (error.message && error.message.includes('unique')) {
+      if (error && typeof error === 'object' && 'message' in error &&
+          typeof error.message === 'string' && error.message.includes('unique')) {
         toast.error('You have already rated this media')
         await loadRatings()
       } else {
@@ -211,7 +212,7 @@ export default function RatingComponent({
       // Database will enforce that only the owner can delete
       await database.deleteDocument(
         'watchlist',
-        process.env.NEXT_PUBLIC_APPWRITE_RATINGS_COLLECTION_ID,
+        process.env.NEXT_PUBLIC_APPWRITE_RATINGS_COLLECTION_ID!,
         userRating.$id
       )
       
@@ -221,9 +222,9 @@ export default function RatingComponent({
       setShowReviewForm(false)
       await loadRatings()
       toast.success('Rating deleted successfully!')
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Error deleting rating:', error)
-      if (error.code === 401) {
+      if (error && typeof error === 'object' && 'code' in error && error.code === 401) {
         toast.error('You can only delete your own ratings')
       } else {
         toast.error('Failed to delete rating')

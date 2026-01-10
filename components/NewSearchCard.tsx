@@ -1,5 +1,5 @@
 'use client'
-import { TMDBMultiSearchResult } from "@/types/tmdbApi"
+import { TMDBMultiSearchResult, TMDBMovieSearchResult } from "@/types/tmdbApi"
 import ProvidersBlock from "./ProvidersBlock"
 import AddWatchlistButton from "./buttons/AddWatchlistButton"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
@@ -49,24 +49,25 @@ const NewSearchCard = ({
                 tmdb_id: media.id,
                 tmdb_type: media.media_type,
                 year: media.first_air_date,
-                poster_path: media.poster_path,
-                backdrop_path: media.backdrop_path,
+                poster_path: media.poster_path || '',
+                backdrop_path: media.backdrop_path || '',
                 genre_ids: media.genre_ids,
                 description: media.overview ? media.overview : "No description available"
             });
         }
 
         if (media.media_type === 'movie') {
+            const movieMedia = media as TMDBMovieSearchResult;
             setData({
-                title: media.title,
-                content_type: media.media_type,
-                tmdb_id: media.id,
-                tmdb_type: media.media_type,
-                year: media.release_date,
-                poster_path: media.poster_path,
-                backdrop_path: media.backdrop_path,
-                genre_ids: media.genre_ids,
-                description: media.overview ? media.overview : "No description available"
+                title: movieMedia.title,
+                content_type: movieMedia.media_type,
+                tmdb_id: movieMedia.id,
+                tmdb_type: movieMedia.media_type,
+                year: movieMedia.release_date,
+                poster_path: movieMedia.poster_path || '',
+                backdrop_path: movieMedia.backdrop_path || '',
+                genre_ids: movieMedia.genre_ids,
+                description: movieMedia.overview ? movieMedia.overview : "No description available"
             });
         }
     }, [media]);
@@ -192,7 +193,7 @@ const NewSearchCard = ({
                                     {/* Backdrop Image */}
                                     {data.backdrop_path && (
                                         <div className="relative w-full h-48 sm:h-64 rounded-lg overflow-hidden">
-                                            <Link href={`${data.tmdb_type}/${data.tmdb_id}`}>
+                                            <Link href={`/${data.tmdb_type}/${data.tmdb_id}`}>
                                             <ImageWithFallback
                                                 src={`https://image.tmdb.org/t/p/w500/${data.backdrop_path}`}
                                                 alt={data.title}

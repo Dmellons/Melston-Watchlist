@@ -67,17 +67,17 @@ const WatchlistMediaCard = ({
     }
     return (
         <Card className="
-        flex 
-        flex-col 
+        flex
+        flex-col
         overflow-y-auto
-        justify-between 
-        items-center 
+        justify-between
+        items-center
         w-full
-        max-w-2xl 
-        p-2 
-        md:flex-row 
-        md:max-h-96 
-        
+        max-w-full sm:max-w-2xl
+        p-2
+        sm:flex-row
+        sm:max-h-96
+
         ">
             <CardHeader className="group flex flex-col w-full justify-between items-center sm:flex-row sm:justify-center sm:gap-4 sm:min-w-48">
                 <div className="flex flex-col items-center gap-1">
@@ -100,17 +100,9 @@ const WatchlistMediaCard = ({
                     <CardDescription className="font-subtitle hidden sm:block ">Year: {data.year?.substring(0, 4)}</CardDescription>
                     <CardDescription className="font-subtitle hidden sm:block ">Type: {`${data.tmdb_type?.charAt(0).toUpperCase()}${data.content_type?.slice(1)}`}</CardDescription>
                 </div>
-                {/* TODO!! */}
-                {/* <div className="flex flex-col  justify-between items-center w-full"> */}
-
-                
-                {data.tmdb_type === 'movie' &&
-                    <Link 
-                    href={`/movie/${media.tmdb_id}`} 
-                    >
-                        <Button className="w-full my-2">View Details</Button>
-                    </Link>
-                }
+                <Link href={`/${data.tmdb_type}/${media.tmdb_id}`}>
+                    <Button className="w-full my-2">View Details</Button>
+                </Link>
 
                 {/* <Accordion type="single" collapsible className="w-full"> 
                     <AccordionItem value="item-1">

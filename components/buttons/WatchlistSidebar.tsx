@@ -96,15 +96,15 @@ const mockWatchlistItems = [
   }
 ];
 
-const WatchStatusBadge = ({ status }) => {
-  const statusConfig = {
+const WatchStatusBadge = ({ status }: { status: string }) => {
+  const statusConfig: Record<string, { label: string; icon: any; color: string }> = {
     want_to_watch: { label: 'Want to Watch', icon: Clock, color: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200' },
     watching: { label: 'Watching', icon: Play, color: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' },
     completed: { label: 'Completed', icon: Check, color: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200' },
     on_hold: { label: 'On Hold', icon: Pause, color: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200' },
     dropped: { label: 'Dropped', icon: X, color: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' }
   };
-  
+
   const config = statusConfig[status] || statusConfig.want_to_watch;
   const IconComponent = config.icon;
   
@@ -116,14 +116,14 @@ const WatchStatusBadge = ({ status }) => {
   );
 };
 
-const StarRating = ({ rating, size = 'sm' }) => {
+const StarRating = ({ rating, size = 'sm' }: { rating: number | undefined; size?: string }) => {
   if (!rating) return null;
-  
-  const sizeClasses = {
+
+  const sizeClasses: Record<string, string> = {
     sm: 'h-3 w-3',
     md: 'h-4 w-4'
   };
-  
+
   return (
     <div className="flex items-center gap-1">
       <Star className={`${sizeClasses[size]} fill-yellow-400 text-yellow-400`} />
@@ -132,7 +132,7 @@ const StarRating = ({ rating, size = 'sm' }) => {
   );
 };
 
-const WatchlistItem = ({ item, isExpanded, onToggle }) => {
+const WatchlistItem = ({ item, isExpanded, onToggle }: { item: any; isExpanded: boolean; onToggle: (id: string) => void }) => {
   const year = item.release_date ? new Date(item.release_date).getFullYear() : '';
   
   return (
@@ -148,8 +148,9 @@ const WatchlistItem = ({ item, isExpanded, onToggle }) => {
             alt={item.title}
             className="w-full h-full object-cover"
             onError={(e) => {
-              e.target.style.display = 'none';
-              e.target.nextSibling.style.display = 'flex';
+              const target = e.target as HTMLImageElement;
+              target.style.display = 'none';
+              (target.nextSibling as HTMLElement).style.display = 'flex';
             }}
           />
           <div className="w-full h-full hidden items-center justify-center bg-muted">
@@ -228,16 +229,26 @@ const WatchlistItem = ({ item, isExpanded, onToggle }) => {
   );
 };
 
-const FilterControls = ({ 
-  searchQuery, 
-  setSearchQuery, 
-  sortBy, 
-  setSortBy, 
-  sortOrder, 
-  setSortOrder, 
-  filterBy, 
+const FilterControls = ({
+  searchQuery,
+  setSearchQuery,
+  sortBy,
+  setSortBy,
+  sortOrder,
+  setSortOrder,
+  filterBy,
   setFilterBy,
-  isCompact = false 
+  isCompact = false
+}: {
+  searchQuery: string;
+  setSearchQuery: (value: string) => void;
+  sortBy: string;
+  setSortBy: (value: string) => void;
+  sortOrder: string;
+  setSortOrder: (value: string) => void;
+  filterBy: string;
+  setFilterBy: (value: string) => void;
+  isCompact?: boolean;
 }) => {
   const [showFilters, setShowFilters] = useState(false);
 
@@ -430,7 +441,7 @@ const MobileSidebarWatchlist = () => {
     return filtered;
   }, [searchQuery, sortBy, sortOrder, filterBy]);
 
-  const toggleExpanded = (itemId) => {
+  const toggleExpanded = (itemId: string) => {
     const newExpanded = new Set(expandedItems);
     if (newExpanded.has(itemId)) {
       newExpanded.delete(itemId);

@@ -28,8 +28,8 @@ export async function POST(req: NextRequest, res: NextResponse) {
         if (jwt) {
 
             const client = new Client()
-                .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT_URL)
-                .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID)
+                .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT_URL!)
+                .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID!)
                 .setJWT(jwt);
 
 
@@ -40,7 +40,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
             const user = await account.get();
             // console.log({user})
 
-            cookies().set(process.env.COOKIE_NAME, jwt, {
+            cookies().set(process.env.COOKIE_NAME!, jwt, {
                 path: "/",
                 httpOnly: true,
                 sameSite: "strict",

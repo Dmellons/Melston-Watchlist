@@ -59,17 +59,13 @@ const AddWatchlistButton = ({
             }
         }
         
-        console.log('Full Media Data:', fullMediaData);
-        
         const title = fullMediaData.media_type === 'tv'
             ? (fullMediaData as { name?: string }).name || (mediaData as { name?: string }).name || ''
             : (fullMediaData as { title?: string }).title || (mediaData as { title?: string }).title || '';
-        
-        console.log('Media Title:', title);
 
         const releaseDate = fullMediaData.media_type === 'tv'
-            ? (fullMediaData as any).first_air_date || mediaData.first_air_date
-            : (fullMediaData as any).release_date || mediaData.release_date;
+            ? (fullMediaData as any).first_air_date || (mediaData as any).first_air_date
+            : (fullMediaData as any).release_date || (mediaData as any).release_date;
 
         // Ensure we have required fields
         if (!title || title.trim() === '') {
@@ -101,11 +97,6 @@ const AddWatchlistButton = ({
         setIsLoading(true);
         
         try {
-            // Debug: Log the media object to see its structure
-            console.log('Media object:', media);
-            console.log('Media ID:', media.id);
-            console.log('Media type:', media.media_type);
-            
             // Ensure we have valid values for the query
             if (!media.id || !media.media_type) {
                 throw new Error('Invalid media data: missing id or media_type');
@@ -128,8 +119,6 @@ const AddWatchlistButton = ({
 
             // Prepare the watchlist data
             const watchlistData = await prepareMediaData(media);
-
-            console.log('Prepared watchlist data:', watchlistData);
 
             // Add to watchlist collection
             await database.createDocument(

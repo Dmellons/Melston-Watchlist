@@ -99,7 +99,7 @@ export default function SearchBar() {
               {/* <CommandEmpty>No framework found.</CommandEmpty> */}
               <CommandGroup>
                 {results.map((result) => {
-                  const name = result.title || result.name
+                  const name = (result as any).title || (result as any).name
 
                   return (
 

@@ -19,25 +19,25 @@ export default async function WatchlistPage() {
     try{
          user = await account.get()
 
-    } catch(error) {
+    } catch(error: unknown) {
        console.log(error)
-       if (error.code === 401 && error.type === 'general_unauthorized_scope') {
-           redirect('/')
-       }     
-        
+       if (error && typeof error === 'object' && 'code' in error && 'type' in error) {
+           if (error.code === 401 && error.type === 'general_unauthorized_scope') {
+               redirect('/')
+           }
+       }
     }
 
    
-    const watchlist: Models.DocumentList<WatchlistDocument> = await databases.listDocuments('watchlist', process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID)
+    const watchlist: Models.DocumentList<WatchlistDocument> = await databases.listDocuments('watchlist', process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID!)
   
     if (!user) {
         return <div className="text-3xl font-bold m-auto w-full text-center">please sign in </div>
     }
 
     return (
-        <main className="flex min-h-screen flex-col items-center p- sm:p-18">
+        <main className="flex min-h-screen flex-col items-center p-4 sm:p-8">
             <h1 className="text-3xl font-bold">Watchlist</h1>
-            {/* <AddWatchlist /> */}
             {
                 user ?
                     (watchlist && watchlist?.total > 0 ? (

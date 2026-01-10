@@ -319,11 +319,9 @@ export default function EnhancedDetailPageContent({
                                 />
                                 
                                 <RatingComponent
-                                    currentRating={watchlistItem.user_rating || 0}
-                                    currentReview={watchlistItem.user_review || ''}
-                                    documentId={watchlistItem.$id}
+                                    tmdbId={data.id}
+                                    tmdbType={tmdbType}
                                     mediaTitle={data.title || data.name}
-                                    onRatingUpdate={handleRatingUpdate}
                                 />
                             </div>
                         </section>

@@ -153,7 +153,7 @@ export function SchoolPicker() {
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>
         <Button variant="outline" className="w-[150px] justify-start">
-          {selectedSchool ? <>{selectedSchool.label}</> : <>+ Set status</>}
+          {selectedSchool ? <>{selectedSchool.name}</> : <>+ Set status</>}
         </Button>
       </DrawerTrigger>
       <DrawerContent>

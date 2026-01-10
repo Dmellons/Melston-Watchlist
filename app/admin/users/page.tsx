@@ -290,7 +290,7 @@ export default function AdminUsersPage() {
                 <div className="text-center">
                     <SafeIcon icon={Shield} className="h-16 w-16 mx-auto mb-4 text-destructive" size={64} />
                     <h2 className="text-2xl font-bold mb-2">Access Denied</h2>
-                    <p className="text-muted-foreground">You don't have permission to access this page.</p>
+                    <p className="text-muted-foreground">You don&apos;t have permission to access this page.</p>
                 </div>
             </div>
         );

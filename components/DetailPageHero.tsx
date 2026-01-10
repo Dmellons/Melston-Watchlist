@@ -6,7 +6,6 @@ import { Card } from "@/components/ui/card";
 import AddWatchlistButton from '@/components/buttons/AddWatchlistButton';
 import BackButton from '@/components/buttons/BackButton';
 import SafeIcon from '@/components/SafeIcon';
-import { WatchlistDocumentCreate } from "@/types/appwrite";
 import { 
     Star, 
     TrendingUp,
@@ -23,7 +22,6 @@ interface HeroSectionProps {
     title: string;
     releaseDate: string;
     tmdbType: 'movie' | 'tv';
-    addButtonData: WatchlistDocumentCreate;
 }
 
 function RatingDisplay({ rating, voteCount }: { rating: number; voteCount: number }) {
@@ -71,13 +69,30 @@ function GenreTags({ genres }: { genres: { id: number; name: string }[] }) {
     );
 }
 
-export default function DetailPageHero({ 
-    data, 
-    title, 
-    releaseDate, 
-    tmdbType, 
-    addButtonData 
+export default function DetailPageHero({
+    data,
+    title,
+    releaseDate,
+    tmdbType
 }: HeroSectionProps) {
+    // Create a TMDBMultiSearchResult-compatible object for AddWatchlistButton
+    const addButtonData = {
+        id: data.id,
+        media_type: tmdbType,
+        title: tmdbType === 'movie' ? data.title : undefined,
+        name: tmdbType === 'tv' ? data.name : undefined,
+        backdrop_path: data.backdrop_path,
+        poster_path: data.poster_path,
+        overview: data.overview,
+        genre_ids: data.genres?.map((g: any) => g.id) || [],
+        release_date: tmdbType === 'movie' ? data.release_date : undefined,
+        first_air_date: tmdbType === 'tv' ? data.first_air_date : undefined,
+        vote_average: data.vote_average,
+        vote_count: data.vote_count,
+        adult: data.adult || false,
+        original_language: data.original_language,
+        popularity: data.popularity,
+    } as any;
     return (
         <>
             {/* Mobile Layout */}

@@ -59,7 +59,7 @@ export class RatingsService {
                 this.COLLECTION_ID,
                 [`user_id="${userId}"`]
             );
-            return response.documents as RatingDocument[];
+            return response.documents as unknown as RatingDocument[];
         } catch (error) {
             console.error('Error fetching user ratings:', error);
             throw error;
@@ -101,7 +101,7 @@ export class RatingsService {
                     existing.$id,
                     ratingData
                 );
-                return updated as RatingDocument;
+                return updated as unknown as RatingDocument;
             } else {
                 // Create new rating
                 const created = await database.createDocument(
@@ -118,7 +118,7 @@ export class RatingsService {
                         Permission.delete(Role.label('admin'))
                     ]
                 );
-                return created as RatingDocument;
+                return created as unknown as RatingDocument;
             }
         } catch (error) {
             console.error('Error adding/updating rating:', error);
@@ -140,7 +140,7 @@ export class RatingsService {
                     `tmdb_type="${tmdbType}"`
                 ]
             );
-            return response.documents[0] as RatingDocument || null;
+            return (response.documents[0] as unknown as RatingDocument) || null;
         } catch (error) {
             console.error('Error fetching user rating:', error);
             return null;
@@ -179,7 +179,7 @@ export class RatingsService {
                 updates
             );
 
-            return updated as RatingDocument;
+            return updated as unknown as RatingDocument;
         } catch (error) {
             console.error('Error updating watch status:', error);
             throw error;
@@ -213,7 +213,7 @@ export class RatingsService {
                 }
             );
 
-            return updated as RatingDocument;
+            return updated as unknown as RatingDocument;
         } catch (error) {
             console.error('Error updating rating and review:', error);
             throw error;
@@ -240,7 +240,7 @@ export class RatingsService {
                 }
             );
 
-            return updated as RatingDocument;
+            return updated as unknown as RatingDocument;
         } catch (error) {
             console.error('Error toggling favorite:', error);
             throw error;

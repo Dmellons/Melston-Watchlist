@@ -6,12 +6,12 @@ import { useEffect, useState } from "react"
 const PlexRequestBlock = () => {
     
 
-    const [data, setData] = useState(null)
+    const [data, setData] = useState<Models.DocumentList<WatchlistDocument> | null>(null)
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const result: Models.DocumentList<WatchlistDocument> = await database.listDocuments('watchlist', process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID)
+                const result: Models.DocumentList<WatchlistDocument> = await database.listDocuments('watchlist', process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID!)
                 setData(result)
             } catch (error) {
                 console.error(error)
