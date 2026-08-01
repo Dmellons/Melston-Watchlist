@@ -30,7 +30,7 @@ export default async function AdminWatchlistTable() {
 
 
     // const watchlist: Models.DocumentList<WatchlistDocument> = await databases?.listDocuments('watchlist', process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID)
-    const watchlist: Models.DocumentList<WatchlistDocument> = await databases.listDocuments(
+    const watchlist: Models.DocumentList<WatchlistDocument> = await databases.listDocuments<WatchlistDocument>(
         'watchlist',
          process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID!,
         [

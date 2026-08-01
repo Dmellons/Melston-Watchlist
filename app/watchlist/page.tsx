@@ -20,7 +20,7 @@ export default async function WatchlistPage() {
         }
     }
 
-    const watchlist: Models.DocumentList<WatchlistDocument> = await databases.listDocuments('watchlist', process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID!, [Query.limit(1000)])
+    const watchlist: Models.DocumentList<WatchlistDocument> = await databases.listDocuments<WatchlistDocument>('watchlist', process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID!, [Query.limit(1000)])
 
     if (!user) {
         return <div className="text-3xl font-bold m-auto w-full text-center">please sign in </div>

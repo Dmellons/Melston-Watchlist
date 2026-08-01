@@ -108,7 +108,7 @@ export async function getLoggedInUser() {
 
     // Fetch only the current user's watchlist documents
     // With document-level permissions, this will automatically filter to user's own documents
-    const watchlist: Models.DocumentList<WatchlistDocument> = await database.listDocuments(
+    const watchlist: Models.DocumentList<WatchlistDocument> = await database.listDocuments<WatchlistDocument>(
       'watchlist', 
       process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID!,
       [

@@ -1,13 +1,18 @@
 // types/appwrite.d.ts - Enhanced version
 import { Models } from "appwrite"
 
+// The client `appwrite` SDK's Models.Document predates the `$sequence` field
+// that node-appwrite v27 requires on its Document constraint; the server
+// returns it either way, so bake it into our document types.
+export type AppwriteDocument = Models.Document & { $sequence: string }
+
 export type CollectionDocumentCreate = {
     name: string;
     owner: string;       // user.id
     item_ids: string[];  // watchlist document $ids
     description?: string;
 }
-export type CollectionDocument = CollectionDocumentCreate & Models.Document;
+export type CollectionDocument = CollectionDocumentCreate & AppwriteDocument;
 
 export type AppwriteUser = {
     id: string,
@@ -94,17 +99,17 @@ export type WatchlistDocumentCreate = {
 export type DocumentType = {
     label: string,
     icon?: string,
-} & Models.Document
+} & AppwriteDocument
 
 export type ContentTypeType = {
     label: string,
     icon?: string,
     website?: string
-} & Models.Document
+} & AppwriteDocument
 
 export type WatchlistDocument = WatchlistDocumentCreate & {
     platform: Platform[],
-} & Models.Document
+} & AppwriteDocument
 
 // New type for user statistics
 export type UserStats = {

@@ -26,7 +26,7 @@ export default async function InsightsPage() {
         return <div className="text-3xl font-bold m-auto w-full text-center">please sign in</div>
     }
 
-    const watchlist: Models.DocumentList<WatchlistDocument> = await databases.listDocuments(
+    const watchlist: Models.DocumentList<WatchlistDocument> = await databases.listDocuments<WatchlistDocument>(
         'watchlist',
         process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID!,
         [Query.limit(1000)]
