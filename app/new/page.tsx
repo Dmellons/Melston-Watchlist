@@ -1,7 +1,7 @@
 import ContentRow from "@/components/home/ContentRow";
 
 export const metadata = {
-  title: "New & Upcoming · Watchlist",
+  title: "New & Upcoming",
 };
 
 export default function NewPage() {

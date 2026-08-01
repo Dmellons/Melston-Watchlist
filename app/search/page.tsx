@@ -3,7 +3,7 @@ import SearchPageContent from "@/components/search/SearchPageContent";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export const metadata = {
-    title: "Search | Watchlist",
+    title: "Search",
     description: "Search movies, TV shows, and games",
 };
 

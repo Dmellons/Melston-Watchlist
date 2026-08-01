@@ -17,7 +17,7 @@ export async function generateMetadata(props: GameDetailPageProps): Promise<Meta
     if (isNaN(igdbIdNum) || !igdbService.isConfigured()) return { title: 'Watchlist' };
 
     const game = await igdbService.getGameById(igdbIdNum);
-    if (!game) return { title: 'Not Found · Watchlist' };
+    if (!game) return { title: 'Not Found' };
 
     const year = game.first_release_date
       ? new Date(game.first_release_date * 1000).getFullYear()
@@ -27,7 +27,7 @@ export async function generateMetadata(props: GameDetailPageProps): Promise<Meta
     const image = game.cover?.image_id ? getIGDBImageUrl(game.cover.image_id, '720p') : undefined;
 
     return {
-      title: `${fullTitle} · Watchlist`,
+      title: fullTitle,
       description,
       openGraph: {
         title: fullTitle,

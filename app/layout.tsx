@@ -11,12 +11,13 @@ import { getLoggedInUser } from "@/lib/server/appwriteServer";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { Providers } from "@/app/providers";
 import { Suspense } from "react";
+import { LoadingSpinner } from "@/components/ui/loading-states";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Melston Watchlist",
-  description: "Track and manage your movie and TV show watchlist",
+  title: { template: '%s · Watchlist', default: 'Watchlist' },
+  description: "Track movies, TV shows, and games — and see where to stream them.",
 };
 
 export const viewport: Viewport = {
@@ -33,11 +34,7 @@ export const viewport: Viewport = {
 export const dynamic = 'force-dynamic'
 
 function LoadingFallback() {
-  return (
-    <div className="flex min-h-screen items-center justify-center">
-      <div className="animate-spin rounded-full h-12 w-12 border-2 border-gray-300 border-t-primary"></div>
-    </div>
-  );
+  return <LoadingSpinner size="lg" className="min-h-screen" />;
 }
 
 export default async function RootLayout({
@@ -62,8 +59,8 @@ export default async function RootLayout({
               enableSystem
               disableTransitionOnChange
             >
-              <main className="relative sm:container z-0 w-full bg-background max-w-7xl mx-auto min-h-screen border-x-2 border-x-primary/10 m-auto">
-                <header className="sticky top-0 z-20 bg-background md:border-b-2 md:border-primary/40 mb-4">
+              <main className="relative z-0 w-full bg-background max-w-7xl mx-auto min-h-screen border-x border-x-primary/10">
+                <header className="sticky top-0 z-20 bg-background md:border-b md:border-primary/20 mb-4">
                   <MainHeader />
                 </header>
                 

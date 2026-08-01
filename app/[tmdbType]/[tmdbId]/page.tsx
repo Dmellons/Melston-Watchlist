@@ -28,7 +28,7 @@ export async function generateMetadata(props: DetailPageProps): Promise<Metadata
             `https://api.themoviedb.org/3/${tmdbType}/${tmdbId}?language=en-US`,
             tmdbFetchOptions
         );
-        if (!res.ok) return { title: 'Not Found · Watchlist' };
+        if (!res.ok) return { title: 'Not Found' };
 
         const data = await res.json();
         const name = data.title || data.name || 'Details';
@@ -42,7 +42,7 @@ export async function generateMetadata(props: DetailPageProps): Promise<Metadata
                 : undefined;
 
         return {
-            title: `${fullTitle} · Watchlist`,
+            title: fullTitle,
             description,
             openGraph: {
                 title: fullTitle,
