@@ -1,10 +1,11 @@
 'use client'
-import WatchlistGrid from "@/components/buttons/WatchlistGrid";
 import ContentRow from "@/components/home/ContentRow";
+import HomeAISuggestions from "@/components/home/HomeAISuggestions";
 import LandingHero from "@/components/home/LandingHero";
+import { Button } from "@/components/ui/button";
 import { useUser } from "@/hooks/User";
-import { WatchlistDocument } from "@/types/appwrite";
-import { Models } from "appwrite";
+import { Bookmark } from "lucide-react";
+import Link from "next/link";
 
 export default function Home() {
   const { user, loading } = useUser();
@@ -29,10 +30,17 @@ export default function Home() {
         <ContentRow title="Popular TV Shows" endpoint="tv/popular" fallbackType="tv" />
       </div>
 
-      {/* The user's watchlist */}
-      {user.watchlist && (
-        <WatchlistGrid watchlist={user.watchlist as Models.DocumentList<WatchlistDocument>} />
-      )}
+      {/* AI picks — manual trigger, never auto-fires the slow vLLM endpoint */}
+      <HomeAISuggestions />
+
+      <div className="flex justify-center">
+        <Button asChild size="lg">
+          <Link href="/watchlist" className="flex items-center gap-2">
+            <Bookmark className="h-5 w-5" />
+            Your Watchlist
+          </Link>
+        </Button>
+      </div>
     </div>
   );
 }

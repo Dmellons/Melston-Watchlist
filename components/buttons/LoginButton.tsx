@@ -20,7 +20,8 @@ import {
     Sparkles,
     Disc,
     Library,
-    BarChart3
+    BarChart3,
+    Bookmark
 } from "lucide-react";
 
 export default function LoginButton() {
@@ -107,6 +108,13 @@ export default function LoginButton() {
 
                                 {/* Navigation Links */}
                                 <div className="space-y-2">
+                                    <Button asChild variant="ghost" className="w-full justify-start h-10">
+                                        <Link href="/watchlist" className="flex items-center gap-3">
+                                            <SafeIcon icon={Bookmark} className="h-4 w-4 text-rose-500" size={16} />
+                                            <span>My Watchlist</span>
+                                        </Link>
+                                    </Button>
+
                                     <Button asChild variant="ghost" className="w-full justify-start h-10">
                                         <Link href="/ai" className="flex items-center gap-3">
                                             <SafeIcon icon={Sparkles} className="h-4 w-4 text-primary" size={16} />
