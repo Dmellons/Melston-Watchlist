@@ -1,7 +1,7 @@
 'use client'
 import { account, database } from "@/lib/appwrite";
 import { WatchlistDocument } from "@/types/appwrite";
-import { Models, OAuthProvider } from "appwrite";
+import { Models, OAuthProvider, Query } from "appwrite";
 import { SetStateAction, createContext, useContext, useEffect, useState, Dispatch } from "react";
 
 export interface UserState {
@@ -26,9 +26,17 @@ export type UserType = {
     providers?: number[]
 }
 
+export type NotificationPrefs = {
+    plexRequestUpdates: boolean;
+    newRecommendations: boolean;
+    watchlistReminders: boolean;
+}
+
 export type UserPrefs = {
     providers?: number[];
     profileImage?: string;
+    notifications?: NotificationPrefs;
+    steamId?: string;
 }
 
 const defaultState: UserState = {
@@ -70,8 +78,9 @@ export const UserProvider = ({ children, serverUser }: { children: React.ReactNo
                     })
 
                     const watchlist: Models.DocumentList<WatchlistDocument> = await database.listDocuments(
-                        'watchlist', 
-                        process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID!
+                        'watchlist',
+                        process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID!,
+                        [Query.limit(1000)] // Appwrite defaults to 25 docs without an explicit limit
                     );
 
                     const userData: UserType = {
@@ -106,8 +115,9 @@ export const UserProvider = ({ children, serverUser }: { children: React.ReactNo
             const prefs = await account.getPrefs();
             
             const watchlist = await database.listDocuments(
-                'watchlist', 
-                process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID!
+                'watchlist',
+                process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID!,
+                [Query.limit(1000)]
             );
 
             setUserState({

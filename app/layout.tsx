@@ -7,6 +7,7 @@ import { UserProvider } from "@/hooks/User";
 import { Toaster } from "@/components/ui/sonner";
 import { getLoggedInUser } from "@/lib/server/appwriteServer";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { Providers } from "@/app/providers";
 import { Suspense } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -20,6 +21,11 @@ export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
 }
+
+// The root layout reads auth cookies via getLoggedInUser(), so every route is
+// inherently dynamic. Declaring it explicitly stops `next build` from attempting
+// static prerender (which would throw DYNAMIC_SERVER_USAGE on cookies access).
+export const dynamic = 'force-dynamic'
 
 function LoadingFallback() {
   return (
@@ -43,6 +49,7 @@ export default async function RootLayout({
       </head>
       <body className={`${inter.className} bg-foreground/10`}>
         <ErrorBoundary>
+          <Providers>
           <UserProvider serverUser={user}>
             <ThemeProvider
               attribute="class"
@@ -70,6 +77,7 @@ export default async function RootLayout({
               />
             </ThemeProvider>
           </UserProvider>
+          </Providers>
         </ErrorBoundary>
       </body>
     </html>

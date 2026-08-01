@@ -17,19 +17,26 @@ const ImageWithFallback = ({
     
     const [error, setError] = useState<boolean | null>(null)
     const [imageSrc, setImageSrc] = useState<string>("")
-    
-    // Create fallback URL if not provided
+
+    // Local placeholder — remote placeholder services (via.placeholder.com) are
+    // dead and hammer the image optimizer with failed fetches.
     if(!fallback){
-        const width = props.width ? props.width : 200
-        const height = props.height ? props.height : 300
-        fallback = `https://via.placeholder.com/${width}x${height}?text=No+Image`
+        fallback = '/no-image.svg'
     }
 
     useEffect(() => {
         setError(null)
-        
-        // Check if src is valid (not null, undefined, or contains 'null')
-        if (!src || src === 'null' || src.includes('/null') || src === 'undefined') {
+
+        // Check if src is valid: not null/undefined, no 'null'/'undefined'
+        // baked into the URL, and no empty image path (e.g. ".../w500/")
+        if (
+            !src ||
+            src === 'null' ||
+            src === 'undefined' ||
+            src.includes('/null') ||
+            src.includes('/undefined') ||
+            src.endsWith('/')
+        ) {
             setImageSrc(fallback)
         } else {
             setImageSrc(src)

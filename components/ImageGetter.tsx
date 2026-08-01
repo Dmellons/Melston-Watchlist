@@ -25,9 +25,7 @@ const ImageGetter = ({
 
         async function fetchData() {
             const session = await getSession();
-            console.log(session);
             if (session) {
-                console.log({session})
                 setProviderAccessToken(session.providerAccessToken);
             }
         }
@@ -41,7 +39,6 @@ const ImageGetter = ({
             try {
                 const response = await fetch(`https://www.googleapis.com/oauth2/v3/userinfo?access_token=${providerAccessToken}`);
                 const imageData = await response.json();
-                console.log(imageData.picture)
                 setImageUrl(imageData.picture);
 
             } catch (error) {
@@ -59,7 +56,6 @@ const ImageGetter = ({
             if (imageUrl === '') { return }
             try {
                 const prefs = await account.getPrefs();
-                console.log({ prefs })
                 type UserPerfs = {
                     providers?: number[] | string,
                     profileImage?: string,
@@ -69,13 +65,11 @@ const ImageGetter = ({
                     profileImage: imageUrl,
                     ...prefs,
                 };
-                console.log(newPrefs)
-               
-                const test = await account.updatePrefs({
+
+                await account.updatePrefs({
                     profileImage:newPrefs.profileImage,
                     ...prefs
                 }); //account.updatePrefs(newPrefs);
-                console.log(test)
                 setImageUrl(imageUrl)
             } catch (error) {
                 console.error('Error fetching image data:', error);
@@ -84,8 +78,6 @@ const ImageGetter = ({
 
         updateProfileImage();
     }, [imageUrl])
-
-    console.log(imageUrl);
 
     return (
         <>

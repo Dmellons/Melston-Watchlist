@@ -12,15 +12,19 @@ const nextConfig = {
             },
             {
                 protocol: "https",
-                hostname: "via.placeholder.com", // for placeholder images
-            },
-            {
-                protocol: "https",
-                hostname: "picsum.photos", // for placeholder images
-            },
-            {
-                protocol: "https",
                 hostname: "lh3.googleusercontent.com", // for google profile images
+            },
+            {
+                protocol: "https",
+                hostname: "images.igdb.com", // For IGDB game images
+            },
+            {
+                protocol: "https",
+                hostname: "img.youtube.com", // YouTube video thumbnails
+            },
+            {
+                protocol: "https",
+                hostname: "i.ytimg.com", // YouTube video thumbnails (alt host)
             },
         ],
     },

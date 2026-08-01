@@ -5,14 +5,14 @@ import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { Account, Client } from "node-appwrite";
 
-export async function GET(req: NextRequest, res: NextResponse) {
+export async function GET(req: NextRequest) {
 
     return NextResponse.json({
         status: 200,
         message: 'success',
     });
 }
-export async function POST(req: NextRequest, res: NextResponse) {
+export async function POST(req: NextRequest) {
     // console.info('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
     // console.info('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
     // console.info('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
@@ -23,7 +23,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
     // console.log({ data })
     try {
 
-        let jwt = data.jwt
+        const jwt = data.jwt
 
         if (jwt) {
 
@@ -40,7 +40,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
             const user = await account.get();
             // console.log({user})
 
-            cookies().set(process.env.COOKIE_NAME!, jwt, {
+            (await cookies()).set(process.env.COOKIE_NAME!, jwt, {
                 path: "/",
                 httpOnly: true,
                 sameSite: "strict",

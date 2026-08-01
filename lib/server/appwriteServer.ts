@@ -1,12 +1,12 @@
 "use server"
-import { Client, Account, Models, Databases, Users } from "node-appwrite";
+import { Client, Account, Models, Databases, Users, Query } from "node-appwrite";
 import { cookies } from "next/headers";
 import { WatchlistDocument } from "@/types/appwrite";
 import { type UserType } from "@/hooks/User";
 
 
 export async function createSessionClient() {
-  const jwt = cookies().get(process.env.COOKIE_NAME!)?.value;
+  const jwt = (await cookies()).get(process.env.COOKIE_NAME!)?.value;
   // // console.log({ jwt });
   if (!jwt) {
     return {
@@ -29,18 +29,19 @@ export async function createSessionClient() {
   // console.log("Account: ", { account });
   const databases = new Databases(client)
   const users = new Users(client)
- try {
-  const user = await account.get()
-} catch (error: any) {
-    if (error.code === 401 && error.type === "user_jwt_invalid") {
-      await fetch(`${process.env.next_public_url_base}/api/jwt/delete`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-      });
-      // throw new Error("Invalid JWT");
-    } else {
-      throw error;
-    }
+  // Validate the JWT. If it's invalid/expired (or any session error), treat the
+  // request as logged-out. We must NOT throw here (this runs during server
+  // component render — an uncaught throw becomes a 500) and we can't mutate
+  // cookies during render, so the stale cookie is simply replaced on next login.
+  try {
+    await account.get();
+  } catch {
+    return {
+      "client": undefined,
+      "account": undefined,
+      "databases": undefined,
+      "users": undefined,
+    };
   }
 
   // console.log('User2: ',{ user });
@@ -97,7 +98,7 @@ export async function getLoggedInUser() {
 
     if (!$id) return null;
 
-    const session = cookies().get(process.env.COOKIE_NAME!);
+    const session = (await cookies()).get(process.env.COOKIE_NAME!);
     if(!session || !session.value) {
       throw new Error("No session");
     }
@@ -111,12 +112,13 @@ export async function getLoggedInUser() {
       'watchlist', 
       process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID!,
       [
+        Query.limit(1000), // Appwrite defaults to 25 docs without an explicit limit
         // Optional: Add explicit user filter for additional safety
         // Query.equal('userId', $id) // If you add a userId field to documents
       ]
     );
   
-    let user: UserType = {
+    const user: UserType = {
       id: $id,
       admin: labels?.includes('admin') ? true : false,
       email,

@@ -1,6 +1,14 @@
 // types/appwrite.d.ts - Enhanced version
 import { Models } from "appwrite"
 
+export type CollectionDocumentCreate = {
+    name: string;
+    owner: string;       // user.id
+    item_ids: string[];  // watchlist document $ids
+    description?: string;
+}
+export type CollectionDocument = CollectionDocumentCreate & Models.Document;
+
 export type AppwriteUser = {
     id: string,
     createdAt: string,
@@ -69,7 +77,7 @@ export type WatchlistDocumentCreate = {
     notes?: string[],
     // New fields
     watch_status?: WatchStatus,
-    user_rating?: number, // 1-10 scale
+    rating?: number, // 1-10 scale
     user_review?: string,
     date_watched?: string,
     rewatch_count?: number,

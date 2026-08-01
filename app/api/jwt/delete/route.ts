@@ -3,7 +3,7 @@ import { cookies, headers } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { Account, Client } from "node-appwrite";
 
-export async function POST(request: NextRequest, res:Response) {  
+export async function POST(request: NextRequest) {
 
   const url = new URL(request.nextUrl.toString());
 

@@ -1,6 +1,46 @@
 import { PlexRequest } from '@/app/admin/columns'
 import { Table } from '@tanstack/react-table'
 import xlsx, { IJsonSheet } from 'json-as-xlsx'
+import { WatchlistDocument } from '@/types/appwrite'
+
+/**
+ * Export a user's watchlist documents to an .xlsx file (client-side download).
+ * Works directly off the documents already in the useUser context — no fetch.
+ */
+export function exportWatchlistToExcel(
+    documents: WatchlistDocument[],
+    fileName = 'My Watchlist',
+) {
+    const columns: IJsonSheet[] = [
+        {
+            sheet: 'Watchlist',
+            columns: [
+                { label: 'Title', value: 'title' },
+                { label: 'Type', value: (row: any) => row.content_type ?? '' },
+                { label: 'TMDB ID', value: (row: any) => row.tmdb_id ?? '' },
+                { label: 'IGDB ID', value: (row: any) => row.igdb_id ?? '' },
+                { label: 'Watch Status', value: (row: any) => row.watch_status ?? '' },
+                { label: 'Rating', value: (row: any) => (row.rating ?? '') },
+                { label: 'Favorite', value: (row: any) => (row.is_favorite ? 'Yes' : 'No') },
+                { label: 'Plex Requested', value: (row: any) => (row.plex_request ? 'Yes' : 'No') },
+                { label: 'Release Date', value: (row: any) => row.release_date ?? '' },
+                {
+                    label: 'Date Watched',
+                    value: (row: any) =>
+                        row.date_watched ? new Date(row.date_watched).toLocaleDateString() : '',
+                },
+                {
+                    label: 'Added',
+                    value: (row: any) =>
+                        row.$createdAt ? new Date(row.$createdAt).toLocaleDateString() : '',
+                },
+            ],
+            content: documents as any[],
+        },
+    ]
+
+    xlsx(columns, { fileName })
+}
 export function downloadToExcel(
     table: Table<PlexRequest>,
     // exportAll: boolean
@@ -30,7 +70,7 @@ export function downloadToExcel(
         }
     // }
 
-    let columns: IJsonSheet[] = [
+    const columns: IJsonSheet[] = [
         {
             sheet: 'Plex Requests',
             columns: [
@@ -45,7 +85,7 @@ export function downloadToExcel(
         }
 
     ]
-    let settings = {
+    const settings = {
         fileName: 'Plex Requests', // Name of the resulting spreadsheet
     }
     xlsx(columns, settings)

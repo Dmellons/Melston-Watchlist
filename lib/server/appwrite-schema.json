@@ -787,7 +787,7 @@
               "$updatedAt": "2025-06-29T20:21:53.850+00:00"
             },
             {
-              "key": "user_rating_unique",
+              "key": "rating_unique",
               "type": "key",
               "status": "available",
               "error": "",
@@ -810,7 +810,7 @@
               "$updatedAt": "2025-06-29T20:22:30.827+00:00"
             },
             {
-              "key": "user_ratings",
+              "key": "ratings",
               "type": "key",
               "status": "available",
               "error": "",
