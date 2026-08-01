@@ -25,8 +25,12 @@ export default function MainHeader() {
 
                 <MainNav />
 
-                <div className="ml-auto hidden md:block w-full max-w-sm">
-                    <NewSearchBar />
+                {/* Centered in the remaining space between nav and avatar; the
+                    results panel anchors to the sticky header, not this box. */}
+                <div className="hidden md:flex flex-1 justify-center px-2">
+                    <div className="w-full max-w-md">
+                        <NewSearchBar />
+                    </div>
                 </div>
 
                 <div className="ml-auto md:ml-0 shrink-0">

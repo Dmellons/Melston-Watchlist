@@ -109,8 +109,9 @@ const SearchPageContent = () => {
 
     return (
         <PageShell className="space-y-6">
-            {/* Mobile has no header search bar — this page is its search input */}
-            <div className="md:hidden">
+            {/* Mobile has no header search bar — this page is its search input.
+                relative: the bar's results panel anchors to this wrapper. */}
+            <div className="md:hidden relative">
                 <NewSearchBar />
             </div>
 

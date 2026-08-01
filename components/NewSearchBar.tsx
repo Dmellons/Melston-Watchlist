@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation"
 import { useQuery, keepPreviousData } from "@tanstack/react-query"
 import { Input } from "./ui/input"
 import { TMDBMultiSearchResult } from "@/types/tmdbApi"
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
 import { ScrollArea } from "./ui/scroll-area"
 import NewSearchCard from "@/components/NewSearchCard"
 import { useUser } from "@/hooks/User"
@@ -43,11 +42,12 @@ function useDebounce<T>(value: T, delay: number): T {
 const NewSearchBar = ({ resultsLength = 10 }: NewSearchBarProps) => {
     const [query, setQuery] = useState<string>("");
     const [searchType, setSearchType] = useState<'media' | 'games'>('media');
-    const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false);
+    const [isPanelOpen, setIsPanelOpen] = useState<boolean>(false);
     const [isMounted, setIsMounted] = useState(false);
     const [isInputFocused, setIsInputFocused] = useState(false);
     const [activeIndex, setActiveIndex] = useState(-1);
     const inputRef = useRef<HTMLInputElement>(null);
+    const rootRef = useRef<HTMLDivElement>(null);
 
     const router = useRouter();
     const { user } = useUser();
@@ -133,14 +133,29 @@ const NewSearchBar = ({ resultsLength = 10 }: NewSearchBarProps) => {
         setActiveIndex(-1);
     }, []);
 
+    const closePanel = useCallback(() => {
+        setIsPanelOpen(false);
+        setQuery("");
+        setIsInputFocused(false);
+    }, []);
+
+    // Close on any click outside the bar/panel (the panel is a child of rootRef).
+    useEffect(() => {
+        if (!isPanelOpen) return;
+        const onPointerDown = (e: PointerEvent) => {
+            if (rootRef.current?.contains(e.target as Node)) return;
+            closePanel();
+        };
+        document.addEventListener('pointerdown', onPointerDown);
+        return () => document.removeEventListener('pointerdown', onPointerDown);
+    }, [isPanelOpen, closePanel]);
+
     // Full results page for the current query + tab.
     const navigateToSearchPage = useCallback(() => {
         if (trimmedQuery.length < 2) return;
         router.push(`/search?q=${encodeURIComponent(trimmedQuery)}&type=${searchType}`);
-        setIsPopoverOpen(false);
-        setQuery("");
-        setIsInputFocused(false);
-    }, [trimmedQuery, searchType, router]);
+        closePanel();
+    }, [trimmedQuery, searchType, router, closePanel]);
 
     // Handle input changes
     const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -148,17 +163,16 @@ const NewSearchBar = ({ resultsLength = 10 }: NewSearchBarProps) => {
         setQuery(value);
         setActiveIndex(-1);
 
-        if (value.length > 0 && !isPopoverOpen) {
-            setIsPopoverOpen(true);
+        if (value.length > 0 && !isPanelOpen) {
+            setIsPanelOpen(true);
         }
-    }, [isPopoverOpen]);
+    }, [isPanelOpen]);
 
     // Handle keyboard navigation
     const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Escape") {
-            setIsPopoverOpen(false);
+            closePanel();
             inputRef.current?.blur();
-            setQuery("");
             return;
         }
         if (e.key === " ") {
@@ -177,7 +191,7 @@ const NewSearchBar = ({ resultsLength = 10 }: NewSearchBarProps) => {
 
         if (e.key === "ArrowDown") {
             e.preventDefault();
-            setIsPopoverOpen(true);
+            setIsPanelOpen(true);
             setActiveIndex(i => (i + 1) % count);
         } else if (e.key === "ArrowUp") {
             e.preventDefault();
@@ -185,39 +199,26 @@ const NewSearchBar = ({ resultsLength = 10 }: NewSearchBarProps) => {
         } else if (e.key === "Enter" && activeIndex >= 0 && activeIndex < count) {
             e.preventDefault();
             router.push(hrefForResult(activeList[activeIndex]));
-            setIsPopoverOpen(false);
-            setQuery("");
-            setIsInputFocused(false);
+            closePanel();
         }
-    }, [activeList, activeIndex, router, hrefForResult, navigateToSearchPage]);
-
-    // Handle popover open change
-    const handlePopoverOpenChange = useCallback((open: boolean) => {
-        setIsPopoverOpen(open);
-        if (!open) {
-            setQuery("");
-            setIsInputFocused(false);
-        }
-    }, []);
+    }, [activeList, activeIndex, router, hrefForResult, navigateToSearchPage, closePanel]);
 
     // Handle clear search
     const handleClearSearch = useCallback(() => {
         setQuery("");
-        setIsPopoverOpen(false);
+        setIsPanelOpen(false);
         inputRef.current?.focus();
     }, []);
 
     // Handle card click - close search
     const handleCardClick = useCallback(() => {
-        setIsPopoverOpen(false);
-        setQuery("");
-        setIsInputFocused(false);
-    }, []);
+        closePanel();
+    }, [closePanel]);
 
     // Show results condition
     const showResults = useMemo(() =>
-        isMounted && isPopoverOpen && (results.length > 0 || gameResults.length > 0 || loading || error) && query.length >= 2,
-        [isMounted, isPopoverOpen, results.length, gameResults.length, loading, error, query.length]
+        isMounted && isPanelOpen && (results.length > 0 || gameResults.length > 0 || loading || error) && query.length >= 2,
+        [isMounted, isPanelOpen, results.length, gameResults.length, loading, error, query.length]
     );
 
     // Current results based on search type
@@ -243,21 +244,8 @@ const NewSearchBar = ({ resultsLength = 10 }: NewSearchBarProps) => {
     }
 
     return (
-        <div className="flex flex-col gap-2 items-center w-full">
-            <Popover 
-                open={isPopoverOpen} 
-                onOpenChange={handlePopoverOpenChange}
-            >
-                <PopoverTrigger asChild className="w-full">
-                    <div className="flex flex-col m-auto gap-1 sm:gap-2 sm:flex-row items-center w-full">
-                        {isDesktop && (
-                            <SafeIcon 
-                                icon={SearchIcon} 
-                                className="h-5 w-5 flex-shrink-0 text-muted-foreground transition-colors" 
-                                size={20}
-                            />
-                        )}
-                        <div className="relative w-full group">
+        <div ref={rootRef} className="w-full">
+            <div className="relative w-full group">
                             <Input
                                 ref={inputRef}
                                 aria-label="Search movies and TV shows"
@@ -304,31 +292,14 @@ const NewSearchBar = ({ resultsLength = 10 }: NewSearchBarProps) => {
                                     />
                                 </Button>
                             )}
-                        </div>
-                    </div>
-                </PopoverTrigger>
+            </div>
 
+            {/* Results panel: absolutely positioned against the nearest positioned
+                ancestor — the sticky header on desktop (full app-column width, right
+                under the header) or the /search page's relative wrapper on mobile. */}
                 {showResults && (
-                    <PopoverContent
-                        className={`
-                            w-screen max-w-none bg-transparent shadow-none border-none p-0 m-0 mt-2
-                            ${isDesktop ? 'sm:w-full sm:max-w-4xl' : ''}
-                        `}
-                        onOpenAutoFocus={(e) => e.preventDefault()}
-                        side="bottom"
-                        align={isDesktop ? "center" : "start"}
-                        sideOffset={8}
-                        style={!isDesktop ? { 
-                            left: 0, 
-                            right: 0, 
-                            width: '100vw',
-                            transform: 'translateX(0)'
-                        } : {}}
-                    >
-                        <div className={`
-                            ${isDesktop ? 'mx-auto max-w-4xl' : 'mx-0 w-full'}
-                        `}>
-                            <Card className="bg-background/95 backdrop-blur-xl border border-border/50 shadow-2xl animate-in slide-in-from-top-2 duration-200 mx-2 sm:mx-0">
+                    <div className="absolute inset-x-0 top-full z-40">
+                            <Card className="bg-background/95 backdrop-blur-xl border-x-0 border-t-0 border-b border-border/50 rounded-none sm:rounded-b-xl sm:border-x shadow-2xl animate-in fade-in-0 slide-in-from-top-2 duration-200">
                                 <CardContent className="p-3 sm:p-6">
                                     {/* Header */}
                                     <div className="flex items-center justify-between mb-3 sm:mb-4">
@@ -347,7 +318,7 @@ const NewSearchBar = ({ resultsLength = 10 }: NewSearchBarProps) => {
                                             size="sm"
                                             aria-label="Close search results"
                                             className="h-8 w-8 p-0"
-                                            onClick={() => setIsPopoverOpen(false)}
+                                            onClick={closePanel}
                                         >
                                             <SafeIcon icon={X} className="h-4 w-4" size={16} />
                                         </Button>
@@ -375,7 +346,7 @@ const NewSearchBar = ({ resultsLength = 10 }: NewSearchBarProps) => {
                                         </TabsList>
                                     </Tabs>
 
-                                    <ScrollArea className={`w-full ${isDesktop ? 'h-[500px] sm:h-[700px]' : 'h-[400px]'}`}>
+                                    <ScrollArea className={`w-full ${isDesktop ? 'h-[60vh] max-h-[720px]' : 'h-[55vh]'}`}>
                                         {/* Skeleton grid on first fetch; refetches keep prior results visible via keepPreviousData */}
                                         {loading && !hasResults && (
                                             <div
@@ -385,7 +356,7 @@ const NewSearchBar = ({ resultsLength = 10 }: NewSearchBarProps) => {
                                                 className={`
                                                     grid gap-3 sm:gap-4 pb-4
                                                     ${isDesktop
-                                                        ? 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'
+                                                        ? 'grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6'
                                                         : 'grid-cols-2'
                                                     }
                                                 `}
@@ -443,7 +414,7 @@ const NewSearchBar = ({ resultsLength = 10 }: NewSearchBarProps) => {
                                             <div className={`
                                                 grid gap-3 sm:gap-4 pb-4
                                                 ${isDesktop
-                                                    ? 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'
+                                                    ? 'grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6'
                                                     : 'grid-cols-2'
                                                 }
                                             `}>
@@ -470,7 +441,7 @@ const NewSearchBar = ({ resultsLength = 10 }: NewSearchBarProps) => {
                                             <div className={`
                                                 grid gap-3 sm:gap-4 pb-4
                                                 ${isDesktop
-                                                    ? 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'
+                                                    ? 'grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6'
                                                     : 'grid-cols-2'
                                                 }
                                             `}>
@@ -501,10 +472,8 @@ const NewSearchBar = ({ resultsLength = 10 }: NewSearchBarProps) => {
                                     </ScrollArea>
                                 </CardContent>
                             </Card>
-                        </div>
-                    </PopoverContent>
+                    </div>
                 )}
-            </Popover>
         </div>
     );
 };
