@@ -212,7 +212,7 @@ export default function SearchOverlay() {
                 className="top-[10%] max-w-2xl translate-y-0 gap-0 overflow-hidden p-0 max-sm:top-0 max-sm:h-[100dvh] max-sm:max-w-none max-sm:rounded-none max-sm:border-0"
             >
                 <DialogTitle className="sr-only">Search</DialogTitle>
-                <Command shouldFilter={false} className="bg-transparent [&_[cmdk-input-wrapper]]:px-5 [&_[cmdk-input-wrapper]_svg]:mr-3">
+                <Command shouldFilter={false} className="bg-transparent">
                     <CommandInput
                         placeholder="Search movies, TV shows, and games..."
                         value={query}
