@@ -5,7 +5,8 @@ import { igdbService } from '@/lib/services/igdbService';
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const query = searchParams.get('query');
-  const limit = parseInt(searchParams.get('limit') || '10');
+  const limit = Math.min(Math.max(parseInt(searchParams.get('limit') || '10') || 10, 1), 50);
+  const offset = Math.min(Math.max(parseInt(searchParams.get('offset') || '0') || 0, 0), 500);
 
   if (!query || query.length < 2) {
     return NextResponse.json({ results: [] });
@@ -20,7 +21,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const results = await igdbService.searchGames(query, limit);
+    const results = await igdbService.searchGames(query, limit, offset);
     return NextResponse.json({ results });
   } catch (error) {
     console.error('Game search error:', error);

@@ -87,7 +87,7 @@ class IGDBService {
   /**
    * Search for games by name
    */
-  async searchGames(query: string, limit: number = 10): Promise<IGDBGame[]> {
+  async searchGames(query: string, limit: number = 10, offset: number = 0): Promise<IGDBGame[]> {
     const igdbQuery = `
       search "${query.replace(/"/g, '\\"')}";
       fields name, slug, summary, cover.image_id, first_release_date,
@@ -95,6 +95,7 @@ class IGDBService {
              platforms.abbreviation, involved_companies.company.name,
              involved_companies.developer, involved_companies.publisher;
       limit ${limit};
+      offset ${offset};
     `;
 
     return this.apiRequest<IGDBGame[]>('games', igdbQuery);
