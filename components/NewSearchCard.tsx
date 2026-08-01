@@ -28,10 +28,12 @@ type CardData = {
 
 const NewSearchCard = ({
     media,
-    userProviders
+    userProviders,
+    showProviders = true
 }: {
     media: TMDBMultiSearchResult
     userProviders?: number[]
+    showProviders?: boolean
 }) => {
     const { user } = useUser();
     const [isHovered, setIsHovered] = useState(false);
@@ -114,7 +116,7 @@ const NewSearchCard = ({
                     <div className="relative">
                         <Link href={detailsHref} aria-label={`View details for ${data.title}`}>
                         <ImageWithFallback
-                            src={`https://image.tmdb.org/t/p/w500/${data.poster_path}`}
+                            src={`https://image.tmdb.org/t/p/w342/${data.poster_path}`}
                             alt={data.title}
                             className="w-full h-40 sm:h-60 md:h-72 object-cover transition-transform duration-500 group-hover:scale-110"
                             width={200}
@@ -158,16 +160,20 @@ const NewSearchCard = ({
                 </div>
             </div>
 
-            {/* Providers */}
-            <div className="px-1">
-                <ProvidersBlock 
-                    tmdbId={data.tmdb_id} 
-                    tmdbType={data.tmdb_type} 
-                    userProviders={userProviders} 
-                    maxWidth="w-full"
-                    iconSize={16}
-                />
-            </div>
+            {/* Providers — skipped in the header dropdown (showProviders={false})
+                to avoid a watch/providers fetch per card; the quick-view dialog
+                below always shows them. */}
+            {showProviders && (
+                <div className="px-1">
+                    <ProvidersBlock
+                        tmdbId={data.tmdb_id}
+                        tmdbType={data.tmdb_type}
+                        userProviders={userProviders}
+                        maxWidth="w-full"
+                        iconSize={16}
+                    />
+                </div>
+            )}
 
             {/* Action Buttons */}
             <div className="flex flex-col gap-1 sm:gap-2 px-1">

@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useRef, useState, useCallback, useMemo } from "react"
 import { useRouter } from "next/navigation"
-import { useQuery } from "@tanstack/react-query"
+import { useQuery, keepPreviousData } from "@tanstack/react-query"
 import { Input } from "./ui/input"
 import { TMDBMultiSearchResult } from "@/types/tmdbApi"
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
@@ -15,6 +15,7 @@ import SafeIcon from "@/components/SafeIcon"
 import { Button } from "./ui/button"
 import { Card, CardContent } from "./ui/card"
 import { Tabs, TabsList, TabsTrigger } from "./ui/tabs"
+import { Skeleton } from "./ui/skeleton"
 import GameSearchCard from "./GameSearchCard"
 import { IGDBGame } from "@/types/game"
 
@@ -66,6 +67,7 @@ const NewSearchBar = ({ resultsLength = 10 }: NewSearchBarProps) => {
         queryKey: ['search', 'media', trimmedQuery, resultsLength],
         enabled: canSearch && searchType === 'media',
         staleTime: 5 * 60 * 1000, // 5 min — recent searches stay warm
+        placeholderData: keepPreviousData, // refining a query keeps prior results visible
         queryFn: async () => {
             const response = await fetch(
                 `https://api.themoviedb.org/3/search/multi?query=${encodeURIComponent(trimmedQuery)}`,
@@ -86,6 +88,7 @@ const NewSearchBar = ({ resultsLength = 10 }: NewSearchBarProps) => {
         queryKey: ['search', 'games', trimmedQuery, resultsLength],
         enabled: canSearch && searchType === 'games',
         staleTime: 5 * 60 * 1000,
+        placeholderData: keepPreviousData,
         queryFn: async () => {
             const response = await fetch(
                 `/api/games/search?query=${encodeURIComponent(trimmedQuery)}&limit=${resultsLength}`
@@ -130,6 +133,15 @@ const NewSearchBar = ({ resultsLength = 10 }: NewSearchBarProps) => {
         setActiveIndex(-1);
     }, []);
 
+    // Full results page for the current query + tab.
+    const navigateToSearchPage = useCallback(() => {
+        if (trimmedQuery.length < 2) return;
+        router.push(`/search?q=${encodeURIComponent(trimmedQuery)}&type=${searchType}`);
+        setIsPopoverOpen(false);
+        setQuery("");
+        setIsInputFocused(false);
+    }, [trimmedQuery, searchType, router]);
+
     // Handle input changes
     const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
@@ -153,6 +165,13 @@ const NewSearchBar = ({ resultsLength = 10 }: NewSearchBarProps) => {
             e.stopPropagation();
         }
 
+        // Enter with no highlighted result goes to the full results page.
+        if (e.key === "Enter" && activeIndex < 0) {
+            e.preventDefault();
+            navigateToSearchPage();
+            return;
+        }
+
         const count = activeList.length;
         if (count === 0) return;
 
@@ -170,7 +189,7 @@ const NewSearchBar = ({ resultsLength = 10 }: NewSearchBarProps) => {
             setQuery("");
             setIsInputFocused(false);
         }
-    }, [activeList, activeIndex, router, hrefForResult]);
+    }, [activeList, activeIndex, router, hrefForResult, navigateToSearchPage]);
 
     // Handle popover open change
     const handlePopoverOpenChange = useCallback((open: boolean) => {
@@ -357,18 +376,27 @@ const NewSearchBar = ({ resultsLength = 10 }: NewSearchBarProps) => {
                                     </Tabs>
 
                                     <ScrollArea className={`w-full ${isDesktop ? 'h-[500px] sm:h-[700px]' : 'h-[400px]'}`}>
-                                        {loading && (
-                                            <div className="flex items-center justify-center py-8 sm:py-12" role="status" aria-live="polite">
-                                                <div className="flex flex-col items-center gap-3">
-                                                    <SafeIcon
-                                                        icon={Loader2}
-                                                        className="h-6 w-6 sm:h-8 sm:w-8 animate-spin text-primary"
-                                                        size={isDesktop ? 32 : 24}
-                                                    />
-                                                    <span className="text-xs sm:text-sm text-muted-foreground">
-                                                        {searchType === 'media' ? 'Searching movies and shows...' : 'Searching games...'}
-                                                    </span>
-                                                </div>
+                                        {/* Skeleton grid on first fetch; refetches keep prior results visible via keepPreviousData */}
+                                        {loading && !hasResults && (
+                                            <div
+                                                role="status"
+                                                aria-live="polite"
+                                                aria-label={searchType === 'media' ? 'Searching movies and shows' : 'Searching games'}
+                                                className={`
+                                                    grid gap-3 sm:gap-4 pb-4
+                                                    ${isDesktop
+                                                        ? 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'
+                                                        : 'grid-cols-2'
+                                                    }
+                                                `}
+                                            >
+                                                {Array.from({ length: 8 }).map((_, i) => (
+                                                    <div key={i} className="space-y-2">
+                                                        <Skeleton className="aspect-[2/3] w-full rounded-lg" />
+                                                        <Skeleton className="h-3 w-3/4" />
+                                                        <Skeleton className="h-3 w-1/2" />
+                                                    </div>
+                                                ))}
                                             </div>
                                         )}
 
@@ -411,7 +439,7 @@ const NewSearchBar = ({ resultsLength = 10 }: NewSearchBarProps) => {
                                         )}
 
                                         {/* Media Results */}
-                                        {!loading && !error && searchType === 'media' && results.length > 0 && (
+                                        {!error && searchType === 'media' && results.length > 0 && (
                                             <div className={`
                                                 grid gap-3 sm:gap-4 pb-4
                                                 ${isDesktop
@@ -430,6 +458,7 @@ const NewSearchBar = ({ resultsLength = 10 }: NewSearchBarProps) => {
                                                         <NewSearchCard
                                                             media={result}
                                                             userProviders={user?.providers}
+                                                            showProviders={false}
                                                         />
                                                     </div>
                                                 ))}
@@ -437,7 +466,7 @@ const NewSearchBar = ({ resultsLength = 10 }: NewSearchBarProps) => {
                                         )}
 
                                         {/* Game Results */}
-                                        {!loading && !error && searchType === 'games' && gameResults.length > 0 && (
+                                        {!error && searchType === 'games' && gameResults.length > 0 && (
                                             <div className={`
                                                 grid gap-3 sm:gap-4 pb-4
                                                 ${isDesktop
@@ -457,6 +486,17 @@ const NewSearchBar = ({ resultsLength = 10 }: NewSearchBarProps) => {
                                                     </div>
                                                 ))}
                                             </div>
+                                        )}
+
+                                        {/* Full results page link */}
+                                        {!error && hasResults && (
+                                            <Button
+                                                variant="ghost"
+                                                className="w-full mb-2 text-muted-foreground"
+                                                onClick={navigateToSearchPage}
+                                            >
+                                                See all results for &quot;{query}&quot;
+                                            </Button>
                                         )}
                                     </ScrollArea>
                                 </CardContent>
