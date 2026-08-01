@@ -121,7 +121,7 @@ const AddWatchlistButton = ({
             const watchlistData = await prepareMediaData(media);
 
             // Add to watchlist collection
-            await database.createDocument(
+            const createdDoc = await database.createDocument(
                 'watchlist',
                 process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID!,
                 ID.unique(),
@@ -133,18 +133,19 @@ const AddWatchlistButton = ({
                 ]
             );
 
-            // Update user context - refresh the watchlist
-            if (user.watchlist) {
-                const updatedWatchlist = await database.listDocuments(
-                    'watchlist', 
-                    process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID!
-                );
-                
-                setUser(prevUser => prevUser ? {
+            // Optimistically add the new item to the user context (no extra
+            // round-trip to re-list the whole collection — mirrors DeleteButton).
+            setUser(prevUser => {
+                if (!prevUser?.watchlist) return prevUser;
+                return {
                     ...prevUser,
-                    watchlist: updatedWatchlist,
-                } : null);
-            }
+                    watchlist: {
+                        ...prevUser.watchlist,
+                        documents: [createdDoc, ...prevUser.watchlist.documents] as typeof prevUser.watchlist.documents,
+                        total: prevUser.watchlist.total + 1,
+                    },
+                };
+            });
             
             if (showSuccess) {
                 setIsSuccess(true);

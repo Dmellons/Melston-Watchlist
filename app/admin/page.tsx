@@ -1,7 +1,9 @@
 'use client'
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useUser } from "@/hooks/User";
+import type { AdminOverview, AdminUserRow } from "@/lib/server/adminUsers";
 import { Separator } from "@/components/ui/separator";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -9,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { WatchlistDocument } from "@/types/appwrite";
 import { Models, database } from "@/lib/appwrite";
 import { Query } from "appwrite";
-import { Star, Users, Database, TrendingUp, Film, Tv, Shield, Activity, Calendar, BarChart3 } from "lucide-react";
+import { Star, Users, Database, TrendingUp, TrendingDown, Film, Tv, Shield, Activity, Calendar, BarChart3 } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import SafeIcon from "@/components/SafeIcon";
@@ -21,13 +23,13 @@ function StatCard({
     description,
     trend,
     className = "" 
-}: { 
-    icon: string, 
-    label: string, 
-    value: string | number, 
+}: {
+    icon: string,
+    label: string,
+    value: string | number,
     description?: string,
-    trend?: string,
-    className?: string 
+    trend?: number | null,
+    className?: string
 }) {
     const getIcon = (iconName: string) => {
         switch(iconName) {
@@ -56,11 +58,17 @@ function StatCard({
                         <SafeIcon icon={IconComponent} className="h-6 w-6 text-primary" size={24} />
                     </div>
                 </div>
-                {trend && (
+                {trend !== undefined && trend !== null && (
                     <div className="flex items-center gap-2 mt-4 pt-4 border-t border-border/50">
-                        <SafeIcon icon={TrendingUp} className="h-4 w-4 text-green-500" size={16} />
-                        <span className="text-sm text-green-500 font-medium">{trend}</span>
-                        <span className="text-sm text-muted-foreground">from last month</span>
+                        <SafeIcon
+                            icon={trend >= 0 ? TrendingUp : TrendingDown}
+                            className={`h-4 w-4 ${trend >= 0 ? 'text-green-500' : 'text-destructive'}`}
+                            size={16}
+                        />
+                        <span className={`text-sm font-medium ${trend >= 0 ? 'text-green-500' : 'text-destructive'}`}>
+                            {trend >= 0 ? '+' : ''}{trend}%
+                        </span>
+                        <span className="text-sm text-muted-foreground">this month</span>
                     </div>
                 )}
             </CardContent>
@@ -157,20 +165,36 @@ function RecentRequestItem({ document, userEmail }: { document: WatchlistDocumen
     );
 }
 
-// Mock data for development (replace with real API call)
-const mockUsers = {
-    total: 42,
-    users: [
-        { $id: '1', email: 'user1@example.com', name: 'User 1' },
-        { $id: '2', email: 'user2@example.com', name: 'User 2' },
-    ]
-};
-
 export default function AdminPage() {
     const { user } = useUser();
     const [watchlistData, setWatchlistData] = useState<Models.DocumentList<WatchlistDocument> | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+
+    // Real platform overview + user directory (server actions via admin client).
+    const { data: overviewRes } = useQuery({
+        queryKey: ['admin', 'overview'],
+        queryFn: async () => {
+            const r = await fetch('/api/admin/overview');
+            return r.json();
+        },
+        enabled: !!user?.admin,
+    });
+    const { data: usersRes } = useQuery({
+        queryKey: ['admin', 'users'],
+        queryFn: async () => {
+            const r = await fetch('/api/admin/users');
+            return r.json();
+        },
+        enabled: !!user?.admin,
+    });
+    const overview: AdminOverview | null = overviewRes?.success ? overviewRes.data : null;
+    const emailById = useMemo(
+        () => new Map<string, string>(
+            ((usersRes?.success ? usersRes.data : []) as AdminUserRow[]).map((u) => [u.id, u.email]),
+        ),
+        [usersRes],
+    );
 
     useEffect(() => {
         const fetchData = async () => {
@@ -198,16 +222,12 @@ export default function AdminPage() {
         fetchData();
     }, [user]);
 
-    // Helper function to get requesting user email (simplified for client-side)
+    // Resolve a document's owner to a real email via the admin user directory.
     const getUserEmail = (document: WatchlistDocument): string => {
-        // Extract user ID from permissions (simplified approach)
         const userPermission = document.$permissions.find(p => p.includes('update("user:'));
-        if (userPermission) {
-            const userId = userPermission.match(/user:([^"]+)/)?.[1];
-            // In a real implementation, you'd map this to actual user emails
-            return `user-${userId?.slice(-4)}@example.com`;
-        }
-        return 'Unknown User';
+        const userId = userPermission?.match(/user:([^"]+)/)?.[1];
+        if (!userId) return 'Unknown user';
+        return emailById.get(userId) ?? `User ${userId.slice(-6)}`;
     };
 
     if (!user) {
@@ -251,9 +271,8 @@ export default function AdminPage() {
         );
     }
 
-    // Calculate statistics
+    // Calculate statistics (real)
     const totalItems = watchlistData.total;
-    const totalUsers = mockUsers.total; // Using mock data
     const plexRequests = watchlistData.documents.filter((item) => item.plex_request === true);
     const recentItems = watchlistData.documents
         .sort((a, b) => new Date(b.$createdAt).getTime() - new Date(a.$createdAt).getTime())
@@ -284,19 +303,19 @@ export default function AdminPage() {
                 <StatCard
                     icon="users"
                     label="Total Users"
-                    value={totalUsers}
-                    description="Registered accounts"
-                    trend="+12%"
+                    value={overview?.totalUsers ?? '—'}
+                    description={overview?.totalUsers == null ? 'Needs users.read scope' : 'Registered accounts'}
+                    trend={overview?.usersTrendPct ?? null}
                 />
-                
+
                 <StatCard
                     icon="database"
                     label="Total Items"
                     value={totalItems}
                     description="Watchlist entries"
-                    trend="+8%"
+                    trend={overview?.itemsTrendPct ?? null}
                 />
-                
+
                 <StatCard
                     icon="star"
                     label="Plex Requests"
@@ -304,13 +323,12 @@ export default function AdminPage() {
                     description="Pending requests"
                     className={plexRequests.length > 0 ? "border-amber-200 bg-amber-50/50 dark:bg-amber-950/20" : ""}
                 />
-                
+
                 <StatCard
                     icon="activity"
-                    label="Active Today"
-                    value={Math.floor(totalUsers * 0.3)}
-                    description="Users online"
-                    trend="+5%"
+                    label="New This Month"
+                    value={overview?.itemsThisMonth ?? 0}
+                    description="Items added"
                 />
             </div>
 
@@ -359,7 +377,6 @@ export default function AdminPage() {
                     description="Manage user accounts, permissions, and roles"
                     href="/admin/users"
                     icon="users"
-                    badge="Coming Soon"
                 />
 
                 <QuickActionCard
@@ -367,7 +384,6 @@ export default function AdminPage() {
                     description="View detailed analytics and usage statistics"
                     href="/admin/analytics"
                     icon="barchart"
-                    badge="Coming Soon"
                 />
             </div>
 

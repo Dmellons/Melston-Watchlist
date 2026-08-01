@@ -6,7 +6,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Button } from "./ui/button"
 import Link from "next/link"
 import { useUser } from "@/hooks/User"
-import { useEffect, useState } from "react"
+import { memo, useMemo, useState } from "react"
 import ImageWithFallback from "@/components/ImageWithFallback"
 import SafeIcon from "@/components/SafeIcon"
 import { Info, Calendar, Film, Tv, Eye, Star, Play } from "lucide-react"
@@ -34,16 +34,13 @@ const NewSearchCard = ({
     userProviders?: number[]
 }) => {
     const { user } = useUser();
-    const [data, setData] = useState<CardData | null>(null);
     const [isHovered, setIsHovered] = useState(false);
-    
-    useEffect(() => {
-        if (media.media_type === 'person') {
-            return; // Don't render person results
-        }
 
+    // Derive card data directly from props so the card paints on first render
+    // (no blank flash from a useState/useEffect round-trip).
+    const data = useMemo<CardData | null>(() => {
         if (media.media_type === 'tv') {
-            setData({
+            return {
                 title: media.name,
                 content_type: media.media_type,
                 tmdb_id: media.id,
@@ -53,12 +50,12 @@ const NewSearchCard = ({
                 backdrop_path: media.backdrop_path || '',
                 genre_ids: media.genre_ids,
                 description: media.overview ? media.overview : "No description available"
-            });
+            };
         }
 
         if (media.media_type === 'movie') {
             const movieMedia = media as TMDBMovieSearchResult;
-            setData({
+            return {
                 title: movieMedia.title,
                 content_type: movieMedia.media_type,
                 tmdb_id: movieMedia.id,
@@ -68,11 +65,15 @@ const NewSearchCard = ({
                 backdrop_path: movieMedia.backdrop_path || '',
                 genre_ids: movieMedia.genre_ids,
                 description: movieMedia.overview ? movieMedia.overview : "No description available"
-            });
+            };
         }
+
+        return null; // Don't render person (or unknown) results
     }, [media]);
 
     if (!data) return null;
+
+    const detailsHref = `/${data.tmdb_type}/${data.tmdb_id}`;
 
     const releaseYear = data.year ? data.year.split('-')[0] : 'N/A';
     const mediaTypeIcon = data.content_type === 'movie' ? Film : Tv;
@@ -111,25 +112,31 @@ const NewSearchCard = ({
 
                 <CardContent className="p-0">
                     <div className="relative">
-                        <Link href={`/${data.tmdb_type}/${data.tmdb_id}`}>
+                        <Link href={detailsHref} aria-label={`View details for ${data.title}`}>
                         <ImageWithFallback
                             src={`https://image.tmdb.org/t/p/w500/${data.poster_path}`}
                             alt={data.title}
                             className="w-full h-40 sm:h-60 md:h-72 object-cover transition-transform duration-500 group-hover:scale-110"
                             width={200}
                             height={300}
+                            sizes="(max-width: 640px) 50vw, (max-width: 1280px) 20vw, 200px"
+                            loading="lazy"
                         />
                         </Link>
 
-                        {/* Gradient overlay on hover (hidden on mobile) */}
+                        {/* Gradient overlay on hover (hidden on mobile).
+                            pointer-events-none so it never swallows clicks meant for the poster Link. */}
                         <div className={`
-                            absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent 
+                            absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent
                             transition-opacity duration-300 flex items-end p-2 sm:p-3
+                            pointer-events-none
                             ${isHovered ? 'opacity-100' : 'opacity-0'}
                             hidden sm:flex
                         `}>
                             <div className="text-white space-y-1">
-                                <h3 className="font-bold text-sm line-clamp-2">{data.title}</h3>
+                                <Link href={detailsHref} className="pointer-events-auto hover:text-primary transition-colors">
+                                    <h3 className="font-bold text-sm line-clamp-2">{data.title}</h3>
+                                </Link>
                                 <div className="flex items-center gap-1 text-xs text-white/80">
                                     <SafeIcon icon={Calendar} className="h-3 w-3" size={12} />
                                     <span>{releaseYear}</span>
@@ -142,7 +149,9 @@ const NewSearchCard = ({
 
             {/* Title and Year for Mobile (shown below image) */}
             <div className="sm:hidden px-1 space-y-1">
-                <h3 className="font-semibold text-xs line-clamp-2 leading-tight">{data.title}</h3>
+                <Link href={detailsHref}>
+                    <h3 className="font-semibold text-xs line-clamp-2 leading-tight hover:text-primary transition-colors">{data.title}</h3>
+                </Link>
                 <div className="flex items-center gap-1 text-xs text-muted-foreground">
                     <SafeIcon icon={Calendar} className="h-3 w-3" size={12} />
                     <span>{releaseYear}</span>
@@ -182,7 +191,7 @@ const NewSearchCard = ({
                     {/* Quick View Dialog */}
                     <Dialog>
                         <DialogTrigger asChild>
-                            <Button variant="outline" size="sm" className="px-2 sm:px-3 transition-all duration-200 hover:scale-105">
+                            <Button variant="outline" size="sm" aria-label={`Quick view ${data.title}`} className="px-2 sm:px-3 transition-all duration-200 hover:scale-105">
                                 <SafeIcon icon={Eye} className="h-3 w-3" size={12} />
                             </Button>
                         </DialogTrigger>
@@ -300,4 +309,4 @@ const NewSearchCard = ({
     );
 };
 
-export default NewSearchCard;
+export default memo(NewSearchCard);

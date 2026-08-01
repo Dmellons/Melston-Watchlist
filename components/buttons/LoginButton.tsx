@@ -9,14 +9,18 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import SafeIcon from "@/components/SafeIcon";
-import { 
-    User, 
-    Settings, 
-    Shield, 
-    LogOut, 
+import {
+    User,
+    Settings,
+    Shield,
+    LogOut,
     Crown,
     Loader2,
-    Star
+    Star,
+    Sparkles,
+    Disc,
+    Library,
+    BarChart3
 } from "lucide-react";
 
 export default function LoginButton() {
@@ -103,6 +107,34 @@ export default function LoginButton() {
 
                                 {/* Navigation Links */}
                                 <div className="space-y-2">
+                                    <Button asChild variant="ghost" className="w-full justify-start h-10">
+                                        <Link href="/ai" className="flex items-center gap-3">
+                                            <SafeIcon icon={Sparkles} className="h-4 w-4 text-primary" size={16} />
+                                            <span>AI Suggestions</span>
+                                        </Link>
+                                    </Button>
+
+                                    <Button asChild variant="ghost" className="w-full justify-start h-10">
+                                        <Link href="/physical" className="flex items-center gap-3">
+                                            <SafeIcon icon={Disc} className="h-4 w-4 text-blue-500" size={16} />
+                                            <span>Physical Library</span>
+                                        </Link>
+                                    </Button>
+
+                                    <Button asChild variant="ghost" className="w-full justify-start h-10">
+                                        <Link href="/collections" className="flex items-center gap-3">
+                                            <SafeIcon icon={Library} className="h-4 w-4 text-amber-500" size={16} />
+                                            <span>Collections</span>
+                                        </Link>
+                                    </Button>
+
+                                    <Button asChild variant="ghost" className="w-full justify-start h-10">
+                                        <Link href="/insights" className="flex items-center gap-3">
+                                            <SafeIcon icon={BarChart3} className="h-4 w-4 text-green-500" size={16} />
+                                            <span>Streaming Insights</span>
+                                        </Link>
+                                    </Button>
+
                                     <Button asChild variant="ghost" className="w-full justify-start h-10">
                                         <Link href="/profile" className="flex items-center gap-3">
                                             <SafeIcon icon={User} className="h-4 w-4" size={16} />

@@ -9,6 +9,11 @@ import { Separator } from "@/components/ui/separator";
 import ProvidersSelect from "@/components/ProvidersSelect";
 import ImageGetter from "@/components/ImageGetter";
 import SafeIcon from "@/components/SafeIcon";
+import NotificationPreferences from "@/components/NotificationPreferences";
+import SteamImport from "@/components/SteamImport";
+import { exportWatchlistToExcel } from "@/lib/xlxs";
+import { WatchlistDocument } from "@/types/appwrite";
+import { toast } from "sonner";
 import { 
   User, 
   Mail, 
@@ -22,7 +27,8 @@ import {
   Bell,
   Download,
   Eye,
-  Crown
+  Crown,
+  Gamepad2
 } from "lucide-react";
 
 const ProfilePage = () => {
@@ -232,19 +238,47 @@ const ProfilePage = () => {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="space-y-3">
-              <Button variant="outline" className="w-full justify-start">
-                <SafeIcon icon={Bell} className="h-4 w-4 mr-2" size={16} />
-                Notification Preferences
-                <span className="ml-auto text-xs text-muted-foreground">Coming Soon</span>
-              </Button>
-              
-              <Button variant="outline" className="w-full justify-start">
+            <div className="space-y-4">
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <SafeIcon icon={Bell} className="h-4 w-4 text-muted-foreground" size={16} />
+                  <span className="text-sm font-medium">Notification Preferences</span>
+                </div>
+                <NotificationPreferences />
+              </div>
+
+              <Button
+                variant="outline"
+                className="w-full justify-start"
+                disabled={!user.watchlist?.documents?.length}
+                onClick={() => {
+                  const docs = (user.watchlist?.documents ?? []) as WatchlistDocument[];
+                  if (!docs.length) {
+                    toast.error("Your watchlist is empty");
+                    return;
+                  }
+                  exportWatchlistToExcel(docs);
+                  toast.success(`Exporting ${docs.length} items…`);
+                }}
+              >
                 <SafeIcon icon={Download} className="h-4 w-4 mr-2" size={16} />
                 Export Watchlist
-                <span className="ml-auto text-xs text-muted-foreground">Coming Soon</span>
+                <span className="ml-auto text-xs text-muted-foreground">.xlsx</span>
               </Button>
             </div>
+          </CardContent>
+        </Card>
+
+        {/* Steam Library Import */}
+        <Card className="transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <SafeIcon icon={Gamepad2} className="h-5 w-5" size={20} />
+              Games
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <SteamImport />
           </CardContent>
         </Card>
 

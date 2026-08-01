@@ -2,7 +2,6 @@
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "./ui/input"
-import MediaSearchCard from "./MediaSearchCard"
 import { TMDBMultiSearchResult } from "@/types/tmdbApi"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "./ui/accordion"
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "./ui/carousel"
@@ -56,7 +55,7 @@ const SearchMovie = ({
         const res = await fetch(`https://api.themoviedb.org/3/search/multi?query=${query}`, tmdbFetchOptions)
             .then(res => res.json())
             .then(data => setResults(data.results))
-            .catch(error => console.log(error))
+            .catch(error => console.error(error))
         setLoading(false)
 
     }

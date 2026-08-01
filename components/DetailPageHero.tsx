@@ -6,11 +6,11 @@ import { Card } from "@/components/ui/card";
 import AddWatchlistButton from '@/components/buttons/AddWatchlistButton';
 import BackButton from '@/components/buttons/BackButton';
 import SafeIcon from '@/components/SafeIcon';
+import { useShare } from '@/hooks/useShare';
 import { 
-    Star, 
+    Star,
     TrendingUp,
     Play,
-    Bookmark,
     Share2,
     Film,
     Tv
@@ -75,6 +75,7 @@ export default function DetailPageHero({
     releaseDate,
     tmdbType
 }: HeroSectionProps) {
+    const share = useShare();
     // Create a TMDBMultiSearchResult-compatible object for AddWatchlistButton
     const addButtonData = {
         id: data.id,
@@ -306,12 +307,12 @@ export default function DetailPageHero({
                                         width="min-w-[120px]"
                                     />
                                     
-                                    <Button variant="outline" size="lg" className="bg-background/20 backdrop-blur-sm border-white/20 text-white hover:bg-background/30 transition-transform hover:scale-105 active:scale-95">
-                                        <SafeIcon icon={Bookmark} className="h-5 w-5 mr-2" size={20} />
-                                        Save
-                                    </Button>
-                                    
-                                    <Button variant="outline" size="lg" className="bg-background/20 backdrop-blur-sm border-white/20 text-white hover:bg-background/30 transition-transform hover:scale-105 active:scale-95">
+                                    <Button
+                                        variant="outline"
+                                        size="lg"
+                                        onClick={() => share({ title, url: `/${tmdbType}/${data.id}` })}
+                                        className="bg-background/20 backdrop-blur-sm border-white/20 text-white hover:bg-background/30 transition-transform hover:scale-105 active:scale-95"
+                                    >
                                         <SafeIcon icon={Share2} className="h-5 w-5 mr-2" size={20} />
                                         Share
                                     </Button>

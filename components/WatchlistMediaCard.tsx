@@ -17,7 +17,7 @@ import {
 import { Separator } from "@/components/ui/separator"
 import DeleteButton from "@/components/DeleteButton"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
-import { Dispatch, SetStateAction, useState } from "react"
+import { Dispatch, SetStateAction, memo, useState } from "react"
 import ProvidersBlock from "@/components/ProvidersBlock"
 import { Models } from "@/lib/appwrite"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
@@ -136,4 +136,4 @@ const WatchlistMediaCard = ({
     )
 }
 
-export default WatchlistMediaCard
+export default memo(WatchlistMediaCard)

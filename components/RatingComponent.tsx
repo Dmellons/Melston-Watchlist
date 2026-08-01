@@ -13,8 +13,9 @@ import { toast } from 'sonner'
 import { Query } from 'appwrite'
 
 interface RatingComponentProps {
-  tmdbId: number
-  tmdbType: 'movie' | 'tv'
+  tmdbId?: number
+  igdbId?: number
+  tmdbType: 'movie' | 'tv' | 'videogame'
   mediaTitle: string
   compact?: boolean
 }
@@ -23,7 +24,8 @@ interface Rating {
   $id: string
   user_id: string
   user_name: string
-  tmdb_id: number
+  tmdb_id?: number
+  igdb_id?: number
   tmdb_type: string
   rating: number
   review?: string
@@ -39,10 +41,14 @@ interface RatingStats {
 
 export default function RatingComponent({
   tmdbId,
+  igdbId,
   tmdbType,
   mediaTitle,
   compact = false
 }: RatingComponentProps) {
+  // Use the appropriate ID based on media type
+  const mediaId = tmdbType === 'videogame' ? igdbId : tmdbId
+  const idField = tmdbType === 'videogame' ? 'igdb_id' : 'tmdb_id'
   const { user } = useUser()
   const [userRating, setUserRating] = useState<Rating | null>(null)
   const [allRatings, setAllRatings] = useState<Rating[]>([])
@@ -56,8 +62,10 @@ export default function RatingComponent({
 
   // Load ratings on component mount
   useEffect(() => {
-    loadRatings()
-  }, [tmdbId, tmdbType, user])
+    if (mediaId) {
+      loadRatings()
+    }
+  }, [mediaId, tmdbType, user])
 
   const loadRatings = async () => {
     try {
@@ -70,10 +78,10 @@ export default function RatingComponent({
       
       // Get all ratings for this media
       const allRatingsResponse = await database.listDocuments(
-        'watchlist', // Replace with your ratings database
-        ratingsCollectionId, // You'll need to create this collection
+        'watchlist',
+        ratingsCollectionId,
         [
-          Query.equal('tmdb_id', tmdbId),
+          Query.equal(idField, mediaId!),
           Query.equal('tmdb_type', tmdbType),
           Query.orderDesc('created_at'),
           Query.limit(100)
@@ -128,16 +136,22 @@ export default function RatingComponent({
     setIsSubmitting(true)
 
     try {
-      const ratingData = {
+      const ratingData: Record<string, any> = {
         user_id: user.id!,
         user_name: user.name,
-        tmdb_id: tmdbId,
         tmdb_type: tmdbType,
         media_title: mediaTitle,
         rating: selectedRating,
-        review: review.trim() || undefined,
+        review: review.trim() || null,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
+      }
+
+      // Set the appropriate ID field based on media type
+      if (tmdbType === 'videogame') {
+        ratingData.igdb_id = igdbId
+      } else {
+        ratingData.tmdb_id = tmdbId
       }
 
       if (userRating) {
@@ -159,7 +173,7 @@ export default function RatingComponent({
           process.env.NEXT_PUBLIC_APPWRITE_RATINGS_COLLECTION_ID!,
           [
             Query.equal('user_id', user.id!),
-            Query.equal('tmdb_id', tmdbId),
+            Query.equal(idField, mediaId!),
             Query.equal('tmdb_type', tmdbType)
           ]
         )

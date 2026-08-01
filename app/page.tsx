@@ -1,33 +1,38 @@
 'use client'
-import SearchMovie from "@/components/SearchMovie";
 import WatchlistGrid from "@/components/buttons/WatchlistGrid";
-import { Button } from "@/components/ui/button";
-import { useMediaQuery } from "@/hooks/MediaQuery";
+import ContentRow from "@/components/home/ContentRow";
+import LandingHero from "@/components/home/LandingHero";
 import { useUser } from "@/hooks/User";
 import { WatchlistDocument } from "@/types/appwrite";
 import { Models } from "appwrite";
-import Image from "next/image";
-import Link from "next/link";
 
 export default function Home() {
-  const { user, loginWithGoogle } = useUser()
-  // const isDesktop = useMediaQuery("(min-width: 768px)")
-  console.log({ user })
-  // const watchlist: Models.DocumentList<WatchlistDocument> = user?.watchlist
+  const { user, loading } = useUser();
+
+  // While auth resolves, render nothing (layout shows a Suspense spinner).
+  if (loading) return null;
+
+  if (!user) {
+    return (
+      <div className="p-2 sm:p-6">
+        <LandingHero />
+      </div>
+    );
+  }
 
   return (
-    <div className=" p-2 sm:p-18 flex  flex-col items-center  ">
-      {/* {!isDesktop &&
-      } */}
-      {/* <SearchMovie resultsLength={10} /> */}
+    <div className="p-2 sm:p-6 space-y-10">
+      {/* Discover rows */}
+      <div className="space-y-8">
+        <ContentRow title="Trending This Week" endpoint="trending/all/week" fallbackType="movie" />
+        <ContentRow title="Now Playing in Theaters" endpoint="movie/now_playing" fallbackType="movie" />
+        <ContentRow title="Popular TV Shows" endpoint="tv/popular" fallbackType="tv" />
+      </div>
 
-
-      {!user &&
-        <Button variant={"link"} onClick={() => loginWithGoogle()}>Please sign in</Button>
-      }
-      {user?.watchlist &&
-        <WatchlistGrid watchlist={user?.watchlist as Models.DocumentList<WatchlistDocument>} />
-      }
+      {/* The user's watchlist */}
+      {user.watchlist && (
+        <WatchlistGrid watchlist={user.watchlist as Models.DocumentList<WatchlistDocument>} />
+      )}
     </div>
-  )
+  );
 }

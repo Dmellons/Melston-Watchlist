@@ -6,13 +6,19 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ProvidersBlock from '@/components/ProvidersBlock';
-import RatingComponent from '@/components/RatingComponent';
+import MediaGallery from '@/components/detail/MediaGallery';
+import RecommendationsRow from '@/components/detail/RecommendationsRow';
+import FavoriteButton from '@/components/buttons/FavoriteButton';
+import AddToCollectionDialog from '@/components/AddToCollectionDialog';
+import { useShare } from '@/hooks/useShare';
+import WatchlistRatingCard from '@/components/WatchlistRatingCard';
 import WatchStatusComponent from './WatchStatusComponent';
 import SafeIcon from '@/components/SafeIcon';
 import { useUser } from '@/hooks/User';
 import { WatchStatus } from '@/types/customTypes'
 import { useState, useEffect, useCallback } from 'react';
 import { database } from '@/lib/appwrite';
+import { Query } from 'appwrite';
 import { toast } from 'sonner';
 import { 
     Calendar, 
@@ -31,10 +37,35 @@ import {
     Zap,
     Heart,
     Share2,
-    Bookmark
+    Shield,
+    Tv2,
+    CalendarClock,
+    User
 } from "lucide-react";
 
-function StatCard({ icon: Icon, label, value, className = "" }: { 
+// Pull the US certification (e.g. "PG-13" / "TV-MA") from the appended
+// release_dates (movies) or content_ratings (tv) data.
+function getUsCertification(data: any, isMovie: boolean): string | null {
+    if (isMovie) {
+        const us = data.release_dates?.results?.find((r: any) => r.iso_3166_1 === 'US');
+        const cert = us?.release_dates?.map((d: any) => d.certification).find((c: string) => c);
+        return cert || null;
+    }
+    const us = data.content_ratings?.results?.find((r: any) => r.iso_3166_1 === 'US');
+    return us?.rating || null;
+}
+
+// Group the most relevant crew members by job for display.
+function getKeyCrew(crew: any[] = []) {
+    const find = (jobs: string[]) => crew.find((c) => jobs.includes(c.job));
+    return [
+        { label: 'Director', person: find(['Director']) },
+        { label: 'Writer', person: find(['Writer', 'Screenplay', 'Story']) },
+        { label: 'Composer', person: find(['Original Music Composer', 'Music']) },
+    ].filter((x) => x.person);
+}
+
+function StatCard({ icon: Icon, label, value, className = "" }: {
     icon: any, 
     label: string, 
     value: string | number, 
@@ -81,6 +112,8 @@ function CastCard({ member }: { member: any }) {
                         alt={member.name}
                         width={128}
                         height={192}
+                        sizes="(max-width: 640px) 80px, 128px"
+                        loading="lazy"
                         className="w-full h-24 sm:h-48 object-cover rounded-t-lg"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-t-lg" />
@@ -108,6 +141,7 @@ export default function EnhancedDetailPageContent({
     runtime 
 }: EnhancedDetailPageContentProps) {
     const { user, setUser } = useUser();
+    const share = useShare();
     const isMovie = tmdbType === 'movie';
     const [watchlistItem, setWatchlistItem] = useState<any>(null);
     const [isInWatchlist, setIsInWatchlist] = useState(false);
@@ -130,8 +164,9 @@ export default function EnhancedDetailPageContent({
         
         try {
             const updatedWatchlist = await database.listDocuments(
-                'watchlist', 
-                process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID!
+                'watchlist',
+                process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID!,
+                [Query.limit(1000)]
             );
             
             setUser(prevUser => prevUser ? {
@@ -161,7 +196,7 @@ export default function EnhancedDetailPageContent({
                 process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID!,
                 watchlistItem.$id,
                 {
-                    user_rating: rating || null,
+                    rating: rating || null,
                     user_review: review || null,
                     ...(rating > 0 && { date_watched: new Date().toISOString() })
                 }
@@ -170,7 +205,7 @@ export default function EnhancedDetailPageContent({
             // Update local state immediately for better UX
             setWatchlistItem((prev: any) => prev ? {
                 ...prev,
-                user_rating: rating,
+                rating: rating,
                 user_review: review,
                 ...(rating > 0 && { date_watched: new Date().toISOString() })
             } : null);
@@ -269,9 +304,16 @@ export default function EnhancedDetailPageContent({
                                 icon={Star}
                                 label="TMDB Rating"
                                 value={`${data.vote_average.toFixed(1)}/10`}
-                                className="col-span-2 sm:col-span-1"
                             />
-                            
+
+                            {getUsCertification(data, isMovie) && (
+                                <StatCard
+                                    icon={Shield}
+                                    label="Rated"
+                                    value={getUsCertification(data, isMovie)!}
+                                />
+                            )}
+
                             {isMovie && data.budget > 0 && (
                                 <StatCard
                                     icon={DollarSign}
@@ -318,10 +360,12 @@ export default function EnhancedDetailPageContent({
                                     onStatusUpdate={handleStatusUpdate}
                                 />
                                 
-                                <RatingComponent
-                                    tmdbId={data.id}
-                                    tmdbType={tmdbType}
+                                <WatchlistRatingCard
+                                    currentRating={watchlistItem.rating || 0}
+                                    currentReview={watchlistItem.user_review || ''}
+                                    documentId={watchlistItem.$id}
                                     mediaTitle={data.title || data.name}
+                                    onRatingUpdate={refreshUserData}
                                 />
                             </div>
                         </section>
@@ -338,10 +382,22 @@ export default function EnhancedDetailPageContent({
                             
                             <TabsContent value="cast" className="mt-4 sm:mt-6">
                                 <div className="space-y-4 sm:space-y-6">
+                                    {/* Key crew */}
+                                    {getKeyCrew(data.credits?.crew).length > 0 && (
+                                        <div className="flex flex-wrap gap-4 sm:gap-8">
+                                            {getKeyCrew(data.credits?.crew).map(({ label, person }) => (
+                                                <div key={`${label}-${person.id}`}>
+                                                    <p className="text-xs text-muted-foreground">{label}</p>
+                                                    <p className="font-medium text-sm sm:text-base">{person.name}</p>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+
                                     <h3 className="text-lg sm:text-xl font-semibold">Cast</h3>
                                     <ScrollArea className="w-full">
                                         <div className="flex gap-2 sm:gap-4 pb-4">
-                                            {data.credits.cast?.slice(0, 12).map((member: any) => (
+                                            {data.credits.cast?.slice(0, 20).map((member: any) => (
                                                 <CastCard key={member.id} member={member} />
                                             ))}
                                         </div>
@@ -373,6 +429,44 @@ export default function EnhancedDetailPageContent({
                                         </div>
                                     </div>
                                     
+                                    {/* TV-specific: creators, networks, next episode */}
+                                    {!isMovie && data.created_by?.length > 0 && (
+                                        <div className="flex items-center gap-3">
+                                            <SafeIcon icon={User} className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" size={20} />
+                                            <div>
+                                                <p className="text-xs sm:text-sm text-muted-foreground">Created By</p>
+                                                <p className="font-medium text-sm sm:text-base">{data.created_by.map((c: any) => c.name).join(', ')}</p>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {!isMovie && data.networks?.length > 0 && (
+                                        <div className="flex items-center gap-3">
+                                            <SafeIcon icon={Tv2} className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground" size={20} />
+                                            <div>
+                                                <p className="text-xs sm:text-sm text-muted-foreground">Network</p>
+                                                <p className="font-medium text-sm sm:text-base">{data.networks.map((n: any) => n.name).join(', ')}</p>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {!isMovie && data.next_episode_to_air && (
+                                        <div className="flex items-center gap-3">
+                                            <SafeIcon icon={CalendarClock} className="h-4 w-4 sm:h-5 sm:w-5 text-primary" size={20} />
+                                            <div>
+                                                <p className="text-xs sm:text-sm text-muted-foreground">Next Episode</p>
+                                                <p className="font-medium text-sm sm:text-base">
+                                                    {data.next_episode_to_air.name
+                                                        ? `${data.next_episode_to_air.name} — `
+                                                        : ''}
+                                                    {data.next_episode_to_air.air_date
+                                                        ? new Date(data.next_episode_to_air.air_date).toLocaleDateString()
+                                                        : 'TBA'}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    )}
+
                                     {data.production_companies && data.production_companies.length > 0 && (
                                         <div className="space-y-4">
                                             <h3 className="text-lg sm:text-xl font-semibold">Production Companies</h3>
@@ -390,10 +484,11 @@ export default function EnhancedDetailPageContent({
                             </TabsContent>
                             
                             <TabsContent value="media" className="mt-4 sm:mt-6">
-                                <div className="text-center py-8 sm:py-12 text-muted-foreground">
-                                    <SafeIcon icon={Film} className="h-8 w-8 sm:h-12 sm:w-12 mx-auto mb-3 sm:mb-4" size={48} />
-                                    <p className="text-sm sm:text-base">Media gallery coming soon...</p>
-                                </div>
+                                <MediaGallery
+                                    title={data.title || data.name}
+                                    videos={data.videos}
+                                    images={data.images}
+                                />
                             </TabsContent>
                         </Tabs>
                     </section>
@@ -410,20 +505,21 @@ export default function EnhancedDetailPageContent({
                                     Quick Actions
                                 </h3>
                                 <div className="space-y-2 sm:space-y-3">
-                                    <Button variant="outline" className="w-full justify-start text-xs sm:text-sm h-9 sm:h-10">
-                                        <SafeIcon icon={Heart} className="h-3 w-3 sm:h-4 sm:w-4 mr-2" size={16} />
-                                        Add to Favorites
-                                    </Button>
-                                    
-                                    <Button variant="outline" className="w-full justify-start text-xs sm:text-sm h-9 sm:h-10">
+                                    <FavoriteButton
+                                        documentId={watchlistItem.$id}
+                                        className="w-full justify-start text-xs sm:text-sm h-9 sm:h-10"
+                                    />
+
+                                    <Button
+                                        variant="outline"
+                                        className="w-full justify-start text-xs sm:text-sm h-9 sm:h-10"
+                                        onClick={() => share({ title: data.title || data.name, url: `/${tmdbType}/${data.id}` })}
+                                    >
                                         <SafeIcon icon={Share2} className="h-3 w-3 sm:h-4 sm:w-4 mr-2" size={16} />
                                         Share
                                     </Button>
-                                    
-                                    <Button variant="outline" className="w-full justify-start text-xs sm:text-sm h-9 sm:h-10">
-                                        <SafeIcon icon={Bookmark} className="h-3 w-3 sm:h-4 sm:w-4 mr-2" size={16} />
-                                        Add to Collection
-                                    </Button>
+
+                                    <AddToCollectionDialog itemId={watchlistItem.$id} />
                                 </div>
                             </CardContent>
                         </Card>
@@ -454,16 +550,18 @@ export default function EnhancedDetailPageContent({
                                 External Links
                             </h3>
                             <div className="space-y-2 sm:space-y-3">
-                                <Button variant="outline" className="w-full justify-start text-xs sm:text-sm h-9 sm:h-10" asChild>
-                                    <Link
-                                        href={`https://www.imdb.com/title/${data.imdb_id || data.id}`}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                    >
-                                        <SafeIcon icon={Info} className="h-3 w-3 sm:h-4 sm:w-4 mr-2" size={16} />
-                                        View on IMDB
-                                    </Link>
-                                </Button>
+                                {(data.external_ids?.imdb_id || data.imdb_id) && (
+                                    <Button variant="outline" className="w-full justify-start text-xs sm:text-sm h-9 sm:h-10" asChild>
+                                        <Link
+                                            href={`https://www.imdb.com/title/${data.external_ids?.imdb_id || data.imdb_id}`}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                        >
+                                            <SafeIcon icon={Info} className="h-3 w-3 sm:h-4 sm:w-4 mr-2" size={16} />
+                                            View on IMDB
+                                        </Link>
+                                    </Button>
+                                )}
                                 
                                 {data.homepage && (
                                     <Button variant="outline" className="w-full justify-start text-xs sm:text-sm h-9 sm:h-10" asChild>
@@ -502,6 +600,26 @@ export default function EnhancedDetailPageContent({
                     )}
                 </div>
             </div>
+
+            {/* More like this */}
+            {(data.recommendations?.results?.length > 0 || data.similar?.results?.length > 0) && (
+                <div className="mt-10 sm:mt-14 space-y-10">
+                    {data.recommendations?.results?.length > 0 && (
+                        <RecommendationsRow
+                            title="More Like This"
+                            items={data.recommendations.results}
+                            fallbackType={tmdbType}
+                        />
+                    )}
+                    {data.similar?.results?.length > 0 && (
+                        <RecommendationsRow
+                            title="Similar Titles"
+                            items={data.similar.results}
+                            fallbackType={tmdbType}
+                        />
+                    )}
+                </div>
+            )}
         </div>
     );
 }

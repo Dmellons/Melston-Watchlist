@@ -1,7 +1,9 @@
 'use client'
-import { ProvidersApiCall, StreamingInfo, tmdbFetchOptions } from '@/lib/tmdb';
+import { ProvidersApiCall, StreamingInfo } from '@/lib/tmdb';
+import { fetchProviders, providersQueryKey, PLEX_PROVIDER } from '@/lib/providers';
 import Image from 'next/image';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import {
   Tooltip,
   TooltipContent,
@@ -10,8 +12,6 @@ import {
 } from "@/components/ui/tooltip"
 import { useUser } from '@/hooks/User';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
-import { database } from '@/lib/appwrite';
-import { Query } from 'appwrite';
 import { Badge } from './ui/badge';
 import SafeIcon from './SafeIcon';
 import { ExternalLink, Sparkles, Play, Loader2 } from 'lucide-react';
@@ -37,10 +37,6 @@ const ProvidersBlock = ({
     iconSize = 24,
     notStreamingValue
 }: ProvidersBlockProps) => {
-    const [data, setData] = useState<ProvidersApiCall | undefined>(undefined);
-    const [loading, setLoading] = useState(true);
-    const [inPlex, setInPlex] = useState(false);
-    const [error, setError] = useState<string | null>(null);
     const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
     const { user } = useUser();
@@ -49,39 +45,21 @@ const ProvidersBlock = ({
         userProviders = user?.providers || [];
     }
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const url = `https://api.themoviedb.org/3/${tmdbType}/${tmdbId.toString()}/watch/providers`;
-                const response = await fetch(url, tmdbFetchOptions);
-                
-                if (!response.ok) {
-                    throw new Error(`Failed to fetch providers: ${response.status}`);
-                }
-                
-                const result = await response.json();
-                setData(result);
+    const plexEnabled = !!user?.labels?.includes('plex');
 
-                // Check Plex availability
-                if (user?.labels?.includes('plex')) {
-                    const plex_collection_id = process.env.NEXT_PUBLIC_APPWRITE_PLEX_COLLECTION_ID;
-                    const plex_db = await database.listDocuments('watchlist', plex_collection_id!, [
-                        Query.equal('tmdb_id', tmdbId.toString())
-                    ]);
+    // Cached + deduped: identical (type, id, plex) lookups across N search cards
+    // collapse to a single in-flight request, and re-searching a title is served
+    // from cache for an hour instead of refetching.
+    const { data: result, isPending, isError } = useQuery<{ data: ProvidersApiCall; inPlex: boolean }>({
+        queryKey: providersQueryKey(tmdbType, tmdbId, plexEnabled),
+        staleTime: 1000 * 60 * 60, // 1 hour
+        queryFn: () => fetchProviders(tmdbType, tmdbId, plexEnabled),
+    });
 
-                    const plex_ids = plex_db.documents.map(doc => doc.tmdb_id);
-                    setInPlex(plex_ids.includes(tmdbId.toString()));
-                }
-            } catch (error) {
-                console.error('Error fetching providers:', error);
-                setError(error instanceof Error ? error.message : 'Failed to load providers');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchData();
-    }, [tmdbId, tmdbType, user?.labels]);
+    const data = result?.data;
+    const inPlex = result?.inPlex ?? false;
+    const loading = isPending;
+    const error = isError;
 
     const NotStreamingComponent = () => {
         if (notStreamingValue) {
@@ -138,13 +116,7 @@ const ProvidersBlock = ({
 
     // Add Plex if available
     if (inPlex) {
-        const plexProvider: StreamingInfo = {
-            logo_path: '/logos/plex-logo.svg',
-            provider_id: 999,
-            provider_name: 'Plex',
-            display_priority: 1
-        };
-        allProviders = [plexProvider, ...allProviders];
+        allProviders = [PLEX_PROVIDER, ...allProviders];
     }
 
     // If no providers available at all

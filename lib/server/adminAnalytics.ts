@@ -38,7 +38,7 @@ export async function getAnalyticsData() {
 
       // Rating analytics
       ratingAnalytics: {
-        totalRated: docs.filter(item => item.user_rating && item.user_rating > 0).length,
+        totalRated: docs.filter(item => item.rating && item.rating > 0).length,
         averageRating: calculateAverageRating(docs),
         ratingDistribution: getRatingDistribution(docs),
       },
@@ -52,8 +52,8 @@ export async function getAnalyticsData() {
 
       // Top rated content
       topRated: docs
-        .filter(item => item.user_rating && item.user_rating > 0)
-        .sort((a: any, b: any) => (b.user_rating || 0) - (a.user_rating || 0))
+        .filter(item => item.rating && item.rating > 0)
+        .sort((a: any, b: any) => (b.rating || 0) - (a.rating || 0))
         .slice(0, 10),
     };
 
@@ -72,10 +72,10 @@ export async function getAnalyticsData() {
 }
 
 function calculateAverageRating(documents: any[]): number {
-  const ratedItems = documents.filter(item => item.user_rating && item.user_rating > 0);
+  const ratedItems = documents.filter(item => item.rating && item.rating > 0);
   if (ratedItems.length === 0) return 0;
   
-  const sum = ratedItems.reduce((acc, item) => acc + item.user_rating, 0);
+  const sum = ratedItems.reduce((acc, item) => acc + item.rating, 0);
   return Math.round((sum / ratedItems.length) * 10) / 10; // Round to 1 decimal
 }
 
@@ -85,8 +85,8 @@ function getRatingDistribution(documents: any[]): Record<string, number> {
   };
 
   documents.forEach(item => {
-    if (item.user_rating && item.user_rating > 0) {
-      const rating = item.user_rating;
+    if (item.rating && item.rating > 0) {
+      const rating = item.rating;
       if (rating <= 2) distribution['1-2']++;
       else if (rating <= 4) distribution['3-4']++;
       else if (rating <= 6) distribution['5-6']++;

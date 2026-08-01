@@ -53,7 +53,6 @@ export default function ProvidersSelect() {
            
             if (prefs.providers && typeof prefs.providers === 'string') {
                 const providersArray = prefs.providers.split(',').map(Number)
-                console.log({ providersArray })
                 setProviders(providersArray);
             } else {
                 setProviders(prefs.providers);

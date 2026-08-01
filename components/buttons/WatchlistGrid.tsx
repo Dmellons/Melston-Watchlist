@@ -11,16 +11,16 @@ import { Button } from "../ui/button"
 import { Input } from "../ui/input"
 import { Badge } from "../ui/badge"
 import SafeIcon from "@/components/SafeIcon"
-import { 
-    Search, 
-    Filter, 
-    Grid, 
-    List, 
-    SortAsc, 
-    SortDesc, 
-    Film, 
-    Tv, 
-    Star, 
+import {
+    Search,
+    Filter,
+    Grid,
+    List,
+    SortAsc,
+    SortDesc,
+    Film,
+    Tv,
+    Star,
     Eye,
     Menu,
     X,
@@ -29,7 +29,9 @@ import {
     TrendingUp,
     Calendar,
     MoreVertical,
-    Trash2
+    Trash2,
+    Gamepad2,
+    Heart
 } from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 import { useBreakpoint } from "@/hooks/MediaQuery"
@@ -50,7 +52,7 @@ interface WatchlistGridProps {
 }
 
 type SortOption = 'title' | 'date' | 'year' | 'type';
-type FilterOption = 'all' | 'movie' | 'tv' | 'requested';
+type FilterOption = 'all' | 'movie' | 'tv' | 'videogame' | 'requested' | 'favorite';
 
 const FilterSidebar = ({ 
     searchQuery, 
@@ -73,7 +75,7 @@ const FilterSidebar = ({
     setSortOrder: (order: 'asc' | 'desc') => void;
     filterBy: FilterOption;
     setFilterBy: (filter: FilterOption) => void;
-    stats: { movies: number; tvShows: number; requested: number; total: number };
+    stats: { movies: number; tvShows: number; games: number; requested: number; favorites: number; total: number };
     isOpen: boolean;
     onClose: () => void;
 }) => {
@@ -123,6 +125,13 @@ const FilterSidebar = ({
                             <span className="text-sm">TV Shows</span>
                         </div>
                         <Badge variant="secondary">{stats.tvShows}</Badge>
+                    </div>
+                    <div className="flex items-center justify-between p-2 bg-muted/30 rounded">
+                        <div className="flex items-center gap-2">
+                            <SafeIcon icon={Gamepad2} className="h-4 w-4 text-purple-500" size={16} />
+                            <span className="text-sm">Games</span>
+                        </div>
+                        <Badge variant="secondary">{stats.games}</Badge>
                     </div>
                     {stats.requested > 0 && (
                         <div className="flex items-center justify-between p-2 bg-amber-50 dark:bg-amber-950/20 rounded border border-amber-200 dark:border-amber-800">
@@ -186,10 +195,22 @@ const FilterSidebar = ({
                                 TV Shows Only
                             </div>
                         </SelectItem>
+                        <SelectItem value="videogame">
+                            <div className="flex items-center gap-2">
+                                <SafeIcon icon={Gamepad2} className="h-4 w-4" size={16} />
+                                Games Only
+                            </div>
+                        </SelectItem>
                         <SelectItem value="requested">
                             <div className="flex items-center gap-2">
                                 <SafeIcon icon={Star} className="h-4 w-4" size={16} />
                                 Plex Requests
+                            </div>
+                        </SelectItem>
+                        <SelectItem value="favorite">
+                            <div className="flex items-center gap-2">
+                                <SafeIcon icon={Heart} className="h-4 w-4" size={16} />
+                                Favorites
                             </div>
                         </SelectItem>
                     </SelectContent>
@@ -447,17 +468,19 @@ const WatchlistGrid = ({ watchlist }: WatchlistGridProps) => {
     const { isMobile, isDesktop } = useBreakpoint();
 
     const filteredAndSortedWatchlist = useMemo(() => {
-        let filtered = watchlist.documents.filter(document => {
+        const filtered = watchlist.documents.filter(document => {
             // Search filter
             const matchesSearch = searchQuery.length === 0 || 
                 document.title.toLowerCase().includes(searchQuery.toLowerCase());
 
             // Type filter
-            const matchesFilter = 
+            const matchesFilter =
                 filterBy === 'all' ||
                 (filterBy === 'movie' && document.content_type === 'movie') ||
                 (filterBy === 'tv' && document.content_type === 'tv') ||
-                (filterBy === 'requested' && document.plex_request);
+                (filterBy === 'videogame' && document.content_type === 'videogame') ||
+                (filterBy === 'requested' && document.plex_request) ||
+                (filterBy === 'favorite' && (document as any).is_favorite);
 
             return matchesSearch && matchesFilter;
         });
@@ -498,9 +521,11 @@ const WatchlistGrid = ({ watchlist }: WatchlistGridProps) => {
     const stats = useMemo(() => {
         const movies = watchlist.documents.filter(d => d.content_type === 'movie').length;
         const tvShows = watchlist.documents.filter(d => d.content_type === 'tv').length;
+        const games = watchlist.documents.filter(d => d.content_type === 'videogame').length;
         const requested = watchlist.documents.filter(d => d.plex_request).length;
-        
-        return { movies, tvShows, requested, total: watchlist.documents.length };
+        const favorites = watchlist.documents.filter(d => (d as any).is_favorite).length;
+
+        return { movies, tvShows, games, requested, favorites, total: watchlist.documents.length };
     }, [watchlist.documents]);
 
     return (
@@ -553,6 +578,12 @@ const WatchlistGrid = ({ watchlist }: WatchlistGridProps) => {
                                         <SafeIcon icon={Tv} className="h-4 w-4" size={16} />
                                         <span>{stats.tvShows} TV Shows</span>
                                     </div>
+                                    {stats.games > 0 && (
+                                        <div className="flex items-center gap-1">
+                                            <SafeIcon icon={Gamepad2} className="h-4 w-4 text-purple-500" size={16} />
+                                            <span>{stats.games} Games</span>
+                                        </div>
+                                    )}
                                     {stats.requested > 0 && (
                                         <div className="flex items-center gap-1">
                                             <SafeIcon icon={Star} className="h-4 w-4 text-amber-500" size={16} />
@@ -597,7 +628,9 @@ const WatchlistGrid = ({ watchlist }: WatchlistGridProps) => {
                                             <SelectItem value="all">All Items</SelectItem>
                                             <SelectItem value="movie">Movies</SelectItem>
                                             <SelectItem value="tv">TV Shows</SelectItem>
+                                            <SelectItem value="videogame">Games</SelectItem>
                                             <SelectItem value="requested">Requested</SelectItem>
+                                            <SelectItem value="favorite">Favorites</SelectItem>
                                         </SelectContent>
                                     </Select>
                                 </div>
@@ -693,26 +726,18 @@ const WatchlistGrid = ({ watchlist }: WatchlistGridProps) => {
                                         }
                                         pb-6
                                     `}>
-                                        {filteredAndSortedWatchlist.map((document, index) => {
-                                            // Ensure content_type is properly set
-                                            const processedDocument = {
-                                                ...document,
-                                                content_type: document.content_type === 'movie' ? 'movie' : 'tv'
-                                            };
-
-                                            return (
-                                                <div
-                                                    key={document.$id}
-                                                    className="animate-in fade-in-0 slide-in-from-bottom-4"
-                                                    style={{ 
-                                                        animationDelay: `${Math.min(index * 50, 500)}ms`,
-                                                        animationFillMode: 'both'
-                                                    }}
-                                                >
-                                                    <NewWatchlistCard media={processedDocument} />
-                                                </div>
-                                            );
-                                        })}
+                                        {filteredAndSortedWatchlist.map((document, index) => (
+                                            <div
+                                                key={document.$id}
+                                                className="animate-in fade-in-0 slide-in-from-bottom-4"
+                                                style={{
+                                                    animationDelay: `${Math.min(index * 50, 500)}ms`,
+                                                    animationFillMode: 'both'
+                                                }}
+                                            >
+                                                <NewWatchlistCard media={document} />
+                                            </div>
+                                        ))}
                                     </div>
                                 </ScrollArea>
                             )}
