@@ -3,6 +3,7 @@ import { Client, Account, Models, Databases, Users, Query } from "node-appwrite"
 import { cookies } from "next/headers";
 import { WatchlistDocument } from "@/types/appwrite";
 import { type UserType } from "@/hooks/User";
+import { toPlain } from "@/lib/server/serialize";
 
 
 export async function createSessionClient() {
@@ -131,8 +132,10 @@ export async function getLoggedInUser() {
       providers: prefs.providers ? prefs.providers : [],
       watchlist: watchlist,
     }
-  
-    return user;
+
+    // This object is passed to the client UserProvider, and the v27 SDK
+    // returns null-prototype objects the RSC serializer rejects.
+    return toPlain(user);
   } catch (error) {
     console.error('getLoggedInUser error:', error);
     return null;

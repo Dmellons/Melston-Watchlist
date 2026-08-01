@@ -1,5 +1,6 @@
 import WatchlistGrid from "@/components/buttons/WatchlistGrid";
 import { createSessionClient } from "@/lib/server/appwriteServer";
+import { toPlain } from "@/lib/server/serialize";
 import { WatchlistDocument } from "@/types/appwrite";
 import { Models, Query } from "appwrite";
 import { redirect } from "next/navigation";
@@ -30,7 +31,7 @@ export default async function WatchlistPage() {
         <main className="flex min-h-screen flex-col items-center p-4 sm:p-8">
             <h1 className="text-3xl font-bold">Watchlist</h1>
             {watchlist && watchlist.total > 0 ? (
-                <WatchlistGrid watchlist={watchlist} />
+                <WatchlistGrid watchlist={toPlain(watchlist)} />
             ) : (
                 <p className="mt-8 text-muted-foreground">
                     Your watchlist is empty — use the search bar above to add your first title.

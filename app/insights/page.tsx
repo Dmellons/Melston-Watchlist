@@ -1,6 +1,6 @@
-"use server"
 import StreamingInsights from "@/components/StreamingInsights";
 import { createSessionClient } from "@/lib/server/appwriteServer";
+import { toPlain } from "@/lib/server/serialize";
 import { WatchlistDocument } from "@/types/appwrite";
 import { Models, Query } from "appwrite";
 import { redirect } from "next/navigation";
@@ -40,7 +40,7 @@ export default async function InsightsPage() {
                     See which streaming services carry the most of your watchlist
                 </p>
             </div>
-            <StreamingInsights watchlist={watchlist.documents} />
+            <StreamingInsights watchlist={toPlain(watchlist.documents)} />
         </main>
     );
 };
