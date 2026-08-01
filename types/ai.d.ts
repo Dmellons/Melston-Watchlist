@@ -30,6 +30,12 @@ export interface AIPreferenceContext {
     type: 'movie' | 'tv';
     tmdb_id: number;
   }[];
+  /** Every item already in the user's library — suggestions must exclude these. */
+  library: {
+    title: string;
+    type: string;
+    tmdb_id: number;
+  }[];
 }
 
 export interface AISuggestionRequest {

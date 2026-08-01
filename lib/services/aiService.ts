@@ -185,6 +185,13 @@ export class AIService {
         tmdb_id: item.tmdb_id
       }));
 
+    // Full library list — used to keep suggestions to titles the user doesn't already have
+    const library = watchlistItems.map(item => ({
+      title: item.title,
+      type: item.tmdb_type,
+      tmdb_id: item.tmdb_id
+    }));
+
     return {
       userId,
       userName,
@@ -194,14 +201,15 @@ export class AIService {
       topRatedMedia,
       recentlyWatched,
       watchStatusCounts,
-      favorites
+      favorites,
+      library
     };
   }
 
   /**
    * Generate the system prompt for the AI
    */
-  private buildSystemPrompt(context: AIPreferenceContext, mediaType: string): string {
+  private buildSystemPrompt(context: AIPreferenceContext, mediaType: string, count: number): string {
     const genreList = context.favoriteGenres
       .slice(0, 5)
       .map(g => `${g.name} (${g.count} items)`)
@@ -222,6 +230,14 @@ export class AIService {
       .map(r => `"${r.title}"`)
       .join(', ');
 
+    // Everything already in the library is off-limits — "suggest something new"
+    // must not return titles the user is watching or has completed. Cap the list
+    // to keep the prompt bounded on very large libraries.
+    const excludeList = context.library
+      .slice(0, 200)
+      .map(item => `"${item.title}"`)
+      .join(', ');
+
     return `You are a personalized media recommendation assistant for ${context.userName}.
 Based on their viewing history and preferences, suggest ${mediaType === 'all' ? 'movies, TV shows, or games' : mediaType + 's'} they might enjoy.
 
@@ -236,10 +252,13 @@ USER PREFERENCES:
 - Currently Watching: ${context.watchStatusCounts.watching} items
 - Completed: ${context.watchStatusCounts.completed} items
 
+ALREADY IN THEIR LIBRARY (NEVER suggest any of these — they are watching them, have watched them, or already plan to):
+${excludeList || 'Nothing yet'}
+
 INSTRUCTIONS:
 1. Consider the user's genre preferences and rating patterns
 2. Suggest content similar to their highly-rated items
-3. Avoid suggesting items they may have already watched
+3. NEVER suggest anything from the ALREADY IN THEIR LIBRARY list above — every suggestion must be new to the user
 4. Provide specific, actionable recommendations
 5. Explain WHY each suggestion matches their preferences
 
@@ -257,7 +276,23 @@ You must respond with valid JSON in this exact format:
   ]
 }
 
-Provide 3-5 suggestions ordered by relevance.`;
+Provide ${count} suggestions ordered by relevance.`;
+  }
+
+  /**
+   * Drop suggestions the user already has in their library. Matches on
+   * type+tmdb_id when enrichment resolved one, and on normalized title
+   * either way (catches enrichment misses and type mismatches).
+   */
+  filterOwnedSuggestions(suggestions: AISuggestion[], context: AIPreferenceContext): AISuggestion[] {
+    const normalize = (title: string) => title.toLowerCase().replace(/[^a-z0-9]/g, '');
+    const ownedIds = new Set(context.library.map(item => `${item.type}-${item.tmdb_id}`));
+    const ownedTitles = new Set(context.library.map(item => normalize(item.title)));
+
+    return suggestions.filter(s =>
+      !(s.tmdb_id && ownedIds.has(`${s.type}-${s.tmdb_id}`)) &&
+      !ownedTitles.has(normalize(s.title || ''))
+    );
   }
 
   /**
@@ -272,7 +307,10 @@ Provide 3-5 suggestions ordered by relevance.`;
     // Get the model from vLLM
     const model = await this.getAvailableModel();
 
-    const systemPrompt = this.buildSystemPrompt(context, mediaType);
+    // Ask for a few extra so the post-generation library filter still leaves
+    // `limit` suggestions when the model slips one through.
+    const requestCount = Math.min(limit + 3, 10);
+    const systemPrompt = this.buildSystemPrompt(context, mediaType, requestCount);
 
     const request: AICompletionRequest = {
       model,
@@ -280,7 +318,7 @@ Provide 3-5 suggestions ordered by relevance.`;
         { role: 'system', content: systemPrompt },
         { role: 'user', content: prompt }
       ],
-      max_tokens: 1500,
+      max_tokens: 2000,
       temperature: 0.7,
       response_format: { type: 'json_object' }
     };
@@ -325,8 +363,10 @@ Provide 3-5 suggestions ordered by relevance.`;
       const jsonStr = start >= 0 && end > start ? content.slice(start, end + 1) : content;
 
       const parsed = JSON.parse(jsonStr);
+      // Return up to requestCount here — the route filters out library matches
+      // after TMDB enrichment, then trims to the caller's limit.
       const suggestions: AISuggestion[] = (parsed.suggestions || [])
-        .slice(0, limit)
+        .slice(0, requestCount)
         .map((s: any) => ({
           title: s.title,
           type: s.type || 'movie',

@@ -80,11 +80,17 @@ export async function POST(req: NextRequest) {
       suggestions.suggestions
     );
 
+    // Hard backstop: drop anything already in the library (the model is told
+    // not to suggest owned titles, but it can slip), then trim to the limit.
+    const freshSuggestions = aiService
+      .filterOwnedSuggestions(enrichedSuggestions, context)
+      .slice(0, limit);
+
     return NextResponse.json({
       success: true,
       data: {
         ...suggestions,
-        suggestions: enrichedSuggestions
+        suggestions: freshSuggestions
       },
       context: {
         totalItems: watchlistItems.length,
