@@ -15,6 +15,10 @@ import { Star, Users, Database, TrendingUp, TrendingDown, Film, Tv, Shield, Acti
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import SafeIcon from "@/components/SafeIcon";
+import PageShell from "@/components/layout/PageShell";
+import { PageHeader } from "@/components/layout/PageHeader";
+import SignInGate from "@/components/layout/SignInGate";
+import { EmptyState, LoadingSpinner } from "@/components/ui/loading-states";
 
 function StatCard({ 
     icon, 
@@ -231,33 +235,22 @@ export default function AdminPage() {
     };
 
     if (!user) {
-        return (
-            <div className="flex items-center justify-center min-h-screen">
-                <div className="text-center">
-                    <p className="text-lg">Please sign in to access the admin panel.</p>
-                </div>
-            </div>
-        );
+        return <SignInGate icon={Shield} title="Sign in to access the admin panel" />;
     }
 
     if (!user.admin) {
         return (
-            <div className="flex items-center justify-center min-h-screen">
-                <div className="text-center">
-                    <SafeIcon icon={Shield} className="h-16 w-16 mx-auto mb-4 text-destructive" size={64} />
-                    <h2 className="text-2xl font-bold mb-2">Access Denied</h2>
-                    <p className="text-muted-foreground">You don&apos;t have permission to access this page.</p>
-                </div>
-            </div>
+            <EmptyState
+                icon={Shield}
+                title="Access Denied"
+                description="You don't have permission to access this page."
+                className="min-h-[60vh]"
+            />
         );
     }
 
     if (loading) {
-        return (
-            <div className="flex items-center justify-center min-h-screen">
-                <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
-            </div>
-        );
+        return <LoadingSpinner size="lg" className="min-h-[50vh]" />;
     }
 
     if (error || !watchlistData) {
@@ -282,21 +275,13 @@ export default function AdminPage() {
     const tvCount = watchlistData.documents.filter(item => item.content_type === 'tv').length;
 
     return (
-        <div className="container mx-auto px-4 py-6 sm:py-12 max-w-7xl">
+        <PageShell>
             {/* Header Section */}
-            <div className="mb-8">
-                <div className="flex items-center gap-3 mb-4">
-                    <div className="p-2 rounded-lg bg-primary/10">
-                        <SafeIcon icon={Shield} className="h-6 w-6 text-primary" size={24} />
-                    </div>
-                    <div>
-                        <h1 className="text-3xl font-bold">Admin Dashboard</h1>
-                        <p className="text-muted-foreground">
-                            Welcome back, {user.name}. Here&apos;s what&apos;s happening with your watchlist platform.
-                        </p>
-                    </div>
-                </div>
-            </div>
+            <PageHeader
+                title="Admin Dashboard"
+                icon={Shield}
+                subtitle={`Welcome back, ${user.name}. Here's what's happening with your watchlist platform.`}
+            />
 
             {/* Stats Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -488,6 +473,6 @@ export default function AdminPage() {
                     )}
                 </div>
             </div>
-        </div>
+        </PageShell>
     );
 }

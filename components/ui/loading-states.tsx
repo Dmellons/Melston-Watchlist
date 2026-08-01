@@ -2,8 +2,9 @@
 import { cn } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
-import SafeIcon from '@/components/SafeIcon';
-import { Loader2, Film, Tv, Search, AlertTriangle } from 'lucide-react';
+// Icons render directly (not via SafeIcon, a client component) so these
+// components stay server-safe when server pages pass icon functions in.
+import { Loader2, Film, Search, AlertTriangle } from 'lucide-react';
 
 interface LoadingSpinnerProps {
   size?: 'sm' | 'md' | 'lg' | 'xl';
@@ -40,14 +41,7 @@ export function LoadingSpinner({ size = 'md', className, text }: LoadingSpinnerP
 
   return (
     <div className={cn('flex flex-col items-center justify-center gap-3', className)}>
-      <SafeIcon
-        icon={Loader2}
-        className={cn(
-          'animate-spin text-primary',
-          sizeClasses[size]
-        )}
-        size={size === 'sm' ? 16 : size === 'md' ? 32 : size === 'lg' ? 48 : 64}
-      />
+      <Loader2 className={cn('animate-spin text-primary', sizeClasses[size])} />
       {text && (
         <span className={cn('text-muted-foreground', textSizeClasses[size])}>
           {text}
@@ -72,11 +66,7 @@ export function WatchlistCardSkeleton() {
         {/* Image area */}
         <div className="h-80 bg-muted/50 rounded-t-xl relative">
           <div className="absolute inset-0 flex items-center justify-center">
-            <SafeIcon
-              icon={Film}
-              className="h-16 w-16 text-muted-foreground/30"
-              size={64}
-            />
+            <Film className="h-16 w-16 text-muted-foreground/30" />
           </div>
         </div>
         
@@ -106,11 +96,7 @@ export function SearchResultsSkeleton({ count = 5 }: { count?: number }) {
           <div className="relative">
             <Skeleton className="w-full h-60 sm:h-72 rounded-lg" />
             <div className="absolute inset-0 flex items-center justify-center">
-              <SafeIcon
-                icon={Film}
-                className="h-12 w-12 text-muted-foreground/20"
-                size={48}
-              />
+              <Film className="h-12 w-12 text-muted-foreground/20" />
             </div>
           </div>
           <div className="mt-2 space-y-2">
@@ -152,11 +138,7 @@ export function EmptyState({
   return (
     <div className={cn('flex flex-col items-center justify-center py-16 text-center', className)}>
       <div className="h-16 w-16 rounded-full bg-muted/50 flex items-center justify-center mb-4">
-        <SafeIcon
-          icon={Icon}
-          className="h-8 w-8 text-muted-foreground"
-          size={32}
-        />
+        <Icon className="h-8 w-8 text-muted-foreground" />
       </div>
       <h3 className="text-lg font-semibold mb-2">{title}</h3>
       <p className="text-muted-foreground max-w-sm mb-4">{description}</p>
@@ -220,11 +202,7 @@ export function ErrorState({
   return (
     <div className={cn('flex flex-col items-center justify-center py-16 text-center', className)}>
       <div className="h-16 w-16 rounded-full bg-destructive/10 flex items-center justify-center mb-4">
-        <SafeIcon
-          icon={AlertTriangle}
-          className="h-8 w-8 text-destructive"
-          size={32}
-        />
+        <AlertTriangle className="h-8 w-8 text-destructive" />
       </div>
       <h3 className="text-lg font-semibold mb-2">{title}</h3>
       <p className="text-muted-foreground max-w-sm mb-4">{description}</p>

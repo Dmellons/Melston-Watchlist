@@ -16,19 +16,25 @@ import SafeIcon from "@/components/SafeIcon";
 import { Library, Plus, Trash2, Loader2 } from "lucide-react";
 import { WatchlistDocument } from "@/types/appwrite";
 import { toast } from "sonner";
+import PageShell from "@/components/layout/PageShell";
+import { PageHeader } from "@/components/layout/PageHeader";
+import SignInGate from "@/components/layout/SignInGate";
+import { EmptyState, LoadingSpinner, PageSkeleton } from "@/components/ui/loading-states";
 
 export default function CollectionsPage() {
     const { user, loading } = useUser();
     const { collections, isLoading, create, remove } = useCollections();
     const [newName, setNewName] = useState("");
 
-    if (loading) return null;
+    if (loading) return <PageShell><PageSkeleton /></PageShell>;
 
     if (!user) {
         return (
-            <div className="flex min-h-[50vh] items-center justify-center">
-                <p className="text-muted-foreground">Please sign in to manage collections.</p>
-            </div>
+            <SignInGate
+                icon={Library}
+                title="Sign in to manage collections"
+                description="Group your watchlist into custom lists."
+            />
         );
     }
 
@@ -45,16 +51,13 @@ export default function CollectionsPage() {
     };
 
     return (
-        <div className="container mx-auto px-4 py-6 sm:py-10 max-w-6xl space-y-8">
-            <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-primary/10">
-                    <SafeIcon icon={Library} className="h-6 w-6 text-primary" size={24} />
-                </div>
-                <div>
-                    <h1 className="text-3xl font-bold">Collections</h1>
-                    <p className="text-muted-foreground">Group your watchlist items into custom lists.</p>
-                </div>
-            </div>
+        <PageShell>
+            <PageHeader
+                title="Collections"
+                icon={Library}
+                color="amber"
+                subtitle="Group your watchlist items into custom lists"
+            />
 
             {/* Create */}
             <Card>
@@ -74,16 +77,15 @@ export default function CollectionsPage() {
             </Card>
 
             {isLoading && (
-                <div className="flex justify-center py-10 text-muted-foreground">
-                    <SafeIcon icon={Loader2} className="h-6 w-6 animate-spin" size={24} />
-                </div>
+                <LoadingSpinner className="py-10" />
             )}
 
             {!isLoading && collections.length === 0 && (
-                <div className="text-center py-12 text-muted-foreground">
-                    <SafeIcon icon={Library} className="h-10 w-10 mx-auto mb-3" size={40} />
-                    <p>No collections yet. Create one above, or use “Add to Collection” on any title.</p>
-                </div>
+                <EmptyState
+                    icon={Library}
+                    title="No collections yet"
+                    description="Create one above, or use 'Add to Collection' on any title."
+                />
             )}
 
             <Accordion type="multiple" className="space-y-3">
@@ -124,6 +126,6 @@ export default function CollectionsPage() {
                     );
                 })}
             </Accordion>
-        </div>
+        </PageShell>
     );
 }

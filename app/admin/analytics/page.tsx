@@ -7,6 +7,10 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import SafeIcon from "@/components/SafeIcon";
+import PageShell from "@/components/layout/PageShell";
+import { PageHeader } from "@/components/layout/PageHeader";
+import SignInGate from "@/components/layout/SignInGate";
+import { EmptyState, PageSkeleton } from "@/components/ui/loading-states";
 import {
     BarChart3, Shield, Film, Tv, Star, Database, Users, RefreshCw, Gamepad2, ArrowLeft,
 } from "lucide-react";
@@ -63,17 +67,16 @@ export default function AdminAnalyticsPage() {
     });
 
     if (!user) {
-        return <div className="flex min-h-screen items-center justify-center"><p className="text-lg">Please sign in to access the admin panel.</p></div>;
+        return <SignInGate icon={Shield} title="Sign in to access the admin panel" />;
     }
     if (!user.admin) {
         return (
-            <div className="flex min-h-screen items-center justify-center">
-                <div className="text-center">
-                    <SafeIcon icon={Shield} className="h-16 w-16 mx-auto mb-4 text-destructive" size={64} />
-                    <h2 className="text-2xl font-bold mb-2">Access Denied</h2>
-                    <p className="text-muted-foreground">You don&apos;t have permission to view analytics.</p>
-                </div>
-            </div>
+            <EmptyState
+                icon={Shield}
+                title="Access Denied"
+                description="You don't have permission to view analytics."
+                className="min-h-[60vh]"
+            />
         );
     }
 
@@ -82,33 +85,29 @@ export default function AdminAnalyticsPage() {
     const topUsers = [...users].sort((x, y) => y.watchlistCount - x.watchlistCount).slice(0, 5);
 
     return (
-        <div className="container mx-auto px-4 py-6 sm:py-10 max-w-7xl space-y-8">
-            <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-primary/10">
-                        <SafeIcon icon={BarChart3} className="h-6 w-6 text-primary" size={24} />
-                    </div>
-                    <div>
-                        <h1 className="text-3xl font-bold">System Analytics</h1>
-                        <p className="text-muted-foreground">Real usage data across the platform.</p>
-                    </div>
-                </div>
-                <div className="flex gap-2">
-                    <Button variant="outline" size="sm" asChild>
-                        <Link href="/admin"><SafeIcon icon={ArrowLeft} className="h-4 w-4 mr-1" size={16} /> Dashboard</Link>
-                    </Button>
-                    <Button
-                        variant="outline" size="sm"
-                        onClick={() => qc.invalidateQueries({ queryKey: ['admin'] })}
-                        disabled={analyticsQ.isFetching}
-                    >
-                        <SafeIcon icon={RefreshCw} className={`h-4 w-4 mr-1 ${analyticsQ.isFetching ? 'animate-spin' : ''}`} size={16} />
-                        Refresh
-                    </Button>
-                </div>
-            </div>
+        <PageShell>
+            <PageHeader
+                title="System Analytics"
+                icon={BarChart3}
+                subtitle="Real usage data across the platform"
+                actions={
+                    <>
+                        <Button variant="outline" size="sm" asChild>
+                            <Link href="/admin"><SafeIcon icon={ArrowLeft} className="h-4 w-4 mr-1" size={16} /> Dashboard</Link>
+                        </Button>
+                        <Button
+                            variant="outline" size="sm"
+                            onClick={() => qc.invalidateQueries({ queryKey: ['admin'] })}
+                            disabled={analyticsQ.isFetching}
+                        >
+                            <SafeIcon icon={RefreshCw} className={`h-4 w-4 mr-1 ${analyticsQ.isFetching ? 'animate-spin' : ''}`} size={16} />
+                            Refresh
+                        </Button>
+                    </>
+                }
+            />
 
-            {analyticsQ.isLoading && <p className="text-muted-foreground">Loading analytics…</p>}
+            {analyticsQ.isLoading && <PageSkeleton header={false} rows={2} />}
             {analyticsQ.data && !analyticsQ.data.success && (
                 <Card className="border-destructive/30 bg-destructive/5"><CardContent className="p-4 text-destructive">{analyticsQ.data.error}</CardContent></Card>
             )}
@@ -180,6 +179,6 @@ export default function AdminAnalyticsPage() {
                     </div>
                 </>
             )}
-        </div>
+        </PageShell>
     );
 }

@@ -7,12 +7,15 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import SafeIcon from '@/components/SafeIcon'
-import { Disc, Plus, ScanBarcode, PenLine, Loader2 } from 'lucide-react'
+import { Disc, Plus, ScanBarcode, PenLine } from 'lucide-react'
 import PhysicalMediaForm from '@/components/PhysicalMediaForm'
 import BarcodeScanner from '@/components/BarcodeScanner'
 import PhysicalLibraryGrid from '@/components/PhysicalLibraryGrid'
 import { PhysicalMediaItem, PhysicalMediaFormData, BarcodeLookupResult } from '@/types/physical'
-import Link from 'next/link'
+import PageShell from '@/components/layout/PageShell'
+import { PageHeader } from '@/components/layout/PageHeader'
+import SignInGate from '@/components/layout/SignInGate'
+import { LoadingSpinner } from '@/components/ui/loading-states'
 
 type AddMode = 'none' | 'scan' | 'manual';
 
@@ -101,40 +104,24 @@ export default function PhysicalLibraryPage() {
   // Not logged in
   if (!userLoading && !user) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4">
-        <Card className="max-w-md w-full">
-          <CardContent className="p-6 text-center space-y-4">
-            <SafeIcon icon={Disc} className="h-12 w-12 mx-auto text-muted-foreground" size={48} />
-            <h2 className="text-xl font-bold">Sign in to view your collection</h2>
-            <p className="text-muted-foreground">
-              Track your Blu-rays, DVDs, and physical games in one place.
-            </p>
-            <Button asChild>
-              <Link href="/">Sign In</Link>
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
+      <SignInGate
+        icon={Disc}
+        title="Sign in to view your collection"
+        description="Track your Blu-rays, DVDs, and physical games in one place."
+      />
     );
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-7xl">
+    <PageShell>
       {/* Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
-        <div>
-          <h1 className="text-3xl font-bold flex items-center gap-3">
-            <SafeIcon icon={Disc} className="h-8 w-8" size={32} />
-            Physical Library
-          </h1>
-          <p className="text-muted-foreground mt-1">
-            Track your Blu-rays, DVDs, and physical game collection
-          </p>
-        </div>
-
-        {/* Add Buttons */}
-        {addMode === 'none' && !editItem && (
-          <div className="flex gap-2">
+      <PageHeader
+        title="Physical Library"
+        icon={Disc}
+        color="blue"
+        subtitle="Track your Blu-rays, DVDs, and physical game collection"
+        actions={addMode === 'none' && !editItem ? (
+          <>
             <Button onClick={() => setAddMode('scan')} variant="outline">
               <SafeIcon icon={ScanBarcode} className="h-4 w-4 mr-2" size={16} />
               Scan Barcode
@@ -143,13 +130,13 @@ export default function PhysicalLibraryPage() {
               <SafeIcon icon={Plus} className="h-4 w-4 mr-2" size={16} />
               Add Manually
             </Button>
-          </div>
-        )}
-      </div>
+          </>
+        ) : undefined}
+      />
 
       {/* Add / Edit Mode UI */}
       {(addMode !== 'none' || editItem) && (
-        <Card className="mb-8">
+        <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               {addMode === 'scan' ? (
@@ -187,15 +174,13 @@ export default function PhysicalLibraryPage() {
 
       {/* Loading State */}
       {loading && (
-        <div className="flex items-center justify-center py-12">
-          <SafeIcon icon={Loader2} className="h-8 w-8 animate-spin text-primary" size={32} />
-        </div>
+        <LoadingSpinner className="py-12" />
       )}
 
       {/* Collection Grid */}
       {!loading && (
         <PhysicalLibraryGrid items={items} onRefresh={fetchItems} onEdit={handleEdit} />
       )}
-    </div>
+    </PageShell>
   );
 }

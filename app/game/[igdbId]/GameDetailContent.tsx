@@ -192,7 +192,7 @@ export default function GameDetailContent({ game, coverUrl, backdropUrl }: GameD
 
         {/* Content */}
         <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8">
-          <div className="container mx-auto flex flex-col sm:flex-row gap-6 items-end sm:items-end">
+          <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row gap-6 items-end sm:items-end">
             {/* Cover */}
             {coverUrl && (
               <div className="hidden sm:block flex-shrink-0">
@@ -243,7 +243,7 @@ export default function GameDetailContent({ game, coverUrl, backdropUrl }: GameD
       </div>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8 py-8">
         <div className="lg:grid lg:grid-cols-3 lg:gap-8 space-y-8 lg:space-y-0">
           {/* Primary Content */}
           <div className="lg:col-span-2 space-y-8">

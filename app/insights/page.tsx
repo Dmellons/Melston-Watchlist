@@ -1,14 +1,27 @@
 import StreamingInsights from "@/components/StreamingInsights";
+import PageShell from "@/components/layout/PageShell";
+import { PageHeader } from "@/components/layout/PageHeader";
+import SignInGate from "@/components/layout/SignInGate";
 import { createSessionClient } from "@/lib/server/appwriteServer";
 import { toPlain } from "@/lib/server/serialize";
 import { WatchlistDocument } from "@/types/appwrite";
+import { BarChart3 } from "lucide-react";
 import { Models, Query } from "appwrite";
-import { redirect } from "next/navigation";
+
+export const metadata = { title: 'Streaming Insights' };
 
 export default async function InsightsPage() {
+    const signInGate = (
+        <SignInGate
+            icon={BarChart3}
+            title="Sign in for streaming insights"
+            description="See which services carry the most of your watchlist."
+        />
+    )
+
     const { account, databases } = await createSessionClient()
     if (!account || !databases) {
-        redirect('/')
+        return signInGate
     }
 
     let user
@@ -17,13 +30,13 @@ export default async function InsightsPage() {
     } catch (error: unknown) {
         if (error && typeof error === 'object' && 'code' in error && 'type' in error) {
             if (error.code === 401 && error.type === 'general_unauthorized_scope') {
-                redirect('/')
+                return signInGate
             }
         }
     }
 
     if (!user) {
-        return <div className="text-3xl font-bold m-auto w-full text-center">please sign in</div>
+        return signInGate
     }
 
     const watchlist: Models.DocumentList<WatchlistDocument> = await databases.listDocuments<WatchlistDocument>(
@@ -33,14 +46,14 @@ export default async function InsightsPage() {
     )
 
     return (
-        <main className="flex min-h-screen flex-col items-center p-4 sm:p-8 gap-6">
-            <div className="text-center">
-                <h1 className="text-3xl font-bold">Streaming Insights</h1>
-                <p className="text-sm text-muted-foreground mt-1">
-                    See which streaming services carry the most of your watchlist
-                </p>
-            </div>
+        <PageShell>
+            <PageHeader
+                title="Streaming Insights"
+                icon={BarChart3}
+                color="green"
+                subtitle="See which streaming services carry the most of your watchlist"
+            />
             <StreamingInsights watchlist={toPlain(watchlist.documents)} />
-        </main>
+        </PageShell>
     );
 };

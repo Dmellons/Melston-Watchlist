@@ -6,6 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import PageShell from "@/components/layout/PageShell";
+import { PageHeader } from "@/components/layout/PageHeader";
+import { EmptyState } from "@/components/ui/loading-states";
 import NewSearchBar from "@/components/NewSearchBar";
 import NewSearchCard from "@/components/NewSearchCard";
 import GameSearchCard from "@/components/GameSearchCard";
@@ -105,18 +108,16 @@ const SearchPageContent = () => {
         : '';
 
     return (
-        <main className="p-4 sm:p-8 space-y-6 max-w-7xl mx-auto">
+        <PageShell className="space-y-6">
             {/* Mobile has no header search bar — this page is its search input */}
             <div className="md:hidden">
                 <NewSearchBar />
             </div>
 
-            <div className="flex items-center gap-2">
-                <SafeIcon icon={SearchIcon} className="h-6 w-6 text-muted-foreground" size={24} />
-                <h1 className="text-2xl sm:text-3xl font-bold">
-                    {canSearch ? <>Results for &quot;{q}&quot;{totalLabel}</> : 'Search'}
-                </h1>
-            </div>
+            <PageHeader
+                title={canSearch ? `Results for "${q}"${totalLabel}` : 'Search'}
+                icon={SearchIcon}
+            />
 
             <Tabs value={type} className="w-full sm:w-80">
                 <TabsList className="grid w-full grid-cols-2">
@@ -149,12 +150,11 @@ const SearchPageContent = () => {
             )}
 
             {canSearch && !activeSearch.isLoading && !activeSearch.isError && !hasResults && (
-                <Card className="p-8 text-center space-y-2">
-                    <p className="font-medium">
-                        No {type === 'media' ? 'movies or shows' : 'games'} found for &quot;{q}&quot;
-                    </p>
-                    <p className="text-sm text-muted-foreground">Try searching with different keywords</p>
-                </Card>
+                <EmptyState
+                    icon={SearchIcon}
+                    title={`No ${type === 'media' ? 'movies or shows' : 'games'} found for "${q}"`}
+                    description="Try searching with different keywords."
+                />
             )}
 
             {hasResults && (
@@ -198,7 +198,7 @@ const SearchPageContent = () => {
                     </div>
                 </>
             )}
-        </main>
+        </PageShell>
     );
 };
 

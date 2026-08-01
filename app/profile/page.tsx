@@ -14,6 +14,9 @@ import SteamImport from "@/components/SteamImport";
 import { exportWatchlistToExcel } from "@/lib/xlxs";
 import { WatchlistDocument } from "@/types/appwrite";
 import { toast } from "sonner";
+import PageShell from "@/components/layout/PageShell";
+import { PageHeader } from "@/components/layout/PageHeader";
+import SignInGate from "@/components/layout/SignInGate";
 import { 
   User, 
   Mail, 
@@ -44,15 +47,7 @@ const ProfilePage = () => {
 
   if (!user) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh]">
-        <div className="text-center space-y-4">
-          <div className="h-16 w-16 rounded-full bg-muted/50 flex items-center justify-center mx-auto">
-            <SafeIcon icon={User} className="h-8 w-8 text-muted-foreground" size={32} />
-          </div>
-          <h2 className="text-2xl font-bold">No User Found</h2>
-          <p className="text-muted-foreground">Please sign in to view your profile.</p>
-        </div>
-      </div>
+      <SignInGate icon={User} title="Sign in to view your profile" />
     );
   }
 
@@ -67,9 +62,15 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-6 sm:py-12 max-w-4xl">
+    <PageShell width="narrow">
+      <PageHeader
+        title="Profile & Settings"
+        icon={User}
+        subtitle="Your account, stats, and preferences"
+      />
+
       {/* Hero Section */}
-      <div className="relative mb-8">
+      <div className="relative">
         <Card className="overflow-hidden border-2 border-primary/20 bg-gradient-to-r from-primary/5 to-primary/10">
           <CardContent className="p-6 sm:p-8">
             <div className="flex flex-col sm:flex-row items-center gap-6">
@@ -91,7 +92,7 @@ const ProfilePage = () => {
               {/* User Info */}
               <div className="flex-1 text-center sm:text-left space-y-3">
                 <div>
-                  <h1 className="text-3xl font-bold mb-2">{user.name}</h1>
+                  <h2 className="text-3xl font-bold mb-2">{user.name}</h2>
                   <div className="flex items-center justify-center sm:justify-start gap-2 text-muted-foreground">
                     <SafeIcon icon={Mail} className="h-4 w-4" size={16} />
                     <span>{user.email}</span>
@@ -117,7 +118,7 @@ const ProfilePage = () => {
       </div>
 
       {/* Stats Section */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <Card className="text-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
           <CardContent className="p-4">
             <div className="flex items-center justify-center mb-2">
@@ -318,7 +319,7 @@ const ProfilePage = () => {
       <div className="hidden">
         <ImageGetter />
       </div>
-    </div>
+    </PageShell>
   );
 };
 

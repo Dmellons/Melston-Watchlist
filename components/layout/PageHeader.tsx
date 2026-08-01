@@ -1,5 +1,4 @@
 import { cn } from "@/lib/utils";
-import SafeIcon from "@/components/SafeIcon";
 import type { LucideIcon } from "lucide-react";
 
 const ICON_STYLES = {
@@ -27,7 +26,10 @@ export function PageHeader({ title, icon: Icon, color = 'primary', subtitle, act
             <div className="flex items-center gap-3">
                 {Icon && (
                     <div className={cn("flex h-11 w-11 shrink-0 items-center justify-center rounded-lg", ICON_STYLES[color])}>
-                        <SafeIcon icon={Icon} className="h-6 w-6" size={24} />
+                        {/* Direct render (not SafeIcon): this component must stay server-safe,
+                            and SafeIcon is a client component — passing it an icon function
+                            from a server tree breaks RSC serialization. */}
+                        <Icon className="h-6 w-6" />
                     </div>
                 )}
                 <div className="min-w-0">

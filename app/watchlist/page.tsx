@@ -1,14 +1,28 @@
 import WatchlistGrid from "@/components/buttons/WatchlistGrid";
+import PageShell from "@/components/layout/PageShell";
+import { PageHeader } from "@/components/layout/PageHeader";
+import SignInGate from "@/components/layout/SignInGate";
+import { EmptyState } from "@/components/ui/loading-states";
 import { createSessionClient } from "@/lib/server/appwriteServer";
 import { toPlain } from "@/lib/server/serialize";
 import { WatchlistDocument } from "@/types/appwrite";
+import { Bookmark } from "lucide-react";
 import { Models, Query } from "appwrite";
-import { redirect } from "next/navigation";
+
+export const metadata = { title: 'My Watchlist' };
 
 export default async function WatchlistPage() {
+    const signInGate = (
+        <SignInGate
+            icon={Bookmark}
+            title="Sign in to see your watchlist"
+            description="Track movies, shows, and games you want to watch."
+        />
+    )
+
     const { account, databases } = await createSessionClient()
     if (!account || !databases) {
-        redirect('/')
+        return signInGate
     }
     let user
     try {
@@ -16,27 +30,34 @@ export default async function WatchlistPage() {
     } catch (error: unknown) {
         if (error && typeof error === 'object' && 'code' in error && 'type' in error) {
             if (error.code === 401 && error.type === 'general_unauthorized_scope') {
-                redirect('/')
+                return signInGate
             }
         }
     }
 
-    const watchlist: Models.DocumentList<WatchlistDocument> = await databases.listDocuments<WatchlistDocument>('watchlist', process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID!, [Query.limit(1000)])
-
     if (!user) {
-        return <div className="text-3xl font-bold m-auto w-full text-center">please sign in </div>
+        return signInGate
     }
 
+    const watchlist: Models.DocumentList<WatchlistDocument> = await databases.listDocuments<WatchlistDocument>('watchlist', process.env.NEXT_PUBLIC_APPWRITE_WATCHLIST_COLLECTION_ID!, [Query.limit(1000)])
+
     return (
-        <main className="flex min-h-screen flex-col items-center p-4 sm:p-8">
-            <h1 className="text-3xl font-bold">Watchlist</h1>
+        <PageShell>
+            <PageHeader
+                title="My Watchlist"
+                icon={Bookmark}
+                color="rose"
+                subtitle="Everything you're tracking, in one place"
+            />
             {watchlist && watchlist.total > 0 ? (
                 <WatchlistGrid watchlist={toPlain(watchlist)} />
             ) : (
-                <p className="mt-8 text-muted-foreground">
-                    Your watchlist is empty — use the search bar above to add your first title.
-                </p>
+                <EmptyState
+                    icon={Bookmark}
+                    title="Your watchlist is empty"
+                    description="Use the search bar above to add your first title."
+                />
             )}
-        </main>
+        </PageShell>
     );
 };

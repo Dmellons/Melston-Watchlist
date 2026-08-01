@@ -11,8 +11,12 @@ import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import Link from "next/link";
 import SafeIcon from "@/components/SafeIcon";
+import PageShell from "@/components/layout/PageShell";
+import { PageHeader } from "@/components/layout/PageHeader";
+import SignInGate from "@/components/layout/SignInGate";
+import { EmptyState, LoadingSpinner } from "@/components/ui/loading-states";
 import {
-    Users, Shield, Search, Mail, Calendar, Activity, UserCheck, UserX, Crown, ArrowLeft, Loader2,
+    Users, Shield, Search, Mail, Calendar, Activity, UserCheck, UserX, Crown, ArrowLeft,
 } from "lucide-react";
 
 function roleBadge(role: AdminUserRow['role']) {
@@ -120,17 +124,16 @@ export default function AdminUsersPage() {
     );
 
     if (!user) {
-        return <div className="flex min-h-screen items-center justify-center"><p className="text-lg">Please sign in to access the admin panel.</p></div>;
+        return <SignInGate icon={Shield} title="Sign in to access the admin panel" />;
     }
     if (!user.admin) {
         return (
-            <div className="flex min-h-screen items-center justify-center">
-                <div className="text-center">
-                    <SafeIcon icon={Shield} className="h-16 w-16 mx-auto mb-4 text-destructive" size={64} />
-                    <h2 className="text-2xl font-bold mb-2">Access Denied</h2>
-                    <p className="text-muted-foreground">You don&apos;t have permission to access this page.</p>
-                </div>
-            </div>
+            <EmptyState
+                icon={Shield}
+                title="Access Denied"
+                description="You don't have permission to access this page."
+                className="min-h-[60vh]"
+            />
         );
     }
 
@@ -139,19 +142,17 @@ export default function AdminUsersPage() {
     const admins = rows.filter((u) => u.role === 'admin').length;
 
     return (
-        <div className="container mx-auto px-4 py-6 sm:py-10 max-w-7xl space-y-8">
-            <div className="flex items-center justify-between flex-wrap gap-3">
-                <div className="flex items-center gap-3">
-                    <div className="p-2 rounded-lg bg-primary/10"><SafeIcon icon={Users} className="h-6 w-6 text-primary" size={24} /></div>
-                    <div>
-                        <h1 className="text-3xl font-bold">User Management</h1>
-                        <p className="text-muted-foreground">Real accounts from your Appwrite project.</p>
-                    </div>
-                </div>
-                <Button variant="outline" size="sm" asChild>
-                    <Link href="/admin"><SafeIcon icon={ArrowLeft} className="h-4 w-4 mr-1" size={16} /> Dashboard</Link>
-                </Button>
-            </div>
+        <PageShell>
+            <PageHeader
+                title="User Management"
+                icon={Users}
+                subtitle="Accounts, roles, and activity"
+                actions={
+                    <Button variant="outline" size="sm" asChild>
+                        <Link href="/admin"><SafeIcon icon={ArrowLeft} className="h-4 w-4 mr-1" size={16} /> Dashboard</Link>
+                    </Button>
+                }
+            />
 
             {usersQ.data && !usersQ.data.success && (
                 <Card className="border-destructive/30 bg-destructive/5">
@@ -172,9 +173,7 @@ export default function AdminUsersPage() {
                 <Input className="pl-9" placeholder="Search by name or email…" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
             </div>
 
-            {usersQ.isLoading && (
-                <div className="flex justify-center py-12 text-muted-foreground"><SafeIcon icon={Loader2} className="h-6 w-6 animate-spin" size={24} /></div>
-            )}
+            {usersQ.isLoading && <LoadingSpinner size="lg" className="py-12" />}
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filtered.map((row) => <UserCard key={row.id} row={row} />)}
@@ -183,6 +182,6 @@ export default function AdminUsersPage() {
             {!usersQ.isLoading && usersQ.data?.success && filtered.length === 0 && (
                 <p className="text-center text-muted-foreground py-8">No users match your search.</p>
             )}
-        </div>
+        </PageShell>
     );
 }
