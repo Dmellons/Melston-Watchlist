@@ -31,7 +31,7 @@ function UserCard({ row }: { row: AdminUserRow }) {
     const initials = row.name.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2) || '?';
     const r = roleBadge(row.role);
     return (
-        <Card className="transition-all duration-300 hover:shadow-lg hover:shadow-primary/10 hover:-translate-y-1">
+        <Card className="card-hover">
             <CardContent className="p-6">
                 <div className="flex items-center gap-3 mb-4">
                     <Avatar className="h-12 w-12">

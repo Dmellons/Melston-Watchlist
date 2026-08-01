@@ -19,7 +19,7 @@ function MetricCard({ title, value, icon, description }: {
     title: string; value: string | number; icon: any; description?: string;
 }) {
     return (
-        <Card className="transition-all duration-300 hover:shadow-lg hover:shadow-primary/10 hover:-translate-y-1">
+        <Card className="card-hover">
             <CardContent className="p-6 flex items-center justify-between">
                 <div>
                     <p className="text-sm font-medium text-muted-foreground">{title}</p>

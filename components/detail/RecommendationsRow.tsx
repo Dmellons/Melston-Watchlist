@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Star } from "lucide-react";
 import SafeIcon from "@/components/SafeIcon";
+import { SectionTitle } from "@/components/layout/PageHeader";
 import {
     Carousel,
     CarouselContent,
@@ -33,7 +34,7 @@ export default function RecommendationsRow({ title, items, fallbackType }: Recom
 
     return (
         <section className="space-y-3 sm:space-y-4">
-            <h2 className="text-xl sm:text-2xl font-bold">{title}</h2>
+            <SectionTitle>{title}</SectionTitle>
             <Carousel opts={{ align: 'start', dragFree: true }} className="w-full">
                 <CarouselContent>
                     {withPoster.map((item) => {

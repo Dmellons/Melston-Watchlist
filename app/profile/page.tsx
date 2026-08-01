@@ -119,7 +119,7 @@ const ProfilePage = () => {
 
       {/* Stats Section */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <Card className="text-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+        <Card className="text-center card-hover">
           <CardContent className="p-4">
             <div className="flex items-center justify-center mb-2">
               <div className="p-2 rounded-lg bg-primary/10">
@@ -131,7 +131,7 @@ const ProfilePage = () => {
           </CardContent>
         </Card>
 
-        <Card className="text-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+        <Card className="text-center card-hover">
           <CardContent className="p-4">
             <div className="flex items-center justify-center mb-2">
               <div className="p-2 rounded-lg bg-blue-500/10">
@@ -143,7 +143,7 @@ const ProfilePage = () => {
           </CardContent>
         </Card>
 
-        <Card className="text-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+        <Card className="text-center card-hover">
           <CardContent className="p-4">
             <div className="flex items-center justify-center mb-2">
               <div className="p-2 rounded-lg bg-green-500/10">
@@ -155,7 +155,7 @@ const ProfilePage = () => {
           </CardContent>
         </Card>
 
-        <Card className="text-center transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+        <Card className="text-center card-hover">
           <CardContent className="p-4">
             <div className="flex items-center justify-center mb-2">
               <div className="p-2 rounded-lg bg-amber-500/10">
@@ -171,7 +171,7 @@ const ProfilePage = () => {
       {/* Settings Sections */}
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Account Information */}
-        <Card className="transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+        <Card className="card-hover">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <SafeIcon icon={User} className="h-5 w-5" size={20} />
@@ -213,7 +213,7 @@ const ProfilePage = () => {
         </Card>
 
         {/* Streaming Providers */}
-        <Card className="transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+        <Card className="card-hover">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <SafeIcon icon={Palette} className="h-5 w-5" size={20} />
@@ -231,7 +231,7 @@ const ProfilePage = () => {
         </Card>
 
         {/* Account Actions */}
-        <Card className="transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+        <Card className="card-hover">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <SafeIcon icon={Settings} className="h-5 w-5" size={20} />
@@ -271,7 +271,7 @@ const ProfilePage = () => {
         </Card>
 
         {/* Steam Library Import */}
-        <Card className="transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+        <Card className="card-hover">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <SafeIcon icon={Gamepad2} className="h-5 w-5" size={20} />
@@ -285,7 +285,7 @@ const ProfilePage = () => {
 
         {/* Developer/Admin Section */}
         {(user.admin || isTester) && (
-          <Card className="transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border-amber-200 bg-amber-50/50 dark:bg-amber-950/20 dark:border-amber-800">
+          <Card className="card-hover border-amber-200 bg-amber-50/50 dark:bg-amber-950/20 dark:border-amber-800">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-amber-700 dark:text-amber-400">
                 <SafeIcon icon={Crown} className="h-5 w-5" size={20} />

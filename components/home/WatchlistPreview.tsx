@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/carousel";
 import { ArrowRight, Bookmark } from "lucide-react";
 import SafeIcon from "@/components/SafeIcon";
+import { SectionTitle } from "@/components/layout/PageHeader";
 
 const PREVIEW_COUNT = 12;
 
@@ -34,10 +35,10 @@ const WatchlistPreview = () => {
     return (
         <section className="space-y-3 sm:space-y-4">
             <div className="flex items-center justify-between">
-                <h2 className="text-xl sm:text-2xl font-bold flex items-center gap-2">
+                <SectionTitle className="flex items-center gap-2">
                     <SafeIcon icon={Bookmark} className="h-5 w-5 text-primary" size={20} />
                     Your Watchlist
-                </h2>
+                </SectionTitle>
                 <Button asChild variant="ghost" size="sm" className="text-muted-foreground">
                     <Link href="/watchlist" className="flex items-center gap-1">
                         View all

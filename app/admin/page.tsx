@@ -48,7 +48,7 @@ function StatCard({
     const IconComponent = getIcon(icon);
 
     return (
-        <Card className={`transition-all duration-300 hover:shadow-lg hover:shadow-primary/10 hover:-translate-y-1 ${className}`}>
+        <Card className={`card-hover ${className}`}>
             <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                     <div className="space-y-2">
@@ -104,7 +104,7 @@ function QuickActionCard({
     const IconComponent = getIcon(icon);
 
     return (
-        <Card className="transition-all duration-300 hover:shadow-lg hover:shadow-primary/10 hover:-translate-y-1 hover:border-primary/30">
+        <Card className="card-hover">
             <CardHeader className="pb-3">
                 <div className="flex items-start justify-between">
                     <div className="p-2 rounded-lg bg-primary/10">
@@ -319,7 +319,7 @@ export default function AdminPage() {
 
             {/* Content Breakdown */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                <Card className="transition-all duration-300 hover:shadow-lg hover:shadow-primary/10 hover:-translate-y-1">
+                <Card className="card-hover">
                     <CardHeader className="pb-3">
                         <CardTitle className="flex items-center gap-2 text-lg">
                             <SafeIcon icon={BarChart3} className="h-5 w-5" size={20} />
