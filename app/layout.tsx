@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import MainHeader from "@/components/layout/MainHeader";
+import BottomNav from "@/components/layout/BottomNav";
+import CommandK from "@/components/CommandK";
 import { ThemeProvider } from "@/components/Contexts/ThemeProvider";
 import { UserProvider } from "@/hooks/User";
 import { Toaster } from "@/components/ui/sonner";
@@ -20,6 +22,9 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
+  // Lets env(safe-area-inset-bottom) be non-zero on iOS so the bottom tab bar
+  // clears the home indicator.
+  viewportFit: 'cover',
 }
 
 // The root layout reads auth cookies via getLoggedInUser(), so every route is
@@ -62,10 +67,16 @@ export default async function RootLayout({
                   <MainHeader />
                 </header>
                 
-                <Suspense fallback={<LoadingFallback />}>
-                  {children}
-                </Suspense>
+                {/* pb clears the fixed mobile bottom tab bar (h-16 + safe area) */}
+                <div className="pb-24 md:pb-0">
+                  <Suspense fallback={<LoadingFallback />}>
+                    {children}
+                  </Suspense>
+                </div>
               </main>
+
+              <BottomNav />
+              <CommandK />
 
               <Toaster
                 toastOptions={{

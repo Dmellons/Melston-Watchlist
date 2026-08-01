@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import NewSearchBar from "@/components/NewSearchBar";
 import NewSearchCard from "@/components/NewSearchCard";
 import GameSearchCard from "@/components/GameSearchCard";
 import SafeIcon from "@/components/SafeIcon";
@@ -105,6 +106,11 @@ const SearchPageContent = () => {
 
     return (
         <main className="p-4 sm:p-8 space-y-6 max-w-7xl mx-auto">
+            {/* Mobile has no header search bar — this page is its search input */}
+            <div className="md:hidden">
+                <NewSearchBar />
+            </div>
+
             <div className="flex items-center gap-2">
                 <SafeIcon icon={SearchIcon} className="h-6 w-6 text-muted-foreground" size={24} />
                 <h1 className="text-2xl sm:text-3xl font-bold">

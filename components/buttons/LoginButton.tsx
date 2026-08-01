@@ -11,18 +11,13 @@ import { Separator } from "@/components/ui/separator";
 import SafeIcon from "@/components/SafeIcon";
 import {
     User,
-    Settings,
     Shield,
     LogOut,
     Crown,
     Loader2,
-    Star,
-    Sparkles,
-    Disc,
-    Library,
-    BarChart3,
-    Bookmark
+    Star
 } from "lucide-react";
+import { ACCOUNT_ITEMS } from "@/components/layout/nav-config";
 
 export default function LoginButton() {
     const { user, logout, loginWithGoogle } = useUser()
@@ -61,7 +56,7 @@ export default function LoginButton() {
                         </Button>
                     </PopoverTrigger>
                     
-                    <PopoverContent className="w-80 p-0 bg-background/95 backdrop-blur-xl border border-border/50 shadow-xl" align="end">
+                    <PopoverContent className="w-72 p-0 bg-background/95 backdrop-blur-xl border border-border/50 shadow-xl" align="end">
                         <Card className="border-none shadow-none">
                             <CardContent className="p-6 space-y-4">
                                 {/* User Info Header */}
@@ -106,58 +101,16 @@ export default function LoginButton() {
 
                                 <Separator />
 
-                                {/* Navigation Links */}
+                                {/* Account links — site navigation lives in MainNav / BottomNav */}
                                 <div className="space-y-2">
-                                    <Button asChild variant="ghost" className="w-full justify-start h-10">
-                                        <Link href="/watchlist" className="flex items-center gap-3">
-                                            <SafeIcon icon={Bookmark} className="h-4 w-4 text-rose-500" size={16} />
-                                            <span>My Watchlist</span>
-                                        </Link>
-                                    </Button>
-
-                                    <Button asChild variant="ghost" className="w-full justify-start h-10">
-                                        <Link href="/ai" className="flex items-center gap-3">
-                                            <SafeIcon icon={Sparkles} className="h-4 w-4 text-primary" size={16} />
-                                            <span>AI Suggestions</span>
-                                        </Link>
-                                    </Button>
-
-                                    <Button asChild variant="ghost" className="w-full justify-start h-10">
-                                        <Link href="/physical" className="flex items-center gap-3">
-                                            <SafeIcon icon={Disc} className="h-4 w-4 text-blue-500" size={16} />
-                                            <span>Physical Library</span>
-                                        </Link>
-                                    </Button>
-
-                                    <Button asChild variant="ghost" className="w-full justify-start h-10">
-                                        <Link href="/collections" className="flex items-center gap-3">
-                                            <SafeIcon icon={Library} className="h-4 w-4 text-amber-500" size={16} />
-                                            <span>Collections</span>
-                                        </Link>
-                                    </Button>
-
-                                    <Button asChild variant="ghost" className="w-full justify-start h-10">
-                                        <Link href="/insights" className="flex items-center gap-3">
-                                            <SafeIcon icon={BarChart3} className="h-4 w-4 text-green-500" size={16} />
-                                            <span>Streaming Insights</span>
-                                        </Link>
-                                    </Button>
-
-                                    <Button asChild variant="ghost" className="w-full justify-start h-10">
-                                        <Link href="/profile" className="flex items-center gap-3">
-                                            <SafeIcon icon={User} className="h-4 w-4" size={16} />
-                                            <span>Profile & Settings</span>
-                                        </Link>
-                                    </Button>
-
-                                    {user.admin && (
-                                        <Button asChild variant="ghost" className="w-full justify-start h-10">
-                                            <Link href="/admin" className="flex items-center gap-3">
-                                                <SafeIcon icon={Shield} className="h-4 w-4" size={16} />
-                                                <span>Admin Dashboard</span>
+                                    {ACCOUNT_ITEMS.filter((item) => !item.adminOnly || user.admin).map((item) => (
+                                        <Button key={item.href} asChild variant="ghost" className="w-full justify-start h-10">
+                                            <Link href={item.href} className="flex items-center gap-3">
+                                                <SafeIcon icon={item.icon} className="h-4 w-4" size={16} />
+                                                <span>{item.label}</span>
                                             </Link>
                                         </Button>
-                                    )}
+                                    ))}
                                 </div>
 
                                 <Separator />

@@ -28,6 +28,12 @@ const nextConfig = {
             },
         ],
     },
+    async redirects() {
+        // /account was a stub page that only redirected here; preserve old links.
+        return [
+            { source: '/account', destination: '/profile', permanent: true },
+        ];
+    },
 };
 
 export default nextConfig;
