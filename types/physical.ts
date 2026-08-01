@@ -69,6 +69,7 @@ export interface PhysicalMediaFormData {
   purchase_date?: string;
   purchase_price?: number;
   purchase_location?: string;
+  poster_url?: string;
   notes?: string;
   is_box_set?: boolean;
   disc_count?: number;

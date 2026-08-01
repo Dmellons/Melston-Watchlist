@@ -28,6 +28,8 @@ import { barcodeService } from '@/lib/services/barcodeService'
 
 interface PhysicalMediaFormProps {
   initialData?: Partial<PhysicalMediaFormData>;
+  /** When set, the form updates this existing document instead of creating one. */
+  editItemId?: string;
   barcodeData?: BarcodeLookupResult;
   onSuccess?: () => void;
   onCancel?: () => void;
@@ -35,6 +37,7 @@ interface PhysicalMediaFormProps {
 
 const PhysicalMediaForm = ({
   initialData,
+  editItemId,
   barcodeData,
   onSuccess,
   onCancel,
@@ -68,7 +71,9 @@ const PhysicalMediaForm = ({
   const [tmdbType, setTmdbType] = useState<'movie' | 'tv' | undefined>(
     initialData?.tmdb_type || barcodeData?.tmdb_type
   );
-  const [posterUrl, setPosterUrl] = useState<string | undefined>(barcodeData?.poster_url);
+  const [posterUrl, setPosterUrl] = useState<string | undefined>(
+    initialData?.poster_url || barcodeData?.poster_url
+  );
 
   // Update form when barcodeData changes
   useEffect(() => {
@@ -152,23 +157,32 @@ const PhysicalMediaForm = ({
         disc_count: parseInt(discCount) || 1,
       };
 
-      await database.createDocument(
-        'watchlist',
-        process.env.NEXT_PUBLIC_APPWRITE_PHYSICAL_MEDIA_COLLECTION_ID!,
-        ID.unique(),
-        physicalMediaData,
-        [
-          'read("any")',
-          `update("user:${user.id}")`,
-          `delete("user:${user.id}")`,
-        ]
-      );
-
-      toast.success(`Added "${title}" to your physical library!`);
+      if (editItemId) {
+        await database.updateDocument(
+          'watchlist',
+          process.env.NEXT_PUBLIC_APPWRITE_PHYSICAL_MEDIA_COLLECTION_ID!,
+          editItemId,
+          physicalMediaData
+        );
+        toast.success(`Updated "${title}"`);
+      } else {
+        await database.createDocument(
+          'watchlist',
+          process.env.NEXT_PUBLIC_APPWRITE_PHYSICAL_MEDIA_COLLECTION_ID!,
+          ID.unique(),
+          physicalMediaData,
+          [
+            'read("any")',
+            `update("user:${user.id}")`,
+            `delete("user:${user.id}")`,
+          ]
+        );
+        toast.success(`Added "${title}" to your physical library!`);
+      }
       onSuccess?.();
     } catch (error) {
-      console.error('Error adding physical media:', error);
-      toast.error('Failed to add physical media');
+      console.error('Error saving physical media:', error);
+      toast.error(editItemId ? 'Failed to update physical media' : 'Failed to add physical media');
     } finally {
       setIsLoading(false);
     }
@@ -178,7 +192,7 @@ const PhysicalMediaForm = ({
     <form onSubmit={handleSubmit}>
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Add Physical Media</CardTitle>
+          <CardTitle className="text-lg">{editItemId ? 'Edit Physical Media' : 'Add Physical Media'}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Poster and Basic Info Row */}

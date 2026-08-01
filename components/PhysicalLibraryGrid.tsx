@@ -28,6 +28,7 @@ import {
   DollarSign,
   MapPin,
   Package,
+  Pencil,
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { database } from '@/lib/appwrite'
@@ -41,6 +42,7 @@ import {
 interface PhysicalLibraryGridProps {
   items: PhysicalMediaItem[];
   onRefresh: () => void;
+  onEdit?: (item: PhysicalMediaItem) => void;
 }
 
 // Format badge colors
@@ -53,7 +55,7 @@ const formatColors: Record<PhysicalMediaFormat, string> = {
   'collectors_edition': 'bg-yellow-500',
 };
 
-const PhysicalLibraryGrid = ({ items, onRefresh }: PhysicalLibraryGridProps) => {
+const PhysicalLibraryGrid = ({ items, onRefresh, onEdit }: PhysicalLibraryGridProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [formatFilter, setFormatFilter] = useState<string>('all');
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -293,6 +295,21 @@ const PhysicalLibraryGrid = ({ items, onRefresh }: PhysicalLibraryGridProps) => 
                         View Details
                       </Link>
                     </Button>
+                  )}
+
+                  {/* Edit */}
+                  {onEdit && (
+                    <DialogClose asChild>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="flex-1"
+                        onClick={() => onEdit(item)}
+                      >
+                        <SafeIcon icon={Pencil} className="h-4 w-4 mr-2" size={16} />
+                        Edit
+                      </Button>
+                    </DialogClose>
                   )}
 
                   {/* Delete */}

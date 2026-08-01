@@ -11,7 +11,7 @@ import { Disc, Plus, ScanBarcode, PenLine, Loader2 } from 'lucide-react'
 import PhysicalMediaForm from '@/components/PhysicalMediaForm'
 import BarcodeScanner from '@/components/BarcodeScanner'
 import PhysicalLibraryGrid from '@/components/PhysicalLibraryGrid'
-import { PhysicalMediaItem, BarcodeLookupResult } from '@/types/physical'
+import { PhysicalMediaItem, PhysicalMediaFormData, BarcodeLookupResult } from '@/types/physical'
 import Link from 'next/link'
 
 type AddMode = 'none' | 'scan' | 'manual';
@@ -22,6 +22,7 @@ export default function PhysicalLibraryPage() {
   const [loading, setLoading] = useState(true);
   const [addMode, setAddMode] = useState<AddMode>('none');
   const [scannedData, setScannedData] = useState<BarcodeLookupResult | undefined>();
+  const [editItem, setEditItem] = useState<PhysicalMediaItem | null>(null);
 
   // Fetch physical media collection
   const fetchItems = useCallback(async () => {
@@ -59,6 +60,7 @@ export default function PhysicalLibraryPage() {
   const handleFormSuccess = () => {
     setAddMode('none');
     setScannedData(undefined);
+    setEditItem(null);
     fetchItems();
   };
 
@@ -66,7 +68,35 @@ export default function PhysicalLibraryPage() {
   const handleFormCancel = () => {
     setAddMode('none');
     setScannedData(undefined);
+    setEditItem(null);
   };
+
+  // Open the form pre-filled with an existing item (the form card is at the top of the page)
+  const handleEdit = (item: PhysicalMediaItem) => {
+    setAddMode('none');
+    setScannedData(undefined);
+    setEditItem(item);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Map a stored document onto the form's shape (null -> undefined, date -> YYYY-MM-DD)
+  const editInitialData: Partial<PhysicalMediaFormData> | undefined = editItem ? {
+    title: editItem.title,
+    format: editItem.format,
+    barcode: editItem.barcode ?? undefined,
+    tmdb_id: editItem.tmdb_id ?? undefined,
+    tmdb_type: editItem.tmdb_type ?? undefined,
+    edition: editItem.edition ?? undefined,
+    condition: editItem.condition,
+    region_code: editItem.region_code ?? undefined,
+    purchase_date: editItem.purchase_date ? editItem.purchase_date.slice(0, 10) : undefined,
+    purchase_price: editItem.purchase_price ?? undefined,
+    purchase_location: editItem.purchase_location ?? undefined,
+    poster_url: editItem.poster_url ?? undefined,
+    notes: editItem.notes ?? undefined,
+    is_box_set: editItem.is_box_set,
+    disc_count: editItem.disc_count ?? undefined,
+  } : undefined;
 
   // Not logged in
   if (!userLoading && !user) {
@@ -103,7 +133,7 @@ export default function PhysicalLibraryPage() {
         </div>
 
         {/* Add Buttons */}
-        {addMode === 'none' && (
+        {addMode === 'none' && !editItem && (
           <div className="flex gap-2">
             <Button onClick={() => setAddMode('scan')} variant="outline">
               <SafeIcon icon={ScanBarcode} className="h-4 w-4 mr-2" size={16} />
@@ -117,8 +147,8 @@ export default function PhysicalLibraryPage() {
         )}
       </div>
 
-      {/* Add Mode UI */}
-      {addMode !== 'none' && (
+      {/* Add / Edit Mode UI */}
+      {(addMode !== 'none' || editItem) && (
         <Card className="mb-8">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -130,7 +160,7 @@ export default function PhysicalLibraryPage() {
               ) : (
                 <>
                   <SafeIcon icon={PenLine} className="h-5 w-5" size={20} />
-                  Add Physical Media
+                  {editItem ? 'Edit Physical Media' : 'Add Physical Media'}
                 </>
               )}
             </CardTitle>
@@ -143,6 +173,9 @@ export default function PhysicalLibraryPage() {
               />
             ) : (
               <PhysicalMediaForm
+                key={editItem?.$id ?? 'add'}
+                initialData={editInitialData}
+                editItemId={editItem?.$id}
                 barcodeData={scannedData}
                 onSuccess={handleFormSuccess}
                 onCancel={handleFormCancel}
@@ -161,7 +194,7 @@ export default function PhysicalLibraryPage() {
 
       {/* Collection Grid */}
       {!loading && (
-        <PhysicalLibraryGrid items={items} onRefresh={fetchItems} />
+        <PhysicalLibraryGrid items={items} onRefresh={fetchItems} onEdit={handleEdit} />
       )}
     </div>
   );
