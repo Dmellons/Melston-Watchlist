@@ -12,7 +12,7 @@ import Link from "next/link";
 
 const PRESETS = [
     { label: "Something new tonight", prompt: "Suggest something new for me to watch tonight based on my taste" },
-    { label: "Help me finish a show", prompt: "Remind me of shows I have started but not finished, or suggest similar ones worth picking back up" },
+    { label: "More like my favorites", prompt: "Suggest shows and movies similar to my favorites and top-rated titles that I have not seen yet" },
     { label: "Hidden gems", prompt: "Suggest hidden gems similar to my favorite movies and shows" },
 ];
 
