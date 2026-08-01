@@ -11,6 +11,18 @@ interface LoadingSpinnerProps {
   text?: string;
 }
 
+/** Generic route-level loading fallback: optional header line + content blocks. */
+export function PageSkeleton({ header = true, rows = 3 }: { header?: boolean; rows?: number }) {
+  return (
+    <div className="space-y-8">
+      {header && <Skeleton className="h-11 w-64" />}
+      {Array.from({ length: rows }).map((_, i) => (
+        <Skeleton key={i} className="h-40 w-full rounded-lg" />
+      ))}
+    </div>
+  );
+}
+
 export function LoadingSpinner({ size = 'md', className, text }: LoadingSpinnerProps) {
   const sizeClasses = {
     sm: 'h-4 w-4',
