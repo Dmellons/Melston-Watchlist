@@ -1,7 +1,7 @@
 'use client'
 import Link from "next/link";
 import LoginButton from "../buttons/LoginButton";
-import NewSearchBar from "../NewSearchBar";
+import { SearchTrigger } from "../search/SearchOverlay";
 import MainNav from "./MainNav";
 import SafeIcon from "@/components/SafeIcon";
 import { Film } from "lucide-react";
@@ -25,11 +25,10 @@ export default function MainHeader() {
 
                 <MainNav />
 
-                {/* Centered in the remaining space between nav and avatar; the
-                    results panel anchors to the sticky header, not this box. */}
+                {/* Opens the global search overlay (also on Cmd/Ctrl+K) */}
                 <div className="hidden md:flex flex-1 justify-center px-2">
                     <div className="w-full max-w-md">
-                        <NewSearchBar />
+                        <SearchTrigger />
                     </div>
                 </div>
 

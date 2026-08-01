@@ -9,7 +9,6 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import PageShell from "@/components/layout/PageShell";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { EmptyState } from "@/components/ui/loading-states";
-import NewSearchBar from "@/components/NewSearchBar";
 import NewSearchCard from "@/components/NewSearchCard";
 import GameSearchCard from "@/components/GameSearchCard";
 import SafeIcon from "@/components/SafeIcon";
@@ -109,12 +108,6 @@ const SearchPageContent = () => {
 
     return (
         <PageShell className="space-y-6">
-            {/* Mobile has no header search bar — this page is its search input.
-                relative: the bar's results panel anchors to this wrapper. */}
-            <div className="md:hidden relative">
-                <NewSearchBar />
-            </div>
-
             <PageHeader
                 title={canSearch ? `Results for "${q}"${totalLabel}` : 'Search'}
                 icon={SearchIcon}

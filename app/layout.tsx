@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import MainHeader from "@/components/layout/MainHeader";
 import BottomNav from "@/components/layout/BottomNav";
-import CommandK from "@/components/CommandK";
+import SearchOverlay from "@/components/search/SearchOverlay";
 import { ThemeProvider } from "@/components/Contexts/ThemeProvider";
 import { UserProvider } from "@/hooks/User";
 import { Toaster } from "@/components/ui/sonner";
@@ -73,7 +73,7 @@ export default async function RootLayout({
               </main>
 
               <BottomNav />
-              <CommandK />
+              <SearchOverlay />
 
               <Toaster
                 toastOptions={{
