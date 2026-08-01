@@ -87,12 +87,12 @@ const mediaYear = (m: TMDBMultiSearchResult) => {
 };
 
 const ResultThumb = ({ src, alt }: { src: string; alt: string }) => (
-    <div className="h-14 w-9 shrink-0 overflow-hidden rounded bg-muted">
+    <div className="h-[4.5rem] w-12 shrink-0 overflow-hidden rounded-md bg-muted">
         <ImageWithFallback
             src={src}
             alt={alt}
-            width={36}
-            height={56}
+            width={48}
+            height={72}
             className="h-full w-full object-cover"
             loading="lazy"
         />
@@ -103,7 +103,7 @@ const RowSkeletons = ({ count }: { count: number }) => (
     <div className="space-y-1 px-2 py-1">
         {Array.from({ length: count }).map((_, i) => (
             <div key={i} className="flex items-center gap-3 px-2 py-2">
-                <Skeleton className="h-14 w-9 rounded" />
+                <Skeleton className="h-[4.5rem] w-12 rounded-md" />
                 <div className="flex-1 space-y-2">
                     <Skeleton className="h-4 w-1/2" />
                     <Skeleton className="h-3 w-1/4" />
@@ -212,7 +212,7 @@ export default function SearchOverlay() {
                 className="top-[10%] max-w-2xl translate-y-0 gap-0 overflow-hidden p-0 max-sm:top-0 max-sm:h-[100dvh] max-sm:max-w-none max-sm:rounded-none max-sm:border-0"
             >
                 <DialogTitle className="sr-only">Search</DialogTitle>
-                <Command shouldFilter={false} className="bg-transparent">
+                <Command shouldFilter={false} className="bg-transparent [&_[cmdk-input-wrapper]]:px-5 [&_[cmdk-input-wrapper]_svg]:mr-3">
                     <CommandInput
                         placeholder="Search movies, TV shows, and games..."
                         value={query}
@@ -254,7 +254,7 @@ export default function SearchOverlay() {
                                         className="gap-3"
                                     >
                                         <ResultThumb
-                                            src={`https://image.tmdb.org/t/p/w92/${result.poster_path}`}
+                                            src={`https://image.tmdb.org/t/p/w154/${result.poster_path}`}
                                             alt={mediaTitle(result) || ''}
                                         />
                                         <div className="min-w-0 flex-1">
@@ -280,7 +280,7 @@ export default function SearchOverlay() {
                                     >
                                         <ResultThumb
                                             src={game.cover?.image_id
-                                                ? `https://images.igdb.com/igdb/image/upload/t_cover_small/${game.cover.image_id}.jpg`
+                                                ? `https://images.igdb.com/igdb/image/upload/t_cover_big/${game.cover.image_id}.jpg`
                                                 : ''}
                                             alt={game.name}
                                         />
