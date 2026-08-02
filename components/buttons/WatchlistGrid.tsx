@@ -31,8 +31,10 @@ import {
     MoreVertical,
     Trash2,
     Gamepad2,
-    Heart
+    Heart,
+    ListChecks
 } from "lucide-react"
+import { WatchStatus } from "@/types/customTypes"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 import { useBreakpoint } from "@/hooks/MediaQuery"
 import Link from "next/link"
@@ -41,6 +43,7 @@ import PlexRequestToggle from "@/components/PlexRequestToggle"
 import { useUser } from "@/hooks/User"
 import {
     DropdownMenu,
+    DropdownMenuCheckboxItem,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger,
@@ -54,6 +57,73 @@ interface WatchlistGridProps {
 type SortOption = 'title' | 'date' | 'year' | 'type';
 type FilterOption = 'all' | 'movie' | 'tv' | 'videogame' | 'requested' | 'favorite';
 
+const STATUS_OPTIONS: Array<{ value: WatchStatus; label: string }> = [
+    { value: WatchStatus.WANT_TO_WATCH, label: 'Want to Watch' },
+    { value: WatchStatus.WATCHING, label: 'Watching' },
+    { value: WatchStatus.COMPLETED, label: 'Completed' },
+    { value: WatchStatus.ON_HOLD, label: 'On Hold' },
+    { value: WatchStatus.DROPPED, label: 'Dropped' },
+];
+
+/** Multi-select watch-status filter; empty selection means "all statuses". */
+const WatchStatusFilter = ({
+    selected,
+    setSelected,
+    className,
+}: {
+    selected: WatchStatus[];
+    setSelected: (statuses: WatchStatus[]) => void;
+    className?: string;
+}) => {
+    const toggle = (status: WatchStatus) => {
+        setSelected(
+            selected.includes(status)
+                ? selected.filter((s) => s !== status)
+                : [...selected, status]
+        );
+    };
+
+    return (
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <Button variant="outline" className={`justify-between gap-2 bg-background/50 font-normal ${className ?? ''}`}>
+                    <span className="flex items-center gap-2">
+                        <SafeIcon icon={ListChecks} className="h-4 w-4" size={16} />
+                        Status
+                    </span>
+                    {selected.length > 0 && (
+                        <Badge variant="secondary" className="px-1.5">{selected.length}</Badge>
+                    )}
+                </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="w-52">
+                {STATUS_OPTIONS.map((option) => (
+                    <DropdownMenuCheckboxItem
+                        key={option.value}
+                        checked={selected.includes(option.value)}
+                        // Keep the menu open while ticking multiple statuses
+                        onSelect={(e) => e.preventDefault()}
+                        onCheckedChange={() => toggle(option.value)}
+                    >
+                        {option.label}
+                    </DropdownMenuCheckboxItem>
+                ))}
+                {selected.length > 0 && (
+                    <DropdownMenuItem
+                        className="justify-center text-muted-foreground"
+                        onSelect={(e) => {
+                            e.preventDefault();
+                            setSelected([]);
+                        }}
+                    >
+                        Clear
+                    </DropdownMenuItem>
+                )}
+            </DropdownMenuContent>
+        </DropdownMenu>
+    );
+};
+
 const FilterSidebar = ({ 
     searchQuery, 
     setSearchQuery, 
@@ -61,8 +131,10 @@ const FilterSidebar = ({
     setSortBy, 
     sortOrder, 
     setSortOrder, 
-    filterBy, 
+    filterBy,
     setFilterBy,
+    statusFilter,
+    setStatusFilter,
     stats,
     isOpen,
     onClose
@@ -75,6 +147,8 @@ const FilterSidebar = ({
     setSortOrder: (order: 'asc' | 'desc') => void;
     filterBy: FilterOption;
     setFilterBy: (filter: FilterOption) => void;
+    statusFilter: WatchStatus[];
+    setStatusFilter: (statuses: WatchStatus[]) => void;
     stats: { movies: number; tvShows: number; games: number; requested: number; favorites: number; total: number };
     isOpen: boolean;
     onClose: () => void;
@@ -217,6 +291,16 @@ const FilterSidebar = ({
                 </Select>
             </div>
 
+            {/* Watch Status */}
+            <div className="p-4 border-b border-border/50">
+                <h3 className="text-sm font-medium text-muted-foreground mb-3">Watch Status</h3>
+                <WatchStatusFilter
+                    selected={statusFilter}
+                    setSelected={setStatusFilter}
+                    className="w-full"
+                />
+            </div>
+
             {/* Sorting */}
             <div className="p-4 border-b border-border/50">
                 <h3 className="text-sm font-medium text-muted-foreground mb-3">Sort Options</h3>
@@ -259,11 +343,12 @@ const FilterSidebar = ({
                     onClick={() => {
                         setSearchQuery('');
                         setFilterBy('all');
+                        setStatusFilter([]);
                         setSortBy('date');
                         setSortOrder('desc');
                     }}
                     className="w-full"
-                    disabled={searchQuery === '' && filterBy === 'all' && sortBy === 'date' && sortOrder === 'desc'}
+                    disabled={searchQuery === '' && filterBy === 'all' && statusFilter.length === 0 && sortBy === 'date' && sortOrder === 'desc'}
                 >
                     Reset All Filters
                 </Button>
@@ -462,6 +547,7 @@ const WatchlistGrid = ({ watchlist }: WatchlistGridProps) => {
     const [sortBy, setSortBy] = useState<SortOption>('date');
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
     const [filterBy, setFilterBy] = useState<FilterOption>('all');
+    const [statusFilter, setStatusFilter] = useState<WatchStatus[]>([]);
     const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
     const [sidebarOpen, setSidebarOpen] = useState(false);
     
@@ -482,7 +568,13 @@ const WatchlistGrid = ({ watchlist }: WatchlistGridProps) => {
                 (filterBy === 'requested' && document.plex_request) ||
                 (filterBy === 'favorite' && (document as any).is_favorite);
 
-            return matchesSearch && matchesFilter;
+            // Watch-status filter (multi-select; empty = all). Items without a
+            // status count as want_to_watch, matching how the rest of the app
+            // treats unset statuses.
+            const matchesStatus = statusFilter.length === 0 ||
+                statusFilter.includes(document.watch_status ?? WatchStatus.WANT_TO_WATCH);
+
+            return matchesSearch && matchesFilter && matchesStatus;
         });
 
         // Sort
@@ -516,7 +608,7 @@ const WatchlistGrid = ({ watchlist }: WatchlistGridProps) => {
         });
 
         return filtered;
-    }, [watchlist.documents, searchQuery, sortBy, sortOrder, filterBy]);
+    }, [watchlist.documents, searchQuery, sortBy, sortOrder, filterBy, statusFilter]);
 
     const stats = useMemo(() => {
         const movies = watchlist.documents.filter(d => d.content_type === 'movie').length;
@@ -549,6 +641,8 @@ const WatchlistGrid = ({ watchlist }: WatchlistGridProps) => {
                     setSortOrder={setSortOrder}
                     filterBy={filterBy}
                     setFilterBy={setFilterBy}
+                    statusFilter={statusFilter}
+                    setStatusFilter={setStatusFilter}
                     stats={stats}
                     isOpen={sidebarOpen}
                     onClose={() => setSidebarOpen(false)}
@@ -633,6 +727,13 @@ const WatchlistGrid = ({ watchlist }: WatchlistGridProps) => {
                                             <SelectItem value="favorite">Favorites</SelectItem>
                                         </SelectContent>
                                     </Select>
+
+                                    {/* Watch status (multi-select) */}
+                                    <WatchStatusFilter
+                                        selected={statusFilter}
+                                        setSelected={setStatusFilter}
+                                        className="w-full sm:w-auto"
+                                    />
                                 </div>
 
                                 {/* Sort and View Controls */}
